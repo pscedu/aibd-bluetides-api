@@ -5,7 +5,7 @@ from astropy.cosmology import FlatLambdaCDM
 from bigfile import BigFile
 
 cosmo = FlatLambdaCDM(H0=69.7, Om0=0.2814, Ob0=0.0464)
-files = '/home/yueying/scratch2/BT3/PIG_*'
+files = '/pylon5/as5pi3p/yueying/BT3/PIG_*'
 for f in sorted(glob.glob(files)):
     pig = BigFile(f)
     z = 1. / pig.open('Header').attrs['Time'][0] - 1  # redshift
