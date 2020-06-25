@@ -3,7 +3,7 @@
 # app: the object created inside of main.py with the line app = FastAPI().
 # --reload: make the server restart after code changes. Only do this for development.
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from bigfile import BigFile
 import glob,os,struct
@@ -26,14 +26,14 @@ pig_dir = '/pylon5/as5pi3p/yueying/BT3/PIG_251/'
 pig = BigFile(pig_dir)
 
 # Route
-# Get all lengthByType data
+# Get the first n lengthByType data
 @app.get("/lengthbytype/n={num}")
 async def read_lbt_file(num: int):
     # Data
-    nhalo = num #only read from the first 500 halos
+    nhalo = num #only read from the first n halos
 
     # lbt: number of particles in each Fof halo
-    # Read data from the first 500 halos
+    # Read data from the first n halos
     lbt = pig.open('FOFGroups/LengthByType')[:nhalo]
 
     # serialize lbt numpy array into json
@@ -52,6 +52,11 @@ async def read_lbh(halo_id: int):
 # Get the number of a specific gas type particles in the nth halo
 @app.get("/lengthbytype/{halo_id}/{type_id}")
 async def read_lbht(halo_id: int, type_id: int):
+    total_halo = pig.open('FOFGroups/LengthByType').size
+    if halo_id < 0 or halo_id >= total_halo:
+        raise HTTPException(status_code=400, detail="halo_id out of range, should be [0,{})".format(total_halo))
+    if type_id < 0 or type_id >= 6:
+        raise HTTPException(status_code=400, detail="type_id out of range, should be [0,6)")
     nhalo = pig.open('FOFGroups/LengthByType')[halo_id]
     length = nhalo[type_id]
     numpyArrayLenData = numpy.array(length)
