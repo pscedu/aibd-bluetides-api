@@ -47,8 +47,42 @@ async def read_lbt_file(num: int):
 # Get the number of all gas type particles in the nth halo
 @app.get("/lengthbytype/{halo_id}/")
 async def read_lbh(halo_id: int):
+    check_halo_id_range(halo_id)
     nhalo = pig.open('FOFGroups/LengthByType')[halo_id]
     numpyArrayTypeData = numpy.array(nhalo)
     encodedNumpyTypeData = json.dumps(numpyArrayTypeData, cls=NumpyArrayEncoder)
     return {"halo_id": halo_id, "type_length": encodedNumpyTypeData}
 
+# Get the number of a specific gas type particles in the nth halo
+@app.get("/lengthbytype/{halo_id}/{type_id}")
+async def read_lbht(halo_id: int, type_id: int):
+    check_halo_id_range(halo_id)
+    check_type_id_range(type_id)
+    nhalo = pig.open('FOFGroups/LengthByType')[halo_id]
+    length = nhalo[type_id]
+    numpyArrayLenData = numpy.array(length)
+    encodedNumpyLenData = json.dumps(numpyArrayLenData, cls=NumpyArrayEncoder)
+    return {"halo_id": halo_id, "type_id": type_id, "length": encodedNumpyLenData}
+
+#Get the beginning and the ending index of a particular group.
+@app.get("/offsetbytype/{halo_id}/")
+async def read_obh(halo_id: int):
+    check_halo_id_range(halo_id)
+    lbt = pig.open('FOFGroups/LengthByType')[:halo_id+1]
+    obt = numpy.cumsum(lbt,axis=0).astype(int)
+    begin = obt[halo_id-1]
+    end = obt[halo_id]
+    numpyArrayBeginData = numpy.array(begin)
+    encodedNumpyBeginData = json.dumps(numpyArrayBeginData, cls=NumpyArrayEncoder)
+    numpyArrayEndData = numpy.array(end)
+    encodedNumpyEndData = json.dumps(numpyArrayEndData, cls=NumpyArrayEncoder)
+    return {"halo_id": halo_id, "beginning_index": encodedNumpyBeginData, "ending_index": encodedNumpyEndData}
+
+def check_halo_id_range(halo_id: int):
+    total_halo = pig.open('FOFGroups/LengthByType').size
+    if halo_id < 0 or halo_id >= total_halo:
+        raise HTTPException(status_code=400, detail="halo_id out of range, should be [0,{})".format(total_halo))
+    
+def check_type_id_range(type_id: int):
+    if type_id < 0 or type_id >= 6:
+        raise HTTPException(status_code=400, detail="type_id out of range, should be [0,6)")
