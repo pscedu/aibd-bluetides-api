@@ -13,7 +13,6 @@ from fastapi import FastAPI, HTTPException
 # Init
 app = FastAPI()
 
-
 # Json serializer
 class NumpyArrayEncoder(JSONEncoder):
     def default(self, obj):
@@ -21,11 +20,9 @@ class NumpyArrayEncoder(JSONEncoder):
             return obj.tolist()
         return JSONEncoder.default(self, obj)
 
-
 # Data Directory
 pig_dir = '/pylon5/as5pi3p/yueying/BT3/PIG_251/'
 pig = BigFile(pig_dir)
-
 
 # Route
 # Get the first n lengthByType data
@@ -70,7 +67,10 @@ async def read_obh(halo_id: int):
     check_halo_id_range(halo_id)
     lbt = pig.open('FOFGroups/LengthByType')[:halo_id+1]
     obt = numpy.cumsum(lbt,axis=0).astype(int)
-    begin = obt[halo_id-1]
+    if halo_id == 0:
+        begin = [0]*6
+    else:
+        begin = obt[halo_id-1]
     end = obt[halo_id]
     numpyArrayBeginData = numpy.array(begin)
     encodedNumpyBeginData = json.dumps(numpyArrayBeginData, cls=NumpyArrayEncoder)
