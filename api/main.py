@@ -10,6 +10,8 @@ import numpy
 from bigfile import BigFile
 from fastapi import FastAPI, HTTPException
 
+import os
+
 # Init
 app = FastAPI()
 
@@ -82,6 +84,18 @@ async def read_obh(halo_id: int):
     numpyArrayEndData = numpy.array(end)
     encodedNumpyEndData = json.dumps(numpyArrayEndData, cls=NumpyArrayEncoder)
     return {"halo_id": halo_id, "beginning_index": encodedNumpyBeginData, "ending_index": encodedNumpyEndData}
+
+
+# Get the list of PIG folders available for querying
+@app.get("/pig/")
+async def read_pig():
+    path = '/pylon5/as5pi3p/yueying/BT3/'
+    subdirectories = []
+    directory_contents = os.listdir(path)
+    for item in directory_contents:
+        if item.startswith("PIG_"):
+            subdirectories.append(item)
+    return {"LIST": subdirectories}
 
 
 def check_halo_id_range(halo_id: int):
