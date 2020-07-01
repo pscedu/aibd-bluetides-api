@@ -24,16 +24,13 @@ class NumpyArrayEncoder(JSONEncoder):
         return JSONEncoder.default(self, obj)
 
 
-# Data Directory
-pig_dir = '/pylon5/as5pi3p/yueying/BT3/PIG_251/'
-pig = BigFile(pig_dir)
-
-
 # Route
-# Get the first n lengthByType data
-@app.get("/lengthbytype/n={num}")
-async def read_lbt_file(num: int):
+# Get the first n lengthByType data in a particular pig folder.
+@app.get("/pig​/{id}/lengthbytype/n={num}")
+async def read_lbt_file(id: int, num: int):
     # Data
+    pig = get_pig_folder(id)
+    check_halo_id_range(pig, num-1)
     nhalo = num  # only read from the first n halos
 
     # lbt: number of particles in each Fof halo
@@ -46,20 +43,22 @@ async def read_lbt_file(num: int):
     return {"length_by_type": encodedNumpyData}
 
 
-# Get the number of all gas type particles in the nth halo
-@app.get("/lengthbytype/{halo_id}/")
-async def read_lbh(halo_id: int):
-    check_halo_id_range(halo_id)
+# Get the number of all gas type particles in the nth halo of a particular pig folder
+@app.get("/pig​/{id}/lengthbytype/{halo_id}/")
+async def read_lbh(id: int, halo_id: int):
+    pig = get_pig_folder(id)
+    check_halo_id_range(pig, halo_id)
     nhalo = pig.open('FOFGroups/LengthByType')[halo_id]
     numpyArrayTypeData = numpy.array(nhalo)
     encodedNumpyTypeData = json.dumps(numpyArrayTypeData, cls=NumpyArrayEncoder)
     return {"halo_id": halo_id, "type_length": encodedNumpyTypeData}
 
 
-# Get the number of a specific gas type particles in the nth halo
-@app.get("/lengthbytype/{halo_id}/{type_id}")
-async def read_lbht(halo_id: int, type_id: int):
-    check_halo_id_range(halo_id)
+# Get the number of a specific gas type particles in the nth halo of a particular pig folder
+@app.get("/pig​/{id}/lengthbytype/{halo_id}/{type_id}")
+async def read_lbht(id: int, halo_id: int, type_id: int):
+    pig = get_pig_folder(id)
+    check_halo_id_range(pig, halo_id)
     check_type_id_range(type_id)
     nhalo = pig.open('FOFGroups/LengthByType')[halo_id]
     length = nhalo[type_id]
@@ -68,10 +67,11 @@ async def read_lbht(halo_id: int, type_id: int):
     return {"halo_id": halo_id, "type_id": type_id, "length": encodedNumpyLenData}
 
 
-# Get the beginning and the ending index of a particular group.
-@app.get("/offsetbytype/{halo_id}/")
-async def read_obh(halo_id: int):
-    check_halo_id_range(halo_id)
+# Get the beginning and the ending index of a particular group and pig folder.
+@app.get("/pig​/{id}/offsetbytype/{halo_id}/")
+async def read_obh(id: int, halo_id: int):
+    pig = get_pig_folder(id)
+    check_halo_id_range(pig, halo_id)
     lbt = pig.open('FOFGroups/LengthByType')[:halo_id + 1]
     obt = numpy.cumsum(lbt, axis=0).astype(int)
     if halo_id == 0:
@@ -98,7 +98,7 @@ async def read_pig():
     return {"LIST": subdirectories}
 
 
-def check_halo_id_range(halo_id: int):
+def check_halo_id_range(pig, halo_id: int):
     total_halo = pig.open('FOFGroups/LengthByType').size
     if halo_id < 0 or halo_id >= total_halo:
         raise HTTPException(status_code=400, detail="halo_id out of range, should be [0,{})".format(total_halo))
@@ -107,3 +107,11 @@ def check_halo_id_range(halo_id: int):
 def check_type_id_range(type_id: int):
     if type_id < 0 or type_id >= 6:
         raise HTTPException(status_code=400, detail="type_id out of range, should be [0,6)")
+
+
+def get_pig_folder(id: int):
+    # data directory
+    pig_base_dir = '/pylon5/as5pi3p/yueying/BT3/'
+    pig_dir = pig_base_dir + "PIG_" + str(id) + "/"
+    pig = BigFile(pig_dir)
+    return pig
