@@ -78,3 +78,40 @@ def test_get_index_invalid_haloid():
     response = client.get("/offsetbytype/-1")
     # Validate the status code: 400
     assert response.status_code == 400
+
+
+### endpoint: /pig/
+# Basic positive tests
+def test_get_pig():
+    response = client.get("/pig/")
+    # Validate the status code: 200
+    assert response.status_code == 200
+    # Validate payload: Response is a well-formed JSON object
+    # response data -- LIST should be a list and match the file data.
+    assert type(response.json()["LIST"]) is list
+    assert response.json() == {
+        "LIST": [
+            "PIG_208",
+            "PIG_230",
+            "PIG_237",
+            "PIG_216",
+            "PIG_265",
+            "PIG_244",
+            "PIG_271",
+            "PIG_258",
+            "PIG_222",
+            "PIG_251",
+            "PIG_184",
+            "PIG_197"
+        ]
+    }
+    # Validate headers
+    assert response.headers["content-type"] == "application/json"
+
+
+# Negative testing with invalid input
+# Invalid URL path.
+def test_get_pig_invalid_url():
+    response = client.get("/pig/2")
+    # Validate the status code: 404
+    assert response.status_code == 404
