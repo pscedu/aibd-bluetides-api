@@ -7,7 +7,8 @@ import json
 from json import JSONEncoder
 
 import numpy
-from bigfile import BigFile
+# from bigfile import BigFile
+import bigfile
 from fastapi import FastAPI, HTTPException
 
 import os
@@ -113,5 +114,5 @@ def get_pig_folder(id: int):
     # data directory
     pig_base_dir = '/pylon5/as5pi3p/yueying/BT3/'
     pig_dir = pig_base_dir + "PIG_" + str(id) + "/"
-    pig = BigFile(pig_dir)
+    pig = bigfile.File(pig_dir)
     return pig
