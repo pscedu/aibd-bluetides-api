@@ -30,7 +30,8 @@ class NumpyArrayEncoder(JSONEncoder):
 @app.get("/pig/{id}/lengthbytype/n={num}")
 async def read_lbt_file(id: int, num: int):
     # Data
-    pig = get_pig_folder(id)
+    check_pig_id(id)
+    pig = get_pig_data(id)
     check_halo_id_range(pig, num-1)
     nhalo = num  # only read from the first n halos
 
@@ -47,7 +48,8 @@ async def read_lbt_file(id: int, num: int):
 # Get the number of all gas type particles in the nth halo of a particular pig folder
 @app.get("/pig/{id}/lengthbytype/{halo_id}/")
 async def read_lbh(id: int, halo_id: int):
-    pig = get_pig_folder(id)
+    check_pig_id(id)
+    pig = get_pig_data(id)
     check_halo_id_range(pig, halo_id)
     nhalo = pig.open('FOFGroups/LengthByType')[halo_id]
     numpyArrayTypeData = numpy.array(nhalo)
@@ -58,7 +60,8 @@ async def read_lbh(id: int, halo_id: int):
 # Get the number of a specific gas type particles in the nth halo of a particular pig folder
 @app.get("/pig/{id}/lengthbytype/{halo_id}/{type_id}")
 async def read_lbht(id: int, halo_id: int, type_id: int):
-    pig = get_pig_folder(id)
+    check_pig_id(id)
+    pig = get_pig_data(id)
     check_halo_id_range(pig, halo_id)
     check_type_id_range(type_id)
     nhalo = pig.open('FOFGroups/LengthByType')[halo_id]
@@ -71,7 +74,8 @@ async def read_lbht(id: int, halo_id: int, type_id: int):
 # Get the beginning and the ending index of a particular group and pig folder.
 @app.get("/pig/{id}/offsetbytype/{halo_id}/")
 async def read_obh(id: int, halo_id: int):
-    pig = get_pig_folder(id)
+    check_pig_id(id)
+    pig = get_pig_data(id)
     check_halo_id_range(pig, halo_id)
     lbt = pig.open('FOFGroups/LengthByType')[:halo_id + 1]
     obt = numpy.cumsum(lbt, axis=0).astype(int)
@@ -90,13 +94,28 @@ async def read_obh(id: int, halo_id: int):
 # Get the list of PIG folders available for querying
 @app.get("/pig/")
 async def read_pig():
+    subdirectories = get_pig_folders()
+    return {"LIST": subdirectories}
+
+
+# Get the list of PIG folders
+def get_pig_folders():
     path = '/pylon5/as5pi3p/yueying/BT3/'
     subdirectories = []
     directory_contents = os.listdir(path)
     for item in directory_contents:
         if item.startswith("PIG_"):
             subdirectories.append(item)
-    return {"LIST": subdirectories}
+    return subdirectories
+
+
+# Get a particular pig folder data in bigfile format
+def get_pig_data(id: int):
+    # data directory
+    pig_base_dir = '/pylon5/as5pi3p/yueying/BT3/'
+    pig_dir = pig_base_dir + "PIG_" + str(id) + "/"
+    pig = bigfile.File(pig_dir)
+    return pig
 
 
 def check_halo_id_range(pig, halo_id: int):
@@ -110,9 +129,8 @@ def check_type_id_range(type_id: int):
         raise HTTPException(status_code=400, detail="type_id out of range, should be [0,6)")
 
 
-def get_pig_folder(id: int):
-    # data directory
-    pig_base_dir = '/pylon5/as5pi3p/yueying/BT3/'
-    pig_dir = pig_base_dir + "PIG_" + str(id) + "/"
-    pig = bigfile.File(pig_dir)
-    return pig
+def check_pig_id(pig_id: int):
+    subdirectories = get_pig_folders()
+    pig_folder = "PIG_" + str(pig_id)
+    if pig_folder not in subdirectories:
+        raise HTTPException(status_code=404, detail="PIG folder does not exist, should in {}".format(subdirectories))

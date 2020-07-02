@@ -8,7 +8,7 @@ from main import app
 client = TestClient(app)
 
 
-### endpoint: /lengthbytype/{halo_id}/{type_id}
+### endpoint: /pig/{id}/lengthbytype/{halo_id}/{type_id}
 # Basic positive tests
 def test_get_length():
     response = client.get("/pig/251/lengthbytype/100/1")
@@ -46,7 +46,14 @@ def test_get_length_invalid_typeid():
     assert response.status_code == 400
 
 
-### endpoint: /offsetbytype/{halo_id}/
+# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
+def test_get_length_invalid_pig_id():
+    response = client.get("/pig/200/lengthbytype/5/10")
+    # Validate the status code: 404
+    assert response.status_code == 404
+
+
+### endpoint: /pig/{id}/offsetbytype/{halo_id}/
 # Basic positive tests
 def test_get_index():
     response = client.get("/pig/251/offsetbytype/100/")
@@ -78,6 +85,13 @@ def test_get_index_invalid_haloid():
     response = client.get("/pig/251/offsetbytype/-1")
     # Validate the status code: 400
     assert response.status_code == 400
+
+
+# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
+def test_get_index_invalid_pig_id():
+    response = client.get("/pig/200/offsetbytype/5")
+    # Validate the status code: 404
+    assert response.status_code == 404
 
 
 ### endpoint: /pig/
