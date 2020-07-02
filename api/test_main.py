@@ -11,7 +11,7 @@ client = TestClient(app)
 ### endpoint: /lengthbytype/{halo_id}/{type_id}
 # Basic positive tests
 def test_get_length():
-    response = client.get("/lengthbytype/100/1")
+    response = client.get("/pig/251/lengthbytype/100/1")
     # Validate the status code: 200
     assert response.status_code == 200
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
@@ -27,21 +27,21 @@ def test_get_length():
 # Negative testing with invalid input
 # Missing required parameters
 def test_get_length_missing_input():
-    response = client.get("/lengthbytype//")
+    response = client.get("/pig/251/lengthbytype//")
     # Validate the status code: 404
     assert response.status_code == 404
 
 
 # Invalid value for endpoint parameters. E.g. halo_id not in [0,286036300) 
 def test_get_length_invalid_haloid():
-    response = client.get("/lengthbytype/-1/5")
+    response = client.get("/pig/251/lengthbytype/-1/5")
     # Validate the status code: 400
     assert response.status_code == 400
 
 
 # Invalid value for endpoint parameters. E.g. type_id not in [0,6)
 def test_get_length_invalid_typeid():
-    response = client.get("/lengthbytype/5/10")
+    response = client.get("/pig/251/lengthbytype/5/10")
     # Validate the status code: 400
     assert response.status_code == 400
 
@@ -49,7 +49,7 @@ def test_get_length_invalid_typeid():
 ### endpoint: /offsetbytype/{halo_id}/
 # Basic positive tests
 def test_get_index():
-    response = client.get("/offsetbytype/100")
+    response = client.get("/pig/251/offsetbytype/100/")
     # Validate the status code: 200
     assert response.status_code == 200
     # Validate payload: Response is a well-formed JSON object
@@ -68,14 +68,14 @@ def test_get_index():
 # Negative testing with invalid input
 # Missing required parameters
 def test_get_index_missing_input():
-    response = client.get("/offsetbytype/")
+    response = client.get("/pig/251/offsetbytype/")
     # Validate the status code: 404
     assert response.status_code == 404
 
 
 # Invalid value for endpoint parameters. E.g. halo_id not in [0,286036300) 
 def test_get_index_invalid_haloid():
-    response = client.get("/offsetbytype/-1")
+    response = client.get("/pig/251/offsetbytype/-1")
     # Validate the status code: 400
     assert response.status_code == 400
 

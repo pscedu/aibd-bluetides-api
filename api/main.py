@@ -26,7 +26,7 @@ class NumpyArrayEncoder(JSONEncoder):
 
 # Route
 # Get the first n lengthByType data in a particular pig folder.
-@app.get("/pig​/{id}/lengthbytype/n={num}")
+@app.get("/pig/{id}/lengthbytype/n={num}")
 async def read_lbt_file(id: int, num: int):
     # Data
     pig = get_pig_folder(id)
@@ -44,7 +44,7 @@ async def read_lbt_file(id: int, num: int):
 
 
 # Get the number of all gas type particles in the nth halo of a particular pig folder
-@app.get("/pig​/{id}/lengthbytype/{halo_id}/")
+@app.get("/pig/{id}/lengthbytype/{halo_id}/")
 async def read_lbh(id: int, halo_id: int):
     pig = get_pig_folder(id)
     check_halo_id_range(pig, halo_id)
@@ -55,7 +55,7 @@ async def read_lbh(id: int, halo_id: int):
 
 
 # Get the number of a specific gas type particles in the nth halo of a particular pig folder
-@app.get("/pig​/{id}/lengthbytype/{halo_id}/{type_id}")
+@app.get("/pig/{id}/lengthbytype/{halo_id}/{type_id}")
 async def read_lbht(id: int, halo_id: int, type_id: int):
     pig = get_pig_folder(id)
     check_halo_id_range(pig, halo_id)
@@ -68,7 +68,7 @@ async def read_lbht(id: int, halo_id: int, type_id: int):
 
 
 # Get the beginning and the ending index of a particular group and pig folder.
-@app.get("/pig​/{id}/offsetbytype/{halo_id}/")
+@app.get("/pig/{id}/offsetbytype/{halo_id}/")
 async def read_obh(id: int, halo_id: int):
     pig = get_pig_folder(id)
     check_halo_id_range(pig, halo_id)
