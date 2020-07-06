@@ -95,6 +95,7 @@ async def read_obh(id: int, halo_id: int):
 @app.get("/pig/")
 async def read_pig():
     subdirectories = get_pig_folders()
+    num_halos = get_pig_numhalo()
     return {"LIST": subdirectories}
 
 
@@ -108,6 +109,17 @@ def get_pig_folders():
             subdirectories.append(item)
     return subdirectories
 
+def get_pig_numhalo():
+    path = '/pylon5/as5pi3p/yueying/BT3/'
+    num_halos = []
+    directory_contents = os.listdir(path)
+    for item in directory_contents:
+        if item.startswith("PIG_"):
+            pig_dir = path + item + '/'
+            pig = bigfile.File(pig_dir)
+            Nhalo = pig.open('FOFGroups/LengthByType').size
+            num_halos.append(Nhalo)
+    return num_halos
 
 # Get a particular pig folder data in bigfile format
 def get_pig_data(id: int):

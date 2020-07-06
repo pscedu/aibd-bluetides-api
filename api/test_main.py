@@ -30,7 +30,12 @@ def test_get_length_missing_input():
     response = client.get("/pig/251/lengthbytype//")
     # Validate the status code: 404
     assert response.status_code == 404
-
+#######################################################################
+def test_get_length_wrong_field():
+    response = client.get("/pig/251/length/10/1")
+    # Validate the status code: 404
+    assert response.status_code == 404
+#######################################################################
 
 # Invalid value for endpoint parameters. E.g. halo_id not in [0,286036300) 
 def test_get_length_invalid_haloid():
@@ -85,8 +90,12 @@ def test_get_index_invalid_haloid():
     response = client.get("/pig/251/offsetbytype/-1")
     # Validate the status code: 400
     assert response.status_code == 400
-
-
+#####################################################################
+def test_get_index_invalid_haloid_large():
+    response = client.get("/pig/251/offsetbytype/286036400")
+    # Validate the status code: 400
+    assert response.status_code == 400
+#####################################################################
 # Invalid value for endpoint parameters. E.g. pig id not in PIG folder
 def test_get_index_invalid_pig_id():
     response = client.get("/pig/200/offsetbytype/5")
