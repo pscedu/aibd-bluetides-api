@@ -117,9 +117,24 @@ def get_pig_numhalo():
         if item.startswith("PIG_"):
             pig_dir = path + item + '/'
             pig = bigfile.File(pig_dir)
-            Nhalo = pig.open('FOFGroups/LengthByType').size
+            Nhalo = pig['Header'].attrs['NumFOFGroupsTotal'][0]
             num_halos.append(Nhalo)
     return num_halos
+
+def get_pig_redshift():
+    path = '/pylon5/as5pi3p/yueying/BT3/'
+    redshift_list = []
+    directory_contents = os.listdir(path)
+    for item in directory_contents:
+        if item.startswith("PIG_"):
+            pig_dir = path + item + '/'
+            pig = bigfile.File(pig_dir)
+            scalefactor = pig['Header'].attrs['Time'][0]
+            redshift = 1./scalefactor - 1.
+            redshift_list.append(redshift)
+    return redshift
+
+
 
 # Get a particular pig folder data in bigfile format
 def get_pig_data(id: int):
