@@ -94,8 +94,17 @@ async def read_obh(id: int, halo_id: int):
 # Get the list of PIG folders available for querying
 @app.get("/pig/")
 async def read_pig():
+    pig_list = []
     subdirectories = get_pig_folders()
-    return {"LIST": subdirectories}
+    for subdir in subdirectories:
+        pig_dict = {}
+        pig_id = subdir.replace("PIG_", "")
+        pig_dict["id"] = pig_id
+        pig_dict["name"] = subdir
+        pig_dict["num_halos"] = int(get_pig_numhalo(subdir))
+        pig_dict["time"] = float(get_pig_redshift(subdir))
+        pig_list.append(pig_dict)
+    return {"LIST": pig_list}
 
 
 # Get the list of PIG folders
@@ -107,6 +116,23 @@ def get_pig_folders():
         if item.startswith("PIG_"):
             subdirectories.append(item)
     return subdirectories
+
+
+def get_pig_numhalo(sub_dir:str):
+    path = '/pylon5/as5pi3p/yueying/BT3/'
+    pig_dir = path + sub_dir + '/'
+    pig = bigfile.File(pig_dir)
+    Nhalo = pig['Header'].attrs['NumFOFGroupsTotal'][0]
+    return Nhalo
+
+
+def get_pig_redshift(sub_dir:str):
+    path = '/pylon5/as5pi3p/yueying/BT3/'
+    pig_dir = path + sub_dir + '/'
+    pig = bigfile.File(pig_dir)
+    scalefactor = pig['Header'].attrs['Time'][0]
+    redshift = 1./scalefactor - 1.
+    return redshift
 
 
 # Get a particular pig folder data in bigfile format
