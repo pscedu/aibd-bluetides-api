@@ -107,6 +107,22 @@ async def read_pig():
     return {"LIST": pig_list}
 
 
+# Get the position of each particle in a particular group and pig folder
+@app.get("/pig/{id}/gas/position/{group_id}")
+async def read_gas_position(id: int, group_id: int):
+    check_pig_id(id)
+    pig = get_pig_data(id)
+    check_group_id_range(pig, group_id)
+    lbt = pig.open('FOFGroups/LengthByType')[:group_id]
+    obt = numpy.cumsum(lbt,axis=0).astype(int)
+    GasPos = pig.open('0/Position')[:obt[-1][0]]
+    GroupID = pig.open('0/GroupID')[:obt[-1][0]]
+    position = GasPos[GroupID==group_id]
+    numpyArrayGasPosData = numpy.array(position)
+    encodedNumpyGasPosData = json.dumps(numpyArrayGasPosData, cls=NumpyArrayEncoder)
+    return {"gas_position": encodedNumpyGasPosData}
+
+
 # Get the list of PIG folders
 def get_pig_folders():
     path = '/pylon5/as5pi3p/yueying/BT3/'
@@ -148,6 +164,12 @@ def check_halo_id_range(pig, halo_id: int):
     total_halo = pig.open('FOFGroups/LengthByType').size
     if halo_id < 0 or halo_id >= total_halo:
         raise HTTPException(status_code=400, detail="halo_id out of range, should be [0,{})".format(total_halo))
+
+
+def check_group_id_range(pig, group_id: int):
+    total_group = pig.open('FOFGroups/LengthByType').size
+    if group_id <= 0 or group_id > total_group:
+        raise HTTPException(status_code=400, detail="group_id out of range, should be [1,{}]".format(total_group))
 
 
 def check_type_id_range(type_id: int):
