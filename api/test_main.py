@@ -237,3 +237,40 @@ def test_get_pig_invalid_url():
     response = client.get("/pig/2")
     # Validate the status code: 404
     assert response.status_code == 404
+
+
+### endpoint: /pig/{id}/gas/position/{group_id}
+# Basic positive tests
+def test_get_gas_position():
+    response = client.get("/pig/251/gas/position/1")
+    # Validate the status code: 200
+    assert response.status_code == 200
+    # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 446499*3 array list
+    gas_position = json.loads(response.json()["gas_position"])
+    assert type(gas_position) is list
+    assert gas_position[0] == [278202.3184792972, 28013.68036349728, 248672.55276327548]
+    assert len(gas_position[0]) == 3
+    assert len(gas_position) == 446499
+    assert response.headers["content-type"] == "application/json"
+
+
+# Negative testing with invalid input
+# Missing required parameters
+def test_get_gas_position_missing_input():
+    response = client.get("/pig/251/gas/position/")
+    # Validate the status code: 404
+    assert response.status_code == 404
+
+
+# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300) 
+def test_get_gas_position_invalid_groupid():
+    response = client.get("/pig/251/gas/position/0")
+    # Validate the status code: 400
+    assert response.status_code == 400
+
+
+# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
+def test_get_gas_position_invalid_pig_id():
+    response = client.get("/pig/1/gas/position/0")
+    # Validate the status code: 404
+    assert response.status_code == 404
