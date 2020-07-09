@@ -123,6 +123,22 @@ async def read_gas_position(id: int, group_id: int):
     return {"gas_position": encodedNumpyGasPosData}
 
 
+# Get the number of free electrons at the particle position
+@app.get("/pig/{id}/gas/electron/{group_id}")
+async def read_gas_electron(id: int, group_id: int):
+    check_pig_id(id)
+    pig = get_pig_data(id)
+    check_group_id_range(pig, group_id)
+    lbt = pig.open('FOFGroups/LengthByType')[:group_id]
+    obt = numpy.cumsum(lbt,axis=0).astype(int)
+    GasElectron = pig.open('0/ElectronAbundance')[:obt[-1][0]]
+    GroupID = pig.open('0/GroupID')[:obt[-1][0]]
+    electron = GasElectron[GroupID==group_id]
+    numpyArrayGasElectronData = numpy.array(electron)
+    encodedNumpyGasElectronData = json.dumps(numpyArrayGasElectronData, cls=NumpyArrayEncoder)
+    return {"gas_electron_abundance": encodedNumpyGasElectronData}
+
+
 # Get the list of PIG folders
 def get_pig_folders():
     path = '/pylon5/as5pi3p/yueying/BT3/'
