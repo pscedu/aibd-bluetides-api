@@ -110,33 +110,15 @@ async def read_pig():
 # Get the position of each particle in a particular group and pig folder
 @app.get("/pig/{id}/gas/position/{group_id}")
 async def read_gas_position(id: int, group_id: int):
-    check_pig_id(id)
-    pig = get_pig_data(id)
-    check_group_id_range(pig, group_id)
-    lbt = pig.open('FOFGroups/LengthByType')[:group_id]
-    obt = numpy.cumsum(lbt,axis=0).astype(int)
-    GasPos = pig.open('0/Position')[:obt[-1][0]]
-    GroupID = pig.open('0/GroupID')[:obt[-1][0]]
-    position = GasPos[GroupID==group_id]
-    numpyArrayGasPosData = numpy.array(position)
-    encodedNumpyGasPosData = json.dumps(numpyArrayGasPosData, cls=NumpyArrayEncoder)
-    return {"gas_position": encodedNumpyGasPosData}
+    position = get_gas_data(id, group_id, "Position")
+    return {"gas_position": position}
 
 
 # Get the number of free electrons at the particle position
 @app.get("/pig/{id}/gas/electron/{group_id}")
 async def read_gas_electron(id: int, group_id: int):
-    check_pig_id(id)
-    pig = get_pig_data(id)
-    check_group_id_range(pig, group_id)
-    lbt = pig.open('FOFGroups/LengthByType')[:group_id]
-    obt = numpy.cumsum(lbt,axis=0).astype(int)
-    GasElectron = pig.open('0/ElectronAbundance')[:obt[-1][0]]
-    GroupID = pig.open('0/GroupID')[:obt[-1][0]]
-    electron = GasElectron[GroupID==group_id]
-    numpyArrayGasElectronData = numpy.array(electron)
-    encodedNumpyGasElectronData = json.dumps(numpyArrayGasElectronData, cls=NumpyArrayEncoder)
-    return {"gas_electron_abundance": encodedNumpyGasElectronData}
+    electron = get_gas_data(id, group_id, "ElectronAbundance")
+    return {"gas_electron_abundance": electron}
 
 
 # Get the list of PIG folders
@@ -174,6 +156,31 @@ def get_pig_data(id: int):
     pig_dir = pig_base_dir + "PIG_" + str(id) + "/"
     pig = bigfile.File(pig_dir)
     return pig
+
+
+def get_obt(id: int, group_id: int):
+    check_pig_id(id)
+    pig = get_pig_data(id)
+    check_group_id_range(pig, group_id)
+    lbt = pig.open('FOFGroups/LengthByType')[:group_id]
+    obt = numpy.cumsum(lbt,axis=0).astype(int)
+    return obt
+
+
+def get_gas_data(id: int, group_id: int, feature: str):
+    check_pig_id(id)
+    pig = get_pig_data(id)
+    check_group_id_range(pig, group_id)
+    lbt = pig.open('FOFGroups/LengthByType')[:group_id]
+    obt = numpy.cumsum(lbt,axis=0).astype(int)
+    obt = get_obt(id, group_id)
+    path = '0/' + feature
+    Gas = pig.open(path)[:obt[-1][0]]
+    GroupID = pig.open('0/GroupID')[:obt[-1][0]]
+    gas_data = Gas[GroupID==group_id]
+    numpyArrayGasData = numpy.array(gas_data)
+    encodedNumpyGasData = json.dumps(numpyArrayGasData, cls=NumpyArrayEncoder)
+    return encodedNumpyGasData
 
 
 def check_halo_id_range(pig, halo_id: int):
