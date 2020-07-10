@@ -254,8 +254,6 @@ def test_get_gas_position():
     assert response.headers["content-type"] == "application/json"
     
     
-    
-    
 def test_get_gas_position_largeID():
     response = client.get("/pig/251/gas/position/2117968")
     # Validate the status code: 200
@@ -359,6 +357,42 @@ def test_get_gas_h2fraction_invalid_group_id():
 
 # Invalid value for endpoint parameters. E.g. pig id not in PIG folder
 def test_get_gas_h2fraction_invalid_pig_id():
+    response = client.get("/pig/1/gas/h2fraction/1000")
+    # Validate the status code: 404
+    assert response.status_code == 404
+
+
+### endpoint: /pig/{id}/gas/internalenergy/{group_id}
+# Basic positive tests
+def test_get_gas_internal_energy():
+    response = client.get("/pig/251/gas/internalenergy/1")
+    # Validate the status code: 200
+    assert response.status_code == 200
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    gas_h2fraction = json.loads(response.json()["gas_internal_energy"])
+    assert type(gas_h2fraction) is list
+    assert gas_h2fraction[0] == 112487.609375
+    assert len(gas_h2fraction) == 446499
+    assert response.headers["content-type"] == "application/json"
+
+
+# Negative testing with invalid input
+# Missing required parameters
+def test_get_gas_internal_energy_missing_input():
+    response = client.get("/pig/251/gas/internalenergy/")
+    # Validate the status code: 404
+    assert response.status_code == 404
+
+
+# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300]
+def test_get_gas_internal_energy_invalid_group_id():
+    response = client.get("/pig/251/gas/internalenergy/286036302")
+    # Validate the status code: 400
+    assert response.status_code == 400
+
+
+# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
+def test_get_gas_internal_energy_invalid_pig_id():
     response = client.get("/pig/1/gas/h2fraction/1000")
     # Validate the status code: 404
     assert response.status_code == 404
