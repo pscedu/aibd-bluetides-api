@@ -262,8 +262,8 @@ def test_get_gas_position_missing_input():
     assert response.status_code == 404
 
 
-# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300) 
-def test_get_gas_position_invalid_groupid():
+# Invalid value for endpoint parameters. E.g. group_id not in [1,31179336]
+def test_get_gas_position_invalid_group_id():
     response = client.get("/pig/251/gas/position/0")
     # Validate the status code: 400
     assert response.status_code == 400
@@ -272,5 +272,41 @@ def test_get_gas_position_invalid_groupid():
 # Invalid value for endpoint parameters. E.g. pig id not in PIG folder
 def test_get_gas_position_invalid_pig_id():
     response = client.get("/pig/1/gas/position/0")
+    # Validate the status code: 404
+    assert response.status_code == 404
+
+
+### endpoint: /pig/{id}/gas/electron/{group_id}
+# Basic positive tests
+def test_get_gas_electron():
+    response = client.get("/pig/251/gas/electron/1")
+    # Validate the status code: 200
+    assert response.status_code == 200
+    # Validate payload: Response is a well-formed JSON object and response data -- gas electron data should be a 446499*1 array list
+    gas_electron = json.loads(response.json()["gas_electron_abundance"])
+    assert type(gas_electron) is list
+    assert gas_electron[0] == 1.157894253730774
+    assert len(gas_electron) == 446499
+    assert response.headers["content-type"] == "application/json"
+
+
+# Negative testing with invalid input
+# Missing required parameters
+def test_get_gas_electron_missing_input():
+    response = client.get("/pig/251/gas/electron/")
+    # Validate the status code: 404
+    assert response.status_code == 404
+
+
+# Invalid value for endpoint parameters. E.g. group_id not in [1,31179336]
+def test_get_gas_electron_invalid_group_id():
+    response = client.get("/pig/251/gas/electron/0")
+    # Validate the status code: 400
+    assert response.status_code == 400
+
+
+# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
+def test_get_gas_electron_invalid_pig_id():
+    response = client.get("/pig/1/gas/electron/1000")
     # Validate the status code: 404
     assert response.status_code == 404
