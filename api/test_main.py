@@ -252,6 +252,21 @@ def test_get_gas_position():
     assert len(gas_position[0]) == 3
     assert len(gas_position) == 446499
     assert response.headers["content-type"] == "application/json"
+    
+    
+    
+    
+def test_get_gas_position_largeID():
+    response = client.get("/pig/251/gas/position/2117968")
+    # Validate the status code: 200
+    assert response.status_code == 200
+    # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 12857*3 array list
+    gas_position = json.loads(response.json()["gas_position"])
+    assert type(gas_position) is list
+    assert gas_position[3] == [198335.0403950171, 40257.09799530143,189707.9848941324]
+    assert len(gas_position[0]) == 3
+    assert len(gas_position) == 804
+    assert response.headers["content-type"] == "application/json"
 
 
 # Negative testing with invalid input

@@ -175,9 +175,10 @@ def get_gas_data(id: int, group_id: int, feature: str):
     obt = numpy.cumsum(lbt,axis=0).astype(int)
     obt = get_obt(id, group_id)
     path = '0/' + feature
-    Gas = pig.open(path)[:obt[-1][0]]
-    GroupID = pig.open('0/GroupID')[:obt[-1][0]]
-    gas_data = Gas[GroupID==group_id]
+    if group_id==1:
+        gas_data = pig.open(path)[:obt[0][0]]
+    else:
+        gas_data = pig.open(path)[obt[-2][0]:obt[-1][0]]
     numpyArrayGasData = numpy.array(gas_data)
     encodedNumpyGasData = json.dumps(numpyArrayGasData, cls=NumpyArrayEncoder)
     return encodedNumpyGasData
