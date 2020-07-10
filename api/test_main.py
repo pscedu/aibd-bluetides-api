@@ -277,7 +277,7 @@ def test_get_gas_position_missing_input():
     assert response.status_code == 404
 
 
-# Invalid value for endpoint parameters. E.g. group_id not in [1,31179336]
+# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300]
 def test_get_gas_position_invalid_group_id():
     response = client.get("/pig/251/gas/position/0")
     # Validate the status code: 400
@@ -313,9 +313,9 @@ def test_get_gas_electron_missing_input():
     assert response.status_code == 404
 
 
-# Invalid value for endpoint parameters. E.g. group_id not in [1,31179336]
+# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300]
 def test_get_gas_electron_invalid_group_id():
-    response = client.get("/pig/251/gas/electron/0")
+    response = client.get("/pig/251/gas/electron/286036301")
     # Validate the status code: 400
     assert response.status_code == 400
 
@@ -323,5 +323,42 @@ def test_get_gas_electron_invalid_group_id():
 # Invalid value for endpoint parameters. E.g. pig id not in PIG folder
 def test_get_gas_electron_invalid_pig_id():
     response = client.get("/pig/1/gas/electron/1000")
+    # Validate the status code: 404
+    assert response.status_code == 404
+
+
+### endpoint: /pig/{id}/gas/h2fraction/{group_id}
+# Basic positive tests
+def test_get_gas_h2fraction():
+    response = client.get("/pig/251/gas/h2fraction/1")
+    # Validate the status code: 200
+    assert response.status_code == 200
+    # Validate payload: Response is a well-formed JSON object and response data -- gas h2fraction data should be a 446499*1 array list
+    gas_h2fraction = json.loads(response.json()["gas_h2fraction"])
+    assert type(gas_h2fraction) is list
+    assert gas_h2fraction[0] == 0.0
+    assert gas_h2fraction[100000] == 0.9962370991706848
+    assert len(gas_h2fraction) == 446499
+    assert response.headers["content-type"] == "application/json"
+
+
+# Negative testing with invalid input
+# Missing required parameters
+def test_get_gas_h2fraction_missing_input():
+    response = client.get("/pig/251/gas/h2fraction/")
+    # Validate the status code: 404
+    assert response.status_code == 404
+
+
+# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300]
+def test_get_gas_h2fraction_invalid_group_id():
+    response = client.get("/pig/251/gas/h2fraction/-1")
+    # Validate the status code: 400
+    assert response.status_code == 400
+
+
+# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
+def test_get_gas_h2fraction_invalid_pig_id():
+    response = client.get("/pig/1/gas/h2fraction/1000")
     # Validate the status code: 404
     assert response.status_code == 404
