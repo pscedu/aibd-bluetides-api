@@ -128,6 +128,13 @@ async def read_gas_h2fraction(id: int, group_id: int):
     return {"gas_h2fraction": h2fraction}
 
 
+# Get the fraction of hydrogen molecules in a particular group and pig folder
+@app.get("/pig/{id}/gas/internalenergy/{group_id}")
+async def read_gas_internal_energy(id: int, group_id: int):
+    internal_energy = get_gas_data(id, group_id, "InternalEnergy")
+    return {"gas_internal_energy": internal_energy}
+
+
 # Get the list of PIG folders
 def get_pig_folders():
     path = '/pylon5/as5pi3p/yueying/BT3/'
