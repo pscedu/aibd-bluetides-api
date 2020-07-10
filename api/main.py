@@ -114,11 +114,18 @@ async def read_gas_position(id: int, group_id: int):
     return {"gas_position": position}
 
 
-# Get the number of free electrons at the particle position
+# Get the number of free electrons at the particle position in a particular group and pig folder
 @app.get("/pig/{id}/gas/electron/{group_id}")
 async def read_gas_electron(id: int, group_id: int):
     electron = get_gas_data(id, group_id, "ElectronAbundance")
     return {"gas_electron_abundance": electron}
+
+
+# Get the fraction of hydrogen molecules in a particular group and pig folder
+@app.get("/pig/{id}/gas/h2fraction/{group_id}")
+async def read_gas_h2fraction(id: int, group_id: int):
+    h2fraction = get_gas_data(id, group_id, "H2Fraction")
+    return {"gas_h2fraction": h2fraction}
 
 
 # Get the list of PIG folders
