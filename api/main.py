@@ -24,7 +24,9 @@ class NumpyArrayEncoder(JSONEncoder):
             return obj.tolist()
         return JSONEncoder.default(self, obj)
 
-
+###################################################################
+#                        FOFGroup Queries                         #
+###################################################################
 # Route
 # Get the first n lengthByType data in a particular pig folder.
 @app.get("/pig/{id}/lengthbytype/n={num}")
@@ -107,6 +109,16 @@ async def read_pig():
     return {"LIST": pig_list}
 
 
+
+
+
+
+
+
+
+###################################################################
+#                           Gas Queries                           #
+###################################################################
 # Get the position of each particle in a particular group and pig folder
 @app.get("/pig/{id}/gas/position/{group_id}")
 async def read_gas_position(id: int, group_id: int):
@@ -120,6 +132,29 @@ async def read_gas_electron(id: int, group_id: int):
     electron = get_gas_data(id, group_id, "ElectronAbundance")
     return {"gas_electron_abundance": electron}
 
+
+
+###################################################################
+#                        DM Queries                               #
+###################################################################
+# Get the position of each particle in a particular group and pig folder
+@app.get("/pig/{id}/dm/position/{group_id}")
+async def read_dm_position(id: int, group_id: int):
+    position = get_dm_data(id, group_id, "Position")
+    return {"dm_position": position}
+
+# Get the velocity of each particle in a particular group and pig folder
+@app.get("/pig/{id}/dm/velocity/{group_id}")
+async def read_dm_velocity(id: int, group_id: int):
+    velocity = get_dm_data(id, group_id, "Velocity")
+    return {"dm_velocity": velocity}
+
+
+
+
+###################################################################
+#                       Helper Functions                          #
+###################################################################
 
 # Get the list of PIG folders
 def get_pig_folders():
@@ -182,6 +217,24 @@ def get_gas_data(id: int, group_id: int, feature: str):
     numpyArrayGasData = numpy.array(gas_data)
     encodedNumpyGasData = json.dumps(numpyArrayGasData, cls=NumpyArrayEncoder)
     return encodedNumpyGasData
+
+
+def get_dm_data(id: int, group_id: int, feature: str):
+    check_pig_id(id)
+    pig = get_pig_data(id)
+    check_group_id_range(pig, group_id)
+    lbt = pig.open('FOFGroups/LengthByType')[:group_id]
+    obt = numpy.cumsum(lbt,axis=0).astype(int)
+    obt = get_obt(id, group_id)
+    path = '1/' + feature
+    if group_id==1:
+        dm_data = pig.open(path)[:obt[0][1]]
+    else:
+        dm_data = pig.open(path)[obt[-2][1]:obt[-1][1]]
+    numpyArrayDMData = numpy.array(dm_data)
+    encodedNumpyDMData = json.dumps(numpyArrayDMData, cls=NumpyArrayEncoder)
+    return encodedNumpyDMData
+
 
 
 def check_halo_id_range(pig, halo_id: int):
