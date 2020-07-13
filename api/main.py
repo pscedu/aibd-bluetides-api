@@ -34,9 +34,9 @@ async def read_lbt_file(id: int, num: int):
     lbt = pig.open('FOFGroups/LengthByType')[:nhalo]
 
     # serialize lbt numpy array into json
-    numpyArrayData = numpy.array(lbt)
-    encodedNumpyData = json.dumps(numpyArrayData, cls=utils.NumpyArrayEncoder)
-    return {"length_by_type": encodedNumpyData}
+    numpy_array_data = numpy.array(lbt)
+    encoded_numpy_data = json.dumps(numpy_array_data, cls=utils.NumpyArrayEncoder)
+    return {"length_by_type": encoded_numpy_data}
 
 
 # Get the number of all gas type particles in the nth halo of a particular pig folder
@@ -46,9 +46,9 @@ async def read_lbh(id: int, halo_id: int):
     pig = utils.get_pig_data(id)
     utils.check_halo_id_range(pig=pig, halo_id=halo_id)
     nhalo = pig.open('FOFGroups/LengthByType')[halo_id]
-    numpyArrayTypeData = numpy.array(nhalo)
-    encodedNumpyTypeData = json.dumps(numpyArrayTypeData, cls=utils.NumpyArrayEncoder)
-    return {"halo_id": halo_id, "type_length": encodedNumpyTypeData}
+    numpy_array_type_data = numpy.array(nhalo)
+    encoded_numpy_type_data = json.dumps(numpy_array_type_data, cls=utils.NumpyArrayEncoder)
+    return {"halo_id": halo_id, "type_length": encoded_numpy_type_data}
 
 
 # Get the number of a specific gas type particles in the nth halo of a particular pig folder
@@ -60,9 +60,9 @@ async def read_lbht(id: int, halo_id: int, type_id: int):
     utils.check_type_id_range(type_id=type_id)
     nhalo = pig.open('FOFGroups/LengthByType')[halo_id]
     length = nhalo[type_id]
-    numpyArrayLenData = numpy.array(length)
-    encodedNumpyLenData = json.dumps(numpyArrayLenData, cls=utils.NumpyArrayEncoder)
-    return {"halo_id": halo_id, "type_id": type_id, "length": encodedNumpyLenData}
+    numpy_array_len_data = numpy.array(length)
+    encoded_numpy_len_data = json.dumps(numpy_array_len_data, cls=utils.NumpyArrayEncoder)
+    return {"halo_id": halo_id, "type_id": type_id, "length": encoded_numpy_len_data}
 
 
 # Get the beginning and the ending index of a particular group and pig folder.
@@ -78,11 +78,11 @@ async def read_obh(id: int, halo_id: int):
     else:
         begin = obt[halo_id - 1]
     end = obt[halo_id]
-    numpyArrayBeginData = numpy.array(begin)
-    encodedNumpyBeginData = json.dumps(numpyArrayBeginData, cls=utils.NumpyArrayEncoder)
-    numpyArrayEndData = numpy.array(end)
-    encodedNumpyEndData = json.dumps(numpyArrayEndData, cls=utils.NumpyArrayEncoder)
-    return {"halo_id": halo_id, "beginning_index": encodedNumpyBeginData, "ending_index": encodedNumpyEndData}
+    numpy_array_begin_data = numpy.array(begin)
+    encoded_numpy_begin_data = json.dumps(numpy_array_begin_data, cls=utils.NumpyArrayEncoder)
+    numpy_array_end_data = numpy.array(end)
+    encoded_numpy_end_data = json.dumps(numpy_array_end_data, cls=utils.NumpyArrayEncoder)
+    return {"halo_id": halo_id, "beginning_index": encoded_numpy_begin_data, "ending_index": encoded_numpy_end_data}
 
 
 # Get the list of PIG folders available for querying
@@ -104,26 +104,26 @@ async def read_pig():
 # Get the position of each particle in a particular group and pig folder
 @app.get("/pig/{id}/gas/position/{group_id}")
 async def read_gas_position(id: int, group_id: int):
-    position = utils.get_gas_data(id=id, group_id=group_id, feature="Position")
+    position = utils.get_gas_data(pig_id=id, group_id=group_id, feature="Position")
     return {"gas_position": position}
 
 
 # Get the number of free electrons at the particle position in a particular group and pig folder
 @app.get("/pig/{id}/gas/electron/{group_id}")
 async def read_gas_electron(id: int, group_id: int):
-    electron = utils.get_gas_data(id=id, group_id=group_id, feature="ElectronAbundance")
+    electron = utils.get_gas_data(pig_id=id, group_id=group_id, feature="ElectronAbundance")
     return {"gas_electron_abundance": electron}
 
 
 # Get the fraction of hydrogen molecules in a particular group and pig folder
 @app.get("/pig/{id}/gas/h2fraction/{group_id}")
 async def read_gas_h2fraction(id: int, group_id: int):
-    h2fraction = utils.get_gas_data(id=id, group_id=group_id, feature="H2Fraction")
+    h2fraction = utils.get_gas_data(pig_id=id, group_id=group_id, feature="H2Fraction")
     return {"gas_h2fraction": h2fraction}
 
 
 # Get the fraction of hydrogen molecules in a particular group and pig folder
 @app.get("/pig/{id}/gas/internalenergy/{group_id}")
 async def read_gas_internal_energy(id: int, group_id: int):
-    internal_energy = utils.get_gas_data(id=id, group_id=group_id, feature="InternalEnergy")
+    internal_energy = utils.get_gas_data(pig_id=id, group_id=group_id, feature="InternalEnergy")
     return {"gas_internal_energy": internal_energy}
