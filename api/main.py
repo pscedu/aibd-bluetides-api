@@ -4,17 +4,21 @@
 # --reload: make the server restart after code changes. Only do this for development.
 
 import json
+import os
 from json import JSONEncoder
 
-import numpy
-# from bigfile import BigFile
 import bigfile
-from fastapi import FastAPI, HTTPException
-
-import os
+import numpy
+from fastapi import FastAPI
+from fastapi import HTTPException
 
 # Init
 app = FastAPI()
+
+
+@app.get("/")
+async def read_main():
+    return {"msg": "COSMO, a REST API for the BlueTides3 Cosmology Simulation Data"}
 
 
 # Json serializer
@@ -32,7 +36,7 @@ async def read_lbt_file(id: int, num: int):
     # Data
     check_pig_id(id)
     pig = get_pig_data(id)
-    check_halo_id_range(pig, num-1)
+    check_halo_id_range(pig, num - 1)
     nhalo = num  # only read from the first n halos
 
     # lbt: number of particles in each Fof halo
@@ -146,7 +150,7 @@ def get_pig_folders():
     return subdirectories
 
 
-def get_pig_numhalo(sub_dir:str):
+def get_pig_numhalo(sub_dir: str):
     path = '/pylon5/as5pi3p/yueying/BT3/'
     pig_dir = path + sub_dir + '/'
     pig = bigfile.File(pig_dir)
@@ -154,12 +158,12 @@ def get_pig_numhalo(sub_dir:str):
     return Nhalo
 
 
-def get_pig_redshift(sub_dir:str):
+def get_pig_redshift(sub_dir: str):
     path = '/pylon5/as5pi3p/yueying/BT3/'
     pig_dir = path + sub_dir + '/'
     pig = bigfile.File(pig_dir)
     scalefactor = pig['Header'].attrs['Time'][0]
-    redshift = 1./scalefactor - 1.
+    redshift = 1. / scalefactor - 1.
     return redshift
 
 
@@ -177,7 +181,7 @@ def get_obt(id: int, group_id: int):
     pig = get_pig_data(id)
     check_group_id_range(pig, group_id)
     lbt = pig.open('FOFGroups/LengthByType')[:group_id]
-    obt = numpy.cumsum(lbt,axis=0).astype(int)
+    obt = numpy.cumsum(lbt, axis=0).astype(int)
     return obt
 
 
@@ -186,10 +190,10 @@ def get_gas_data(id: int, group_id: int, feature: str):
     pig = get_pig_data(id)
     check_group_id_range(pig, group_id)
     lbt = pig.open('FOFGroups/LengthByType')[:group_id]
-    obt = numpy.cumsum(lbt,axis=0).astype(int)
+    obt = numpy.cumsum(lbt, axis=0).astype(int)
     obt = get_obt(id, group_id)
     path = '0/' + feature
-    if group_id==1:
+    if group_id == 1:
         gas_data = pig.open(path)[:obt[0][0]]
     else:
         gas_data = pig.open(path)[obt[-2][0]:obt[-1][0]]
