@@ -41,6 +41,13 @@ def check_halo_id_range(pig, halo_id: int):
         raise HTTPException(status_code=400, detail="halo_id out of range, should be [0,{})".format(total_halo))
 
 
+def check_type_name(ptype:str):
+    type_list = ['gas','dm','star','gas']
+    if ptype not in type_list:
+        raise HTTPException(status_code=404, detail="Particle type {} does not exist, should be in {}".format(ptype,type_list))
+        
+        
+        
 def get_gas_data(pig_id: int, group_id: int, feature: str):
     check_pig_id(pig_id=pig_id)
     pig = get_pig_data(pig_id)
@@ -56,6 +63,7 @@ def get_gas_data(pig_id: int, group_id: int, feature: str):
     numpy_array_gas_data = numpy.array(gas_data)
     encoded_numpy_gas_data = json.dumps(numpy_array_gas_data, cls=NumpyArrayEncoder)
     return encoded_numpy_gas_data
+
 
 
 def get_dm_data(id: int, group_id: int, feature: str):
@@ -116,3 +124,18 @@ def get_obt(pig_id: int, group_id: int):
     lbt = pig.open('FOFGroups/LengthByType')[:group_id]
     obt = numpy.cumsum(lbt, axis=0).astype(int)
     return obt
+
+def get_part_subfield(pig_id:int, ptype:str):
+    check_pig_id(pig_id = pig_id)
+    check_type_name(ptype)
+    type_ind = {}
+    type_ind['gas']  = 0
+    type_ind['dm']   = 1
+    type_ind['star'] = 4
+    type_ind['bh']   = 5
+    subdirectories = []
+    directory_contents = os.listdir(constants.PIG_BASE_DIR + 'PIG_' + str(pig_id) + '/' + str(type_ind[ptype]))
+    for item in directory_contents:
+        subdirectories.append(item)
+    return subdirectories
+    
