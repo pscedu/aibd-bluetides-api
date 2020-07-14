@@ -145,3 +145,26 @@ async def read_gas_h2fraction(id: int, group_id: int):
 async def read_gas_internal_energy(id: int, group_id: int):
     internal_energy = utils.get_gas_data(pig_id=id, group_id=group_id, feature="InternalEnergy")
     return {"gas_internal_energy": internal_energy}
+
+
+###################################################################
+#                        Gas Queries                               #
+###################################################################
+# Get the position of each particle in a particular group and pig folder
+@app.get("/pig/{id}/gas/{feature}/{group_id}")
+async def read_gas_data(id: int, group_id: int,feature:str):
+    utils.check_feature(pig_id = id, group_id = group_id, feature = feature)
+    data = utils.get_gas_data(pig_id=id, group_id=group_id, feature=feature)
+    return {('gas_'+feature): data}
+
+
+###################################################################
+#                        DM Queries                               #
+###################################################################
+# Get the position of each particle in a particular group and pig folder
+@app.get("/pig/{id}/dm/{feature}/{group_id}")
+async def read_dm_data(id: int, group_id: int,feature:str):
+    utils.check_feature(pig_id = id, group_id = group_id, feature = feature)
+    data = utils.get_dm_data(pig_id=id, group_id=group_id, feature=feature)
+    return {('dm_'+feature): data}
+
