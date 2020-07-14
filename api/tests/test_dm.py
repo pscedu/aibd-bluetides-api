@@ -20,7 +20,6 @@ def test_get_dm_invalid_feature():
 
 
 #DM POSITION
-
 ### endpoint: /pig/{id}/gas/position/{group_id}
 # Basic positive tests
 def test_get_dm_position():
