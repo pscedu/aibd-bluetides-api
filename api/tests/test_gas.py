@@ -3,6 +3,7 @@ import json
 from fastapi.testclient import TestClient
 
 from ..main import app
+from . import test_utils
 
 client = TestClient(app)
 
@@ -11,7 +12,7 @@ client = TestClient(app)
 # Basic positive tests
 def test_get_gas_position_251():
     response = client.get("/pig/251/gas/position/1")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 446499*3 array list
     gas_position = json.loads(response.json()["gas_position"])
     assert type(gas_position) is list
@@ -21,7 +22,7 @@ def test_get_gas_position_251():
 
 def test_get_gas_position_271():
     response = client.get("/pig/271/gas/position/1")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 513379*3 array list
     gas_position = json.loads(response.json()["gas_position"])
     assert type(gas_position) is list
@@ -32,7 +33,7 @@ def test_get_gas_position_271():
 
 def test_get_gas_position_largeID():
     response = client.get("/pig/251/gas/position/2117968")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 804*3 array list
     gas_position = json.loads(response.json()["gas_position"])
     assert type(gas_position) is list
@@ -73,7 +74,7 @@ def test_get_gas_position_invalid_pig_id():
 # Basic positive tests
 def test_get_gas_electron_251():
     response = client.get("/pig/251/gas/electron/1")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas electron data should be a 446499*1 array list
     gas_electron = json.loads(response.json()["gas_electron_abundance"])
     assert type(gas_electron) is list
@@ -83,7 +84,7 @@ def test_get_gas_electron_251():
 
 def test_get_gas_electron_271():
     response = client.get("/pig/271/gas/electron/1")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas electron data should be a 513379*1 array list
     gas_electron = json.loads(response.json()["gas_electron_abundance"])
     assert type(gas_electron) is list
@@ -122,7 +123,7 @@ def test_get_gas_electron_invalid_pig_id():
 # Basic positive tests
 def test_get_gas_h2fraction_251():
     response = client.get("/pig/251/gas/h2fraction/1")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas h2fraction data should be a 446499*1 array list
     gas_h2fraction = json.loads(response.json()["gas_h2fraction"])
     assert type(gas_h2fraction) is list
@@ -132,7 +133,7 @@ def test_get_gas_h2fraction_251():
 
 def test_get_gas_h2fraction_271():
     response = client.get("/pig/271/gas/h2fraction/1")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas h2fraction data should be a 513379*1 array list
     gas_h2fraction = json.loads(response.json()["gas_h2fraction"])
     assert type(gas_h2fraction) is list
@@ -171,7 +172,7 @@ def test_get_gas_h2fraction_invalid_pig_id():
 # Basic positive tests
 def test_get_gas_internal_energy_251():
     response = client.get("/pig/251/gas/internalenergy/1")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
     gas_h2fraction = json.loads(response.json()["gas_internal_energy"])
     assert type(gas_h2fraction) is list
@@ -181,7 +182,7 @@ def test_get_gas_internal_energy_251():
 
 def test_get_gas_internal_energy_271():
     response = client.get("/pig/271/gas/internalenergy/1")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
     gas_h2fraction = json.loads(response.json()["gas_internal_energy"])
     assert type(gas_h2fraction) is list
@@ -212,10 +213,3 @@ def test_get_gas_internal_energy_invalid_pig_id():
     # Validate the status code: 404
     response = client.get("/pig/1/gas/h2fraction/1000")
     assert response.status_code == 404
-
-
-# Common basic positive tests
-def common_positive_tests(response):
-    # Validate the status code: 200
-    assert response.status_code == 200
-    assert response.headers["content-type"] == "application/json"

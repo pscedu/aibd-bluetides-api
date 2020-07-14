@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from ..main import app
+from . import test_utils
 
 client = TestClient(app)
 
@@ -9,7 +10,7 @@ client = TestClient(app)
 # Basic positive tests
 def test_get_length_251():
     response = client.get("/pig/251/lengthbytype/100/1")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
     assert response.json() == {
         "halo_id": 100,
@@ -20,7 +21,7 @@ def test_get_length_251():
 
 def test_get_length_271():
     response = client.get("/pig/271/lengthbytype/100/1")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
     assert response.json() == {
         "halo_id": 100,
@@ -78,7 +79,7 @@ def test_get_length_invalid_pig_id():
 # Basic positive tests
 def test_get_lbt_251():
     response = client.get("/pig/251/lengthbytype/n=4")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
     assert response.json() == {
         "length_by_type": "[[446499, 507723, 0, 0, 561897, 7], [700225, 0, 0, 0, 1, 0], "
@@ -88,7 +89,7 @@ def test_get_lbt_251():
 
 def test_get_lbt_271():
     response = client.get("/pig/271/lengthbytype/n=4")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
     assert response.json() == {
         "length_by_type": "[[513379, 579338, 0, 0, 622535, 9], [791952, 0, 0, 0, 7, 0], [226008, 237161, 0, 0, 182457, 7], [127491, 160510, 0, 0, 232226, 2]]"
@@ -126,7 +127,7 @@ def test_get_lbt_invalid_pig_id():
 # Basic positive tests
 def test_get_lbh_251():
     response = client.get("/pig/251/lengthbytype/100")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
     assert response.json() == {
         "halo_id": 100,
@@ -136,7 +137,7 @@ def test_get_lbh_251():
 
 def test_get_lbh_271():
     response = client.get("/pig/271/lengthbytype/100")
-    common_positive_tests(response)
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
     assert response.json() == {
         "halo_id": 100,
@@ -168,9 +169,3 @@ def test_get_lbh_invalid_pig_id():
     # Validate the status code: 404
     response = client.get("/pig/200/lengthbytype/5/")
     assert response.status_code == 404
-
-# Common basic positive tests
-def common_positive_tests(response):
-    # Validate the status code: 200
-    assert response.status_code == 200
-    assert response.headers["content-type"] == "application/json"
