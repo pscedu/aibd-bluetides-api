@@ -58,6 +58,24 @@ def get_gas_data(pig_id: int, group_id: int, feature: str):
     return encoded_numpy_gas_data
 
 
+def get_dm_data(id: int, group_id: int, feature: str):
+    check_pig_id(id)
+    pig = get_pig_data(id)
+    check_group_id_range(pig, group_id)
+    lbt = pig.open('FOFGroups/LengthByType')[:group_id]
+    obt = numpy.cumsum(lbt,axis=0).astype(int)
+    obt = get_obt(id, group_id)
+    path = '1/' + feature
+    if group_id==1:
+        dm_data = pig.open(path)[:obt[0][1]]
+    else:
+        dm_data = pig.open(path)[obt[-2][1]:obt[-1][1]]
+    numpyArrayDMData = numpy.array(dm_data)
+    encodedNumpyDMData = json.dumps(numpyArrayDMData, cls=NumpyArrayEncoder)
+    return encodedNumpyDMData
+
+
+
 # Get the list of PIG folders
 def get_pig_folders():
     subdirectories = []
