@@ -240,8 +240,41 @@ def test_get_pig_invalid_url():
     response = client.get("/pig/2")
     # Validate the status code: 404
     assert response.status_code == 404
+    
+    
+    
+ ### endpoint: /pig/{id}/MassCenterPosition/{halo_id}/{type_id}
+# Basic positive tests
+def test_get_mcp():
+    response = client.get("/pig/251/MassCenterPosition/100/1")
+    # Validate the status code: 200
+    assert response.status_code == 200
+    # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
+    assert response.json() == {
+        "halo_id": 100,
+        "type_id": 1,
+        "length": "74788"
+    }
+    # Validate headers
+    assert response.headers["content-type"] == "application/json"
+
 
     
+### endpoint: /pig/{id}/MassCenterVelocity/{halo_id}/{type_id}
+# Basic positive tests
+def test_get_mcp():
+    response = client.get("/pig/251/MassCenterVelocity/100/1")
+    # Validate the status code: 200
+    assert response.status_code == 200
+    # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
+    assert response.json() == {
+        "halo_id": 100,
+        "type_id": 1,
+        "length": "74788"
+    }
+    # Validate headers
+    assert response.headers["content-type"] == "application/json"
+
     
 ###################################################################
 #                           Gas Tests                             #
@@ -261,7 +294,11 @@ def test_get_gas_position():
     assert len(gas_position) == 446499
     assert response.headers["content-type"] == "application/json"
     
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> master
 def test_get_gas_position_largeID():
     response = client.get("/pig/251/gas/position/2117968")
     # Validate the status code: 200
@@ -283,8 +320,8 @@ def test_get_gas_position_missing_input():
     assert response.status_code == 404
 
 
-# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300) 
-def test_get_gas_position_invalid_groupid():
+# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300]
+def test_get_gas_position_invalid_group_id():
     response = client.get("/pig/251/gas/position/0")
     # Validate the status code: 400
     assert response.status_code == 400
@@ -295,6 +332,7 @@ def test_get_gas_position_invalid_pig_id():
     response = client.get("/pig/1/gas/position/0")
     # Validate the status code: 404
     assert response.status_code == 404
+<<<<<<< HEAD
     
     
     
@@ -322,18 +360,47 @@ def test_get_dm_position():
 # Missing required parameters
 def test_get_dm_position_missing_input():
     response = client.get("/pig/244/dm/position/")
+=======
+
+
+### endpoint: /pig/{id}/gas/electron/{group_id}
+# Basic positive tests
+def test_get_gas_electron():
+    response = client.get("/pig/251/gas/electron/1")
+    # Validate the status code: 200
+    assert response.status_code == 200
+    # Validate payload: Response is a well-formed JSON object and response data -- gas electron data should be a 446499*1 array list
+    gas_electron = json.loads(response.json()["gas_electron_abundance"])
+    assert type(gas_electron) is list
+    assert gas_electron[0] == 1.157894253730774
+    assert len(gas_electron) == 446499
+    assert response.headers["content-type"] == "application/json"
+
+
+# Negative testing with invalid input
+# Missing required parameters
+def test_get_gas_electron_missing_input():
+    response = client.get("/pig/251/gas/electron/")
+>>>>>>> master
     # Validate the status code: 404
     assert response.status_code == 404
 
 
+<<<<<<< HEAD
 # Invalid value for endpoint parameters. E.g. group_id not in [1,286036300) 
 def test_get_dm_position_invalid_groupid():
     response = client.get("/pig/244/dm/position/0")
+=======
+# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300]
+def test_get_gas_electron_invalid_group_id():
+    response = client.get("/pig/251/gas/electron/286036301")
+>>>>>>> master
     # Validate the status code: 400
     assert response.status_code == 400
 
 
 # Invalid value for endpoint parameters. E.g. pig id not in PIG folder
+<<<<<<< HEAD
 def test_get_dm_position_invalid_pig_id():
     response = client.get("/pig/200/dm/position/80")
     # Validate the status code: 404
@@ -360,21 +427,97 @@ def test_get_dm_velocity():
 # Missing required parameters
 def test_get_dm_velocity_missing_input():
     response = client.get("/pig/244/dm/velocity/")
+=======
+def test_get_gas_electron_invalid_pig_id():
+    response = client.get("/pig/1/gas/electron/1000")
     # Validate the status code: 404
     assert response.status_code == 404
 
 
+### endpoint: /pig/{id}/gas/h2fraction/{group_id}
+# Basic positive tests
+def test_get_gas_h2fraction():
+    response = client.get("/pig/251/gas/h2fraction/1")
+    # Validate the status code: 200
+    assert response.status_code == 200
+    # Validate payload: Response is a well-formed JSON object and response data -- gas h2fraction data should be a 446499*1 array list
+    gas_h2fraction = json.loads(response.json()["gas_h2fraction"])
+    assert type(gas_h2fraction) is list
+    assert gas_h2fraction[0] == 0.0
+    assert gas_h2fraction[100000] == 0.9962370991706848
+    assert len(gas_h2fraction) == 446499
+    assert response.headers["content-type"] == "application/json"
+
+
+# Negative testing with invalid input
+# Missing required parameters
+def test_get_gas_h2fraction_missing_input():
+    response = client.get("/pig/251/gas/h2fraction/")
+>>>>>>> master
+    # Validate the status code: 404
+    assert response.status_code == 404
+
+
+<<<<<<< HEAD
 # Invalid value for endpoint parameters. E.g. group_id not in [1,286036300) 
 def test_get_dm_velocity_invalid_groupid():
     response = client.get("/pig/244/dm/velocity/0")
+=======
+# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300]
+def test_get_gas_h2fraction_invalid_group_id():
+    response = client.get("/pig/251/gas/h2fraction/-1")
+>>>>>>> master
     # Validate the status code: 400
     assert response.status_code == 400
 
 
 # Invalid value for endpoint parameters. E.g. pig id not in PIG folder
+<<<<<<< HEAD
 def test_get_dm_velocity_invalid_pig_id():
     response = client.get("/pig/20/dm/velocity/203940")
     # Validate the status code: 404
     assert response.status_code == 404
     
 
+=======
+def test_get_gas_h2fraction_invalid_pig_id():
+    response = client.get("/pig/1/gas/h2fraction/1000")
+    # Validate the status code: 404
+    assert response.status_code == 404
+
+
+### endpoint: /pig/{id}/gas/internalenergy/{group_id}
+# Basic positive tests
+def test_get_gas_internal_energy():
+    response = client.get("/pig/251/gas/internalenergy/1")
+    # Validate the status code: 200
+    assert response.status_code == 200
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    gas_h2fraction = json.loads(response.json()["gas_internal_energy"])
+    assert type(gas_h2fraction) is list
+    assert gas_h2fraction[0] == 112487.609375
+    assert len(gas_h2fraction) == 446499
+    assert response.headers["content-type"] == "application/json"
+
+
+# Negative testing with invalid input
+# Missing required parameters
+def test_get_gas_internal_energy_missing_input():
+    response = client.get("/pig/251/gas/internalenergy/")
+    # Validate the status code: 404
+    assert response.status_code == 404
+
+
+# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300]
+def test_get_gas_internal_energy_invalid_group_id():
+    response = client.get("/pig/251/gas/internalenergy/286036302")
+    # Validate the status code: 400
+    assert response.status_code == 400
+
+
+# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
+def test_get_gas_internal_energy_invalid_pig_id():
+    response = client.get("/pig/1/gas/h2fraction/1000")
+    # Validate the status code: 404
+    assert response.status_code == 404
+>>>>>>> master
