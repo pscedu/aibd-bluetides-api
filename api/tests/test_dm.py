@@ -20,7 +20,7 @@ def test_get_dm_position():
     # Validate the status code: 200
     assert response.status_code == 200
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 446499*3 array list
-    dm_position = json.loads(response.json()["dm_Position"])
+    dm_position = json.loads(response.json()["dm_position"])
     assert type(dm_position) is list
     assert dm_position[456] == [394903.89612031489, 43208.98194487528,257613.16877157817]
     assert len(dm_position[0]) == 3
@@ -57,7 +57,7 @@ def test_get_dm_velocity():
     # Validate the status code: 200
     assert response.status_code == 200
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 12857*3 array list
-    data = json.loads(response.json()["dm_Velocity"])
+    data = json.loads(response.json()["dm_velocity"])
     assert type(data) is list
     assert data[2000] == [14.788228034973145, 49.952144622802734,23.566410064697266]
     assert len(data[0]) == 3

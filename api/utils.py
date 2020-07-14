@@ -138,4 +138,12 @@ def get_part_subfield(pig_id:int, ptype:str):
     for item in directory_contents:
         subdirectories.append(item)
     return subdirectories
+
+
+def check_feature(pig_id:int, ptype:str,feature:str):
+    subdirectories = get_part_subfield(pig_id = pig_id, ptype = ptype)
+    if feature not in subdirectories:
+        raise HTTPException(status_code=404, detail="Feature {} does not exist, should be in {}".format(feature,subdirectories))
+    
+    
     
