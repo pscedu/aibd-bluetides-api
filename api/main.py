@@ -32,8 +32,10 @@ async def read_snapshot_info(id: int):
 
 @app.get("/pig/{id}/{ptype}")
 async def read_snapshot_type_info(id: int, ptype: str):
-    subfields = get_part_subfields(pig_id = id,ptype = ptype)
+    subfields = utils.get_part_subfield(pig_id = id,ptype = ptype)
     return {'type':ptype, 'subdirs':subfields}
+
+
     
     
 
@@ -153,7 +155,7 @@ async def read_gas_internal_energy(id: int, group_id: int):
 # Get the position of each particle in a particular group and pig folder
 @app.get("/pig/{id}/gas/{feature}/{group_id}")
 async def read_gas_data(id: int, group_id: int,feature:str):
-    utils.check_feature(pig_id = id, group_id = group_id, feature = feature)
+#     utils.check_feature(pig_id = id, group_id = group_id, feature = feature)
     data = utils.get_gas_data(pig_id=id, group_id=group_id, feature=feature)
     return {('gas_'+feature): data}
 
@@ -164,7 +166,7 @@ async def read_gas_data(id: int, group_id: int,feature:str):
 # Get the position of each particle in a particular group and pig folder
 @app.get("/pig/{id}/dm/{feature}/{group_id}")
 async def read_dm_data(id: int, group_id: int,feature:str):
-    utils.check_feature(pig_id = id, group_id = group_id, feature = feature)
+#     utils.check_feature(pig_id = id, group_id = group_id, feature = feature)
     data = utils.get_dm_data(pig_id=id, group_id=group_id, feature=feature)
     return {('dm_'+feature): data}
 
