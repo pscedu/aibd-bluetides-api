@@ -11,6 +11,14 @@ client = TestClient(app)
 #                           DM Tests                              #
 ################################################################### 
 
+# Invalid feature for dm particle
+def test_get_dm_invalid_feature():
+    response = client.get("/pig/251/dm/H2Fraction/80")
+    # Validate the status code: 404
+    assert response.status_code == 404
+
+
+
 #DM POSITION
 
 ### endpoint: /pig/{id}/gas/position/{group_id}
@@ -47,8 +55,7 @@ def test_get_dm_position_invalid_pig_id():
     response = client.get("/pig/200/dm/Position/80")
     # Validate the status code: 404
     assert response.status_code == 404
-
-
+    
 
 
 #DM VELOCITY

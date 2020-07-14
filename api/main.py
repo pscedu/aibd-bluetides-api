@@ -18,6 +18,23 @@ app = FastAPI()
 async def read_main():
     return {"msg": "COSMO, a REST API for the BlueTides3 Cosmology Simulation Data"}
 
+# Get the list of PIG folders available for querying
+@app.get("/pig/")
+async def read_pig():
+    pig_list = []
+    subdirectories = utils.get_pig_folders()
+    for subdir in subdirectories:
+        pig_dict = {}
+        pig_id = subdir.replace("PIG_", "")
+        pig_dict["id"] = pig_id
+        pig_dict["name"] = subdir
+        pig_dict["num_halos"] = int(utils.get_pig_numhalo(subdir))
+        pig_dict["time"] = float(utils.get_pig_redshift(subdir))
+        pig_list.append(pig_dict)
+    return {"LIST": pig_list}
+
+
+
 @app.get("/pig/{id}")
 async def read_snapshot_info(id: int):
     utils.check_pig_id(pig_id=id)
@@ -28,15 +45,11 @@ async def read_snapshot_info(id: int):
     return {'subdirs':['gas','dm','star','bh'], 'total_number':encoded_numpy_data}
 
 
-
-
 @app.get("/pig/{id}/{ptype}")
 async def read_snapshot_type_info(id: int, ptype: str):
     subfields = utils.get_part_subfield(pig_id = id,ptype = ptype)
     return {'type':ptype, 'subdirs':subfields}
 
-
-    
     
 
 # Route
@@ -103,22 +116,6 @@ async def read_obh(id: int, halo_id: int):
     numpy_array_end_data = numpy.array(end)
     encoded_numpy_end_data = json.dumps(numpy_array_end_data, cls=utils.NumpyArrayEncoder)
     return {"halo_id": halo_id, "beginning_index": encoded_numpy_begin_data, "ending_index": encoded_numpy_end_data}
-
-
-# Get the list of PIG folders available for querying
-@app.get("/pig/")
-async def read_pig():
-    pig_list = []
-    subdirectories = utils.get_pig_folders()
-    for subdir in subdirectories:
-        pig_dict = {}
-        pig_id = subdir.replace("PIG_", "")
-        pig_dict["id"] = pig_id
-        pig_dict["name"] = subdir
-        pig_dict["num_halos"] = int(utils.get_pig_numhalo(subdir))
-        pig_dict["time"] = float(utils.get_pig_redshift(subdir))
-        pig_list.append(pig_dict)
-    return {"LIST": pig_list}
 
 
 ###################################################################
