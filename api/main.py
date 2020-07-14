@@ -18,6 +18,24 @@ app = FastAPI()
 async def read_main():
     return {"msg": "COSMO, a REST API for the BlueTides3 Cosmology Simulation Data"}
 
+@app.get("/pig/{id}")
+async def read_snapshot_info(id: int):
+    utils.check_pig_id(pig_id=id)
+    pig = utils.get_pig_data(id)
+    total_part = pig['Header'].attrs['NumPartInGroupTotal']
+    numpy_array_data = numpy.array(total_part)
+    encoded_numpy_data = json.dumps(numpy_array_data, cls=utils.NumpyArrayEncoder)
+    return {'subdirs':['gas','dm','star','bh'], 'total_number':encoded_numpy_data}
+
+
+
+
+@app.get("/pig/{id}/{ptype}")
+async def read_snapshot_type_info(id: int, ptype: str):
+    subfields = get_part_subfields(pig_id = id,ptype = ptype)
+    return {'type':ptype, 'subdirs':subfields}
+    
+    
 
 # Route
 # Get the first n lengthByType data in a particular pig folder.
