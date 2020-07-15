@@ -26,19 +26,19 @@ def check_pig_id(pig_id: int):
 
 def check_type_id_range(type_id: int):
     if type_id < 0 or type_id >= 6:
-        raise HTTPException(status_code=400, detail="type_id out of range, should be [0,6)")
+        raise HTTPException(status_code=404, detail="type_id out of range, should be [0,6)")
 
 
 def check_group_id_range(pig, group_id: int):
     total_group = pig.open('FOFGroups/LengthByType').size
     if group_id <= 0 or group_id > total_group:
-        raise HTTPException(status_code=400, detail="group_id out of range, should be [1,{}]".format(total_group))
+        raise HTTPException(status_code=404, detail="group_id out of range, should be [1,{}]".format(total_group))
 
 
 def check_halo_id_range(pig, halo_id: int):
     total_halo = pig.open('FOFGroups/LengthByType').size
     if halo_id < 0 or halo_id >= total_halo:
-        raise HTTPException(status_code=400, detail="halo_id out of range, should be [0,{})".format(total_halo))
+        raise HTTPException(status_code=404, detail="halo_id out of range, should be [0,{})".format(total_halo))
 
 
 def check_type_name(ptype:str):

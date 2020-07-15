@@ -48,17 +48,17 @@ def test_get_index_missing_input():
 
 # Invalid value for endpoint parameters. E.g. pig 251 halo_id not in [0,286036300) and pig 271 halo_id not in [0,294288056)
 def test_get_index_invalid_haloid():
-    # Validate the status code: 400
+    # Validate the status code: 404
     response = client.get("/pig/251/offsetbytype/-1")
-    assert response.status_code == 400
+    assert response.status_code == 404
     response = client.get("/pig/271/offsetbytype/294288056")
-    assert response.status_code == 400
+    assert response.status_code == 404
 
 
 def test_get_index_invalid_haloid_large():
     response = client.get("/pig/251/offsetbytype/286036400")
-    # Validate the status code: 400
-    assert response.status_code == 400
+    # Validate the status code: 404
+    assert response.status_code == 404
 
 
 # Invalid value for endpoint parameters. E.g. pig id not in PIG folder
