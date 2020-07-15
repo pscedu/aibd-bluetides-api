@@ -124,3 +124,42 @@ def test_get_dm_velocity_invalid_pig_id():
     # Validate the status code: 404
     response = client.get("/pig/20/dm/Velocity/203940")
     assert response.status_code == 404
+
+
+#DM MASS
+def test_get_dm_mass_271():
+    response = client.get("/pig/271/dm/Mass/10")
+    test_utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 12857*1 array list
+    data = json.loads(response.json()["dm_mass"])
+    assert type(data) is list
+    assert data[0] == 0.0011963852448388934
+    assert data[:4] == [0.0011963852448388934, 0.0011963852448388934, 0.0011963852448388934, 0.0011963852448388934]
+    assert len(data) == 158970
+
+
+# Negative testing with invalid input
+# Missing required parameters
+def test_get_dm_mass_missing_input():
+    # Validate the status code: 404
+    response = client.get("/pig/271/dm/Mass/")
+    assert response.status_code == 404
+    response = client.get("/pig//dm/Mass/10")
+    assert response.status_code == 404
+
+
+# Invalid value for endpoint parameters. E.g. pig 271 group_id not in [1,294288056]
+def test_get_dm_mass_invalid_groupid():
+    # Validate the status code: 400
+    response = client.get("/pig/271/dm/Mass/0")
+    assert response.status_code == 400
+    response = client.get("/pig/271/dm/Mass/294288057")
+    assert response.status_code == 400
+
+
+# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
+def test_get_dm_mass_invalid_pig_id():
+    # Validate the status code: 404
+    response = client.get("/pig/20/dm/Mass/203940")
+    assert response.status_code == 404
+
