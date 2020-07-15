@@ -12,13 +12,6 @@ client = TestClient(app)
 #                           DM Tests                              #
 ################################################################### 
 
-# Invalid feature for dm particle
-def test_get_dm_invalid_feature():
-    response = client.get("/pig/251/dm/H2Fraction/80")
-    # Validate the status code: 404
-    assert response.status_code == 404
-
-
 
 #DM POSITION
 ### endpoint: /pig/{id}/dm/position/{group_id}
@@ -45,35 +38,20 @@ def test_get_dm_position_271():
     assert len(dm_position) == 158970
 
 
-# Negative testing with invalid input
-# Missing required parameters
-def test_get_dm_position_missing_input():
-    # Validate the status code: 404 when missing group id or pig id or feature
-    response = client.get("/pig/244/dm/Position/")
-    assert response.status_code == 404
-    response = client.get("/pig/271/dm/Position/")
-    assert response.status_code == 404
-    response = client.get("/pig//dm/Position/")
-    assert response.status_code == 404
-    response = client.get("/pig/271//Position/")
-    assert response.status_code == 404
+def test_get_dm_position_negative():
+    # missing required parameters
+    test_utils.test_get_missing_input(244, "dm", "Position", 10)
+    test_utils.test_get_missing_input(271, "dm", "Position", 10)
+    # pig 271 group_id not in [1,294288056]
+    test_utils.test_get_invalid_input(244, "dm", "Position", 0)
+    test_utils.test_get_invalid_input(244, "dm", "Position", 282939567)
+    test_utils.test_get_invalid_input(271, "dm", "Position", 0)
+    test_utils.test_get_invalid_input(271, "dm", "Position", 294288057)
+    # pig id not in folder
+    test_utils.test_get_invalid_input(10, "dm", "Position", 10000)
+    # invalid feature
+    test_utils.test_get_invalid_input(10, "dm", "H2Fraction", 10000)
 
-
-# Invalid value for endpoint parameters. E.g. pig 244 group_id not in [1,282939566] or pig 271 group_id not in [1,294288056]
-def test_get_dm_position_invalid_groupid():
-    # Validate the status code: 400
-    response = client.get("/pig/244/dm/Position/0")
-    assert response.status_code == 400
-    response = client.get("/pig/271/dm/Position/294288057")
-    assert response.status_code == 400
-
-
-# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
-def test_get_dm_position_invalid_pig_id():
-    # Validate the status code: 404
-    response = client.get("/pig/200/dm/Position/80")
-    assert response.status_code == 404
-    
 
 #DM VELOCITY
 def test_get_dm_velocity_244():
@@ -98,32 +76,17 @@ def test_get_dm_velocity_271():
     assert len(data) == 158970
 
 
-# Negative testing with invalid input
-# Missing required parameters
-def test_get_dm_velocity_missing_input():
-    # Validate the status code: 404
-    response = client.get("/pig/244/dm/Velocity/")
-    assert response.status_code == 404
-    response = client.get("/pig/271/dm/Velocity/")
-    assert response.status_code == 404
-    response = client.get("/pig//dm/Velocity/10")
-    assert response.status_code == 404
-
-
-# Invalid value for endpoint parameters. E.g. pig 244 group_id not in [1,282939566] or pig 271 group_id not in [1,294288056]
-def test_get_dm_velocity_invalid_groupid():
-    # Validate the status code: 400
-    response = client.get("/pig/244/dm/Velocity/0")
-    assert response.status_code == 400
-    response = client.get("/pig/271/dm/Velocity/294288057")
-    assert response.status_code == 400
-
-
-# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
-def test_get_dm_velocity_invalid_pig_id():
-    # Validate the status code: 404
-    response = client.get("/pig/20/dm/Velocity/203940")
-    assert response.status_code == 404
+def test_get_dm_velocity_negative():
+    # missing required parameters
+    test_utils.test_get_missing_input(244, "dm", "Velocity", 10)
+    test_utils.test_get_missing_input(271, "dm", "Velocity", 10)
+    # pig 271 group_id not in [1,294288056]
+    test_utils.test_get_invalid_input(244, "dm", "Velocity", 0)
+    test_utils.test_get_invalid_input(244, "dm", "Velocity", 282939567)
+    test_utils.test_get_invalid_input(271, "dm", "Velocity", 0)
+    test_utils.test_get_invalid_input(271, "dm", "Velocity", 294288057)
+    # pig id not in folder
+    test_utils.test_get_invalid_input(10, "dm", "Velocity", 10000)
 
 
 #DM MASS
@@ -137,29 +100,32 @@ def test_get_dm_mass_271():
     assert data[:4] == [0.0011963852448388934, 0.0011963852448388934, 0.0011963852448388934, 0.0011963852448388934]
     assert len(data) == 158970
 
-
-# Negative testing with invalid input
-# Missing required parameters
-def test_get_dm_mass_missing_input():
-    # Validate the status code: 404
-    response = client.get("/pig/271/dm/Mass/")
-    assert response.status_code == 404
-    response = client.get("/pig//dm/Mass/10")
-    assert response.status_code == 404
-
-
-# Invalid value for endpoint parameters. E.g. pig 271 group_id not in [1,294288056]
-def test_get_dm_mass_invalid_groupid():
-    # Validate the status code: 400
-    response = client.get("/pig/271/dm/Mass/0")
-    assert response.status_code == 400
-    response = client.get("/pig/271/dm/Mass/294288057")
-    assert response.status_code == 400
+def test_get_dm_mass_negative():
+    # missing required parameters
+    test_utils.test_get_missing_input(271, "dm", "Mass", 10)
+    # pig 271 group_id not in [1,294288056]
+    test_utils.test_get_invalid_input(271, "dm", "Mass", 0)
+    test_utils.test_get_invalid_input(271, "dm", "Mass", 294288057)
+    # pig id not in folder
+    test_utils.test_get_invalid_input(20, "dm", "Mass", 203940)
 
 
-# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
-def test_get_dm_mass_invalid_pig_id():
-    # Validate the status code: 404
-    response = client.get("/pig/20/dm/Mass/203940")
-    assert response.status_code == 404
+#DM POTENTIAL
+def test_get_dm_potential_271():
+    response = client.get("/pig/271/dm/Potential/10")
+    test_utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 12857*1 array list
+    data = json.loads(response.json()["dm_potential"])
+    assert type(data) is list
+    assert data[0] == -330457.6875
+    assert data[:4] == [-330457.6875, -329781.90625, -330611.59375, -330459.625]
+    assert len(data) == 158970
 
+def test_get_dm_potential_negative():
+    # missing required parameters
+    test_utils.test_get_missing_input(271, "dm", "Potential", 10)
+    # pig 271 group_id not in [1,294288056]
+    test_utils.test_get_invalid_input(271, "dm", "Potential", 0)
+    test_utils.test_get_invalid_input(271, "dm", "Potential", 294288057)
+    # pig id not in folder
+    test_utils.test_get_invalid_input(200, "dm", "Potential", 1)
