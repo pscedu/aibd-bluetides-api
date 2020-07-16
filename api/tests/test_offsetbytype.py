@@ -3,7 +3,7 @@ import json
 from fastapi.testclient import TestClient
 
 from ..main import app
-from . import test_utils
+from . import utils
 
 client = TestClient(app)
 
@@ -12,7 +12,7 @@ client = TestClient(app)
 # Basic positive tests
 def test_get_index_251():
     response = client.get("/pig/251/offsetbytype/100/")
-    test_utils.common_positive_tests(response)
+    utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object
     # response data -- beginning and ending index should be 1 row 6 colums array and match the file data.
     assert len(json.loads(response.json()["beginning_index"])) == 6
@@ -26,7 +26,7 @@ def test_get_index_251():
 
 def test_get_index_271():
     response = client.get("/pig/271/offsetbytype/1/")
-    test_utils.common_positive_tests(response)
+    utils.common_positive_tests(response)
     assert len(json.loads(response.json()["beginning_index"])) == 6
     assert len(json.loads(response.json()["ending_index"])) == 6
     assert response.json() == {

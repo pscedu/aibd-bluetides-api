@@ -3,7 +3,7 @@ import json
 from fastapi.testclient import TestClient
 
 from ..main import app
-from . import test_utils
+from . import utils
 
 client = TestClient(app)
 
@@ -18,7 +18,7 @@ client = TestClient(app)
 # Basic positive tests
 def test_get_dm_position_244():
     response = client.get("/pig/244/dm/Position/331526")
-    test_utils.common_positive_tests(response)
+    utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 446499*3 array list
     dm_position = json.loads(response.json()["dm_position"])
     assert type(dm_position) is list
@@ -29,7 +29,7 @@ def test_get_dm_position_244():
 
 def test_get_dm_position_271():
     response = client.get("/pig/271/dm/Position/10")
-    test_utils.common_positive_tests(response)
+    utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 446499*3 array list
     dm_position = json.loads(response.json()["dm_position"])
     assert type(dm_position) is list
@@ -40,23 +40,23 @@ def test_get_dm_position_271():
 
 def test_get_dm_position_negative():
     # missing required parameters
-    test_utils.test_get_missing_input(244, "dm", "Position", 10)
-    test_utils.test_get_missing_input(271, "dm", "Position", 10)
+    utils.test_get_missing_input(244, "dm", "Position", 10)
+    utils.test_get_missing_input(271, "dm", "Position", 10)
     # pig 271 group_id not in [1,294288056]
-    test_utils.test_get_invalid_input(244, "dm", "Position", 0)
-    test_utils.test_get_invalid_input(244, "dm", "Position", 282939567)
-    test_utils.test_get_invalid_input(271, "dm", "Position", 0)
-    test_utils.test_get_invalid_input(271, "dm", "Position", 294288057)
+    utils.test_get_invalid_input(244, "dm", "Position", 0)
+    utils.test_get_invalid_input(244, "dm", "Position", 282939567)
+    utils.test_get_invalid_input(271, "dm", "Position", 0)
+    utils.test_get_invalid_input(271, "dm", "Position", 294288057)
     # pig id not in folder
-    test_utils.test_get_invalid_input(10, "dm", "Position", 10000)
+    utils.test_get_invalid_input(10, "dm", "Position", 10000)
     # invalid feature
-    test_utils.test_get_invalid_input(10, "dm", "H2Fraction", 10000)
+    utils.test_get_invalid_input(10, "dm", "H2Fraction", 10000)
 
 
 #DM VELOCITY
 def test_get_dm_velocity_244():
     response = client.get("/pig/244/dm/Velocity/1862")
-    test_utils.common_positive_tests(response)
+    utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 12857*3 array list
     data = json.loads(response.json()["dm_velocity"])
     assert type(data) is list
@@ -67,7 +67,7 @@ def test_get_dm_velocity_244():
 
 def test_get_dm_velocity_271():
     response = client.get("/pig/271/dm/Velocity/10")
-    test_utils.common_positive_tests(response)
+    utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 12857*3 array list
     data = json.loads(response.json()["dm_velocity"])
     assert type(data) is list
@@ -78,21 +78,21 @@ def test_get_dm_velocity_271():
 
 def test_get_dm_velocity_negative():
     # missing required parameters
-    test_utils.test_get_missing_input(244, "dm", "Velocity", 10)
-    test_utils.test_get_missing_input(271, "dm", "Velocity", 10)
+    utils.test_get_missing_input(244, "dm", "Velocity", 10)
+    utils.test_get_missing_input(271, "dm", "Velocity", 10)
     # pig 271 group_id not in [1,294288056]
-    test_utils.test_get_invalid_input(244, "dm", "Velocity", 0)
-    test_utils.test_get_invalid_input(244, "dm", "Velocity", 282939567)
-    test_utils.test_get_invalid_input(271, "dm", "Velocity", 0)
-    test_utils.test_get_invalid_input(271, "dm", "Velocity", 294288057)
+    utils.test_get_invalid_input(244, "dm", "Velocity", 0)
+    utils.test_get_invalid_input(244, "dm", "Velocity", 282939567)
+    utils.test_get_invalid_input(271, "dm", "Velocity", 0)
+    utils.test_get_invalid_input(271, "dm", "Velocity", 294288057)
     # pig id not in folder
-    test_utils.test_get_invalid_input(10, "dm", "Velocity", 10000)
+    utils.test_get_invalid_input(10, "dm", "Velocity", 10000)
 
 
 #DM MASS
 def test_get_dm_mass_271():
     response = client.get("/pig/271/dm/Mass/10")
-    test_utils.common_positive_tests(response)
+    utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 12857*1 array list
     data = json.loads(response.json()["dm_mass"])
     assert type(data) is list
@@ -102,18 +102,18 @@ def test_get_dm_mass_271():
 
 def test_get_dm_mass_negative():
     # missing required parameters
-    test_utils.test_get_missing_input(271, "dm", "Mass", 10)
+    utils.test_get_missing_input(271, "dm", "Mass", 10)
     # pig 271 group_id not in [1,294288056]
-    test_utils.test_get_invalid_input(271, "dm", "Mass", 0)
-    test_utils.test_get_invalid_input(271, "dm", "Mass", 294288057)
+    utils.test_get_invalid_input(271, "dm", "Mass", 0)
+    utils.test_get_invalid_input(271, "dm", "Mass", 294288057)
     # pig id not in folder
-    test_utils.test_get_invalid_input(20, "dm", "Mass", 203940)
+    utils.test_get_invalid_input(20, "dm", "Mass", 203940)
 
 
 #DM POTENTIAL
 def test_get_dm_potential_271():
     response = client.get("/pig/271/dm/Potential/10")
-    test_utils.common_positive_tests(response)
+    utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 12857*1 array list
     data = json.loads(response.json()["dm_potential"])
     assert type(data) is list
@@ -123,9 +123,9 @@ def test_get_dm_potential_271():
 
 def test_get_dm_potential_negative():
     # missing required parameters
-    test_utils.test_get_missing_input(271, "dm", "Potential", 10)
+    utils.test_get_missing_input(271, "dm", "Potential", 10)
     # pig 271 group_id not in [1,294288056]
-    test_utils.test_get_invalid_input(271, "dm", "Potential", 0)
-    test_utils.test_get_invalid_input(271, "dm", "Potential", 294288057)
+    utils.test_get_invalid_input(271, "dm", "Potential", 0)
+    utils.test_get_invalid_input(271, "dm", "Potential", 294288057)
     # pig id not in folder
-    test_utils.test_get_invalid_input(200, "dm", "Potential", 1)
+    utils.test_get_invalid_input(200, "dm", "Potential", 1)
