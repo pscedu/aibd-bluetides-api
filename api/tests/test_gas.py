@@ -206,3 +206,42 @@ def test_get_gas_density_negative():
     utils.test_get_invalid_input(-1, "gas", "Density", 120)
     # invalid feature
     utils.test_get_invalid_input(10, "gas", "Jmom", 120)
+
+
+### endpoint: /pig/{id}/gas/Entropy/{group_id}
+# Basic positive tests
+def test_get_gas_entropy_251():
+    response = client.get("/pig/251/gas/Entropy/100")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    gas_entropy = json.loads(response.json()["gas_entropy"])
+    assert type(gas_entropy) is list
+    assert gas_entropy[0] == 2959285.5
+    assert gas_entropy[:4] == [2959285.5, 77811.4609375, 100789.5625, 111917.515625]
+    assert len(gas_entropy) == 68419
+
+
+def test_get_gas_entropy_271():
+    response = client.get("/pig/271/gas/Entropy/100")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    gas_entropy = json.loads(response.json()["gas_entropy"])
+    assert type(gas_entropy) is list
+    assert gas_entropy[0] == 40433988.0
+    assert gas_entropy[:4] == [40433988.0, 11036351.0, 22856564.0, 211525.53125]
+    assert len(gas_entropy) == 77457
+
+
+def test_get_gas_entropy_negative():
+    # missing required parameters
+    utils.test_get_missing_input(251, "gas", "Entropy", 330)
+    utils.test_get_missing_input(271, "gas", "Entropy", 330)
+    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
+    utils.test_get_invalid_input(251, "gas", "Entropy", 0)
+    utils.test_get_invalid_input(251, "gas", "Entropy", 286036400)
+    utils.test_get_invalid_input(271, "gas", "Entropy", -10)
+    utils.test_get_invalid_input(271, "gas", "Entropy", 294288100)
+    # pig id not in folder
+    utils.test_get_invalid_input(333, "gas", "Entropy", 330)
+    # invalid feature
+    utils.test_get_invalid_input(10, "gas", "abcd", 330)
