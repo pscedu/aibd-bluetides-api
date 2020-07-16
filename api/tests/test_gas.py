@@ -42,32 +42,19 @@ def test_get_gas_position_largeID():
     assert len(gas_position) == 804
 
 
-# Negative testing with invalid input
-# Missing required parameters
-def test_get_gas_position_missing_input():
-    # Validate the status code: 404 when missing group id or pig id
-    response = client.get("/pig/251/gas/Position/")
-    assert response.status_code == 404
-    response = client.get("/pig/271/gas/Position/")
-    assert response.status_code == 404
-    response = client.get("/pig//gas/Position/")
-    assert response.status_code == 404
-
-
-# Invalid value for endpoint parameters. E.g. pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-def test_get_gas_position_invalid_group_id():
-    # Validate the status code: 400 when group id is 0 or 286036301
-    response = client.get("/pig/251/gas/Position/0")
-    assert response.status_code == 400
-    response = client.get("/pig/271/gas/Position/0")
-    assert response.status_code == 400
-
-
-# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
-def test_get_gas_position_invalid_pig_id():
-    response = client.get("/pig/1/gas/Position/0")
-    # Validate the status code: 404
-    assert response.status_code == 404
+def test_get_gas_position_negative():
+    # missing required parameters
+    test_utils.test_get_missing_input(251, "gas", "Position", 10)
+    test_utils.test_get_missing_input(271, "gas", "Position", 10)
+    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
+    test_utils.test_get_invalid_input(251, "gas", "Position", 0)
+    test_utils.test_get_invalid_input(251, "gas", "Position", 286036301)
+    test_utils.test_get_invalid_input(271, "gas", "Position", 0)
+    test_utils.test_get_invalid_input(271, "gas", "Position", 294288057)
+    # pig id not in folder
+    test_utils.test_get_invalid_input(1, "gas", "Position", 10000)
+    # invalid feature
+    test_utils.test_get_invalid_input(10, "gas", "XXX", 100)
 
 
 ### endpoint: /pig/{id}/gas/electron/{group_id}
@@ -92,34 +79,22 @@ def test_get_gas_electron_271():
     assert len(gas_electron) == 513379
 
 
-# Negative testing with invalid input
-# Missing required parameters
-def test_get_gas_electron_missing_input():
-    # Validate the status code: 404 when missing group id or pig id
-    response = client.get("/pig/251/gas/ElectronAbundance/")
-    assert response.status_code == 404
-    response = client.get("/pig/271/gas/ElectronAbundance/")
-    assert response.status_code == 404
-    response = client.get("/pig//gas/ElectronAbundance/")
-    assert response.status_code == 404
-
-# Invalid value for endpoint parameters. E.g. pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-def test_get_gas_electron_invalid_group_id():
-    # Validate the status code: 400 when group id is 286036301 in pig 271 and 0 in pig 251
-    response = client.get("/pig/251/gas/ElectronAbundance/286036301")
-    assert response.status_code == 400
-    response1 = client.get("/pig/271/gas/ElectronAbundance/294288057")
-    assert response1.status_code == 400
+def test_get_gas_electron_negative():
+    # missing required parameters
+    test_utils.test_get_missing_input(251, "gas", "ElectronAbundance", 100)
+    test_utils.test_get_missing_input(271, "gas", "ElectronAbundance", 100)
+    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
+    test_utils.test_get_invalid_input(251, "gas", "ElectronAbundance", 0)
+    test_utils.test_get_invalid_input(251, "gas", "ElectronAbundance", 286036301)
+    test_utils.test_get_invalid_input(271, "gas", "ElectronAbundance", 0)
+    test_utils.test_get_invalid_input(271, "gas", "ElectronAbundance", 294288060)
+    # pig id not in folder
+    test_utils.test_get_invalid_input(1000, "gas", "ElectronAbundance", 10000)
+    # invalid feature
+    test_utils.test_get_invalid_input(10, "gas", "Imom", 100)
 
 
-# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
-def test_get_gas_electron_invalid_pig_id():
-    response = client.get("/pig/1/gas/ElectronAbundance/1000")
-    # Validate the status code: 404
-    assert response.status_code == 404
-
-
-### endpoint: /pig/{id}/gas/h2fraction/{group_id}
+### endpoint: /pig/{id}/gas/H2fraction/{group_id}
 # Basic positive tests
 def test_get_gas_h2fraction_251():
     response = client.get("/pig/251/gas/H2Fraction/1")
@@ -142,33 +117,22 @@ def test_get_gas_h2fraction_271():
     assert len(gas_h2fraction) == 513379
 
 
-# Negative testing with invalid input
-# Missing required parameters
-def test_get_gas_h2fraction_missing_input():
-    # Validate the status code: 404
-    response = client.get("/pig/251/gas/H2Fraction/")
-    assert response.status_code == 404
-    response = client.get("/pig/271/gas/H2Fraction/")
-    assert response.status_code == 404
+def test_get_gas_h2fraction_negative():
+    # missing required parameters
+    test_utils.test_get_missing_input(251, "gas", "H2Fraction", 200)
+    test_utils.test_get_missing_input(271, "gas", "H2Fraction", 200)
+    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
+    test_utils.test_get_invalid_input(251, "gas", "H2Fraction", -1)
+    test_utils.test_get_invalid_input(251, "gas", "H2Fraction", 286036301)
+    test_utils.test_get_invalid_input(271, "gas", "H2Fraction", -100)
+    test_utils.test_get_invalid_input(271, "gas", "H2Fraction", 294288060)
+    # pig id not in folder
+    test_utils.test_get_invalid_input(2000, "gas", "H2Fraction", 10000)
+    # invalid feature
+    test_utils.test_get_invalid_input(10, "gas", "Imom", 100)
 
 
-# Invalid value for endpoint parameters. E.g. pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-def test_get_gas_h2fraction_invalid_group_id():
-    # Validate the status code: 400
-    response = client.get("/pig/251/gas/H2Fraction/-1")
-    assert response.status_code == 400
-    response = client.get("/pig/271/gas/H2Fraction/-100")
-    assert response.status_code == 400
-
-
-# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
-def test_get_gas_h2fraction_invalid_pig_id():
-    response = client.get("/pig/1/gas/H2Fraction/1000")
-    # Validate the status code: 404
-    assert response.status_code == 404
-
-
-### endpoint: /pig/{id}/gas/internalenergy/{group_id}
+### endpoint: /pig/{id}/gas/InternalEnergy/{group_id}
 # Basic positive tests
 def test_get_gas_internal_energy_251():
     response = client.get("/pig/251/gas/InternalEnergy/1")
@@ -189,27 +153,17 @@ def test_get_gas_internal_energy_271():
     assert gas_h2fraction[0] == 163354.578125
     assert len(gas_h2fraction) == 513379
 
-# Negative testing with invalid input
-# Missing required parameters
-def test_get_gas_internal_energy_missing_input():
-    # Validate the status code: 404
-    response = client.get("/pig/251/gas/InternalEnergy/")
-    assert response.status_code == 404
-    response = client.get("/pig/271/gas/InternalEnergy/")
-    assert response.status_code == 404
 
-
-# Invalid value for endpoint parameters. E.g. pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-def test_get_gas_internal_energy_invalid_group_id():
-    # Validate the status code: 400
-    response = client.get("/pig/251/gas/InternalEnergy/286036302")
-    assert response.status_code == 400
-    response = client.get("/pig/251/gas/InternalEnergy/294288057")
-    assert response.status_code == 400
-
-
-# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
-def test_get_gas_internal_energy_invalid_pig_id():
-    # Validate the status code: 404
-    response = client.get("/pig/1/gas/InternalEnergy/1000")
-    assert response.status_code == 404
+def test_get_gas_h2fraction_negative():
+    # missing required parameters
+    test_utils.test_get_missing_input(251, "gas", "H2Fraction", 300)
+    test_utils.test_get_missing_input(271, "gas", "H2Fraction", 300)
+    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
+    test_utils.test_get_invalid_input(251, "gas", "H2Fraction", -2)
+    test_utils.test_get_invalid_input(251, "gas", "H2Fraction", 286036302)
+    test_utils.test_get_invalid_input(271, "gas", "H2Fraction", -200)
+    test_utils.test_get_invalid_input(271, "gas", "H2Fraction", 294288060)
+    # pig id not in folder
+    test_utils.test_get_invalid_input(-1, "gas", "H2Fraction", 10000)
+    # invalid feature
+    test_utils.test_get_invalid_input(10, "gas", "Jmom", 100)

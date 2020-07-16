@@ -52,20 +52,20 @@ def test_get_length_wrong_field():
 def test_get_length_invalid_haloid():
     # Validate the status code: 400 when halo id is invalid
     response = client.get("/pig/251/lengthbytype/-1/5")
-    assert response.status_code == 400
+    assert response.status_code == 404
     response = client.get("/pig/251/lengthbytype/-100/5")
-    assert response.status_code == 400
+    assert response.status_code == 404
     response = client.get("/pig/251/lengthbytype/294288057/5")
-    assert response.status_code == 400
+    assert response.status_code == 404
 
 
 # Invalid value for endpoint parameters. E.g. type_id not in [0,6)
 def test_get_length_invalid_typeid():
     # Validate the status code: 400 when type id is invalid
     response = client.get("/pig/251/lengthbytype/5/10")
-    assert response.status_code == 400
+    assert response.status_code == 404
     response = client.get("/pig/251/lengthbytype/5/-1")
-    assert response.status_code == 400
+    assert response.status_code == 404
 
 
 # Invalid value for endpoint parameters. E.g. pig id not in PIG folder
@@ -109,9 +109,9 @@ def test_get_lbt_missing_input():
 def test_get_lbt_invalid_num():
     # Validate the status code: 400
     response = client.get("/pig/251/lengthbytype/n=-1")
-    assert response.status_code == 400
+    assert response.status_code == 404
     response = client.get("/pig/271/lengthbytype/n=-10")
-    assert response.status_code == 400
+    assert response.status_code == 404
 
 
 # Invalid value for endpoint parameters. E.g. pig id not in PIG folder
@@ -159,9 +159,9 @@ def test_get_lbh_missing_input():
 def test_get_lbh_invalid_haloid():
     # Validate the status code: 400
     response = client.get("/pig/251/lengthbytype/-1")
-    assert response.status_code == 400
+    assert response.status_code == 404
     response = client.get("/pig/271/lengthbytype/294288056")
-    assert response.status_code == 400
+    assert response.status_code == 404
 
 
 # Invalid value for endpoint parameters. E.g. pig id not in PIG folder

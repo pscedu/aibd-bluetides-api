@@ -3,6 +3,7 @@ import json
 from fastapi.testclient import TestClient
 
 from ..main import app
+from . import test_utils
 
 client = TestClient(app)
 
@@ -11,83 +12,120 @@ client = TestClient(app)
 #                           DM Tests                              #
 ################################################################### 
 
-# Invalid feature for dm particle
-def test_get_dm_invalid_feature():
-    response = client.get("/pig/251/dm/H2Fraction/80")
-    # Validate the status code: 404
-    assert response.status_code == 404
-
-
 
 #DM POSITION
-### endpoint: /pig/{id}/gas/position/{group_id}
+### endpoint: /pig/{id}/dm/position/{group_id}
 # Basic positive tests
-def test_get_dm_position():
+def test_get_dm_position_244():
     response = client.get("/pig/244/dm/Position/331526")
-    # Validate the status code: 200
-    assert response.status_code == 200
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 446499*3 array list
     dm_position = json.loads(response.json()["dm_position"])
     assert type(dm_position) is list
     assert dm_position[456] == [394903.89612031489, 43208.98194487528,257613.16877157817]
     assert len(dm_position[0]) == 3
     assert len(dm_position) == 2585
-    assert response.headers["content-type"] == "application/json"
-
-# Negative testing with invalid input
-# Missing required parameters
-def test_get_dm_position_missing_input():
-    response = client.get("/pig/244/dm/Position/")
-    # Validate the status code: 404
-    assert response.status_code == 404
 
 
-# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300) 
-def test_get_dm_position_invalid_groupid():
-    response = client.get("/pig/244/dm/Position/0")
-    # Validate the status code: 400
-    assert response.status_code == 400
+def test_get_dm_position_271():
+    response = client.get("/pig/271/dm/Position/10")
+    test_utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 446499*3 array list
+    dm_position = json.loads(response.json()["dm_position"])
+    assert type(dm_position) is list
+    assert dm_position[1] == [72973.67144294265, 195179.85487456998, 229742.43473667066]
+    assert len(dm_position[0]) == 3
+    assert len(dm_position) == 158970
 
 
-# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
-def test_get_dm_position_invalid_pig_id():
-    response = client.get("/pig/200/dm/Position/80")
-    # Validate the status code: 404
-    assert response.status_code == 404
-    
+def test_get_dm_position_negative():
+    # missing required parameters
+    test_utils.test_get_missing_input(244, "dm", "Position", 10)
+    test_utils.test_get_missing_input(271, "dm", "Position", 10)
+    # pig 271 group_id not in [1,294288056]
+    test_utils.test_get_invalid_input(244, "dm", "Position", 0)
+    test_utils.test_get_invalid_input(244, "dm", "Position", 282939567)
+    test_utils.test_get_invalid_input(271, "dm", "Position", 0)
+    test_utils.test_get_invalid_input(271, "dm", "Position", 294288057)
+    # pig id not in folder
+    test_utils.test_get_invalid_input(10, "dm", "Position", 10000)
+    # invalid feature
+    test_utils.test_get_invalid_input(10, "dm", "H2Fraction", 10000)
 
 
 #DM VELOCITY
-def test_get_dm_velocity():
+def test_get_dm_velocity_244():
     response = client.get("/pig/244/dm/Velocity/1862")
-    # Validate the status code: 200
-    assert response.status_code == 200
+    test_utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 12857*3 array list
     data = json.loads(response.json()["dm_velocity"])
     assert type(data) is list
     assert data[2000] == [14.788228034973145, 49.952144622802734,23.566410064697266]
     assert len(data[0]) == 3
     assert len(data) == 26324
-    assert response.headers["content-type"] == "application/json"
 
 
-# Negative testing with invalid input
-# Missing required parameters
-def test_get_dm_velocity_missing_input():
-    response = client.get("/pig/244/dm/Velocity/")
-    # Validate the status code: 404
-    assert response.status_code == 404
+def test_get_dm_velocity_271():
+    response = client.get("/pig/271/dm/Velocity/10")
+    test_utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 12857*3 array list
+    data = json.loads(response.json()["dm_velocity"])
+    assert type(data) is list
+    assert data[0] == [-2.3727707862854004, 65.58319854736328, 70.11107635498047]
+    assert len(data[0]) == 3
+    assert len(data) == 158970
 
 
-# Invalid value for endpoint parameters. E.g. group_id not in [1,286036300) 
-def test_get_dm_velocity_invalid_groupid():
-    response = client.get("/pig/244/dm/Velocity/0")
-    # Validate the status code: 400
-    assert response.status_code == 400
+def test_get_dm_velocity_negative():
+    # missing required parameters
+    test_utils.test_get_missing_input(244, "dm", "Velocity", 10)
+    test_utils.test_get_missing_input(271, "dm", "Velocity", 10)
+    # pig 271 group_id not in [1,294288056]
+    test_utils.test_get_invalid_input(244, "dm", "Velocity", 0)
+    test_utils.test_get_invalid_input(244, "dm", "Velocity", 282939567)
+    test_utils.test_get_invalid_input(271, "dm", "Velocity", 0)
+    test_utils.test_get_invalid_input(271, "dm", "Velocity", 294288057)
+    # pig id not in folder
+    test_utils.test_get_invalid_input(10, "dm", "Velocity", 10000)
 
 
-# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
-def test_get_dm_velocity_invalid_pig_id():
-    response = client.get("/pig/20/dm/Velocity/203940")
-    # Validate the status code: 404
-    assert response.status_code == 404
+#DM MASS
+def test_get_dm_mass_271():
+    response = client.get("/pig/271/dm/Mass/10")
+    test_utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 12857*1 array list
+    data = json.loads(response.json()["dm_mass"])
+    assert type(data) is list
+    assert data[0] == 0.0011963852448388934
+    assert data[:4] == [0.0011963852448388934, 0.0011963852448388934, 0.0011963852448388934, 0.0011963852448388934]
+    assert len(data) == 158970
+
+def test_get_dm_mass_negative():
+    # missing required parameters
+    test_utils.test_get_missing_input(271, "dm", "Mass", 10)
+    # pig 271 group_id not in [1,294288056]
+    test_utils.test_get_invalid_input(271, "dm", "Mass", 0)
+    test_utils.test_get_invalid_input(271, "dm", "Mass", 294288057)
+    # pig id not in folder
+    test_utils.test_get_invalid_input(20, "dm", "Mass", 203940)
+
+
+#DM POTENTIAL
+def test_get_dm_potential_271():
+    response = client.get("/pig/271/dm/Potential/10")
+    test_utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 12857*1 array list
+    data = json.loads(response.json()["dm_potential"])
+    assert type(data) is list
+    assert data[0] == -330457.6875
+    assert data[:4] == [-330457.6875, -329781.90625, -330611.59375, -330459.625]
+    assert len(data) == 158970
+
+def test_get_dm_potential_negative():
+    # missing required parameters
+    test_utils.test_get_missing_input(271, "dm", "Potential", 10)
+    # pig 271 group_id not in [1,294288056]
+    test_utils.test_get_invalid_input(271, "dm", "Potential", 0)
+    test_utils.test_get_invalid_input(271, "dm", "Potential", 294288057)
+    # pig id not in folder
+    test_utils.test_get_invalid_input(200, "dm", "Potential", 1)
