@@ -245,3 +245,40 @@ def test_get_gas_entropy_negative():
     utils.test_get_invalid_input(333, "gas", "Entropy", 330)
     # invalid feature
     utils.test_get_invalid_input(10, "gas", "abcd", 330)
+
+
+### endpoint: /pig/{id}/gas/JUV/{group_id}
+# Basic positive tests
+def test_get_gas_juv_251():
+    response = client.get("/pig/251/gas/JUV/10")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    gas_juv = json.loads(response.json()["gas_juv"])
+    assert type(gas_juv) is list
+    assert gas_juv[0] == 9.999999682655225e-22
+    assert len(gas_juv) == 134377
+
+
+def test_get_gas_juv_271():
+    response = client.get("/pig/271/gas/JUV/10")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    gas_juv = json.loads(response.json()["gas_juv"])
+    assert type(gas_juv) is list
+    assert gas_juv[0] == 9.999999682655225e-22
+    assert len(gas_juv) == 145402
+
+
+def test_get_gas_juv_negative():
+    # missing required parameters
+    utils.test_get_missing_input(251, "gas", "JUV", 400)
+    utils.test_get_missing_input(271, "gas", "JUV", 400)
+    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
+    utils.test_get_invalid_input(251, "gas", "JUV", -30)
+    utils.test_get_invalid_input(251, "gas", "JUV", 286036400)
+    utils.test_get_invalid_input(271, "gas", "JUV", 0)
+    utils.test_get_invalid_input(271, "gas", "JUV", 294288100)
+    # pig id not in folder
+    utils.test_get_invalid_input(333, "gas", "JUV", 400)
+    # invalid feature
+    utils.test_get_invalid_input(10, "gas", "xyz", 400)
