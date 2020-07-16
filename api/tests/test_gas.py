@@ -138,32 +138,71 @@ def test_get_gas_internal_energy_251():
     response = client.get("/pig/251/gas/InternalEnergy/1")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
-    gas_h2fraction = json.loads(response.json()["gas_internalenergy"])
-    assert type(gas_h2fraction) is list
-    assert gas_h2fraction[0] == 112487.609375
-    assert len(gas_h2fraction) == 446499
+    gas_internal_energy = json.loads(response.json()["gas_internalenergy"])
+    assert type(gas_internal_energy) is list
+    assert gas_internal_energy[0] == 112487.609375
+    assert len(gas_internal_energy) == 446499
 
 
 def test_get_gas_internal_energy_271():
     response = client.get("/pig/271/gas/InternalEnergy/1")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
-    gas_h2fraction = json.loads(response.json()["gas_internalenergy"])
-    assert type(gas_h2fraction) is list
-    assert gas_h2fraction[0] == 163354.578125
-    assert len(gas_h2fraction) == 513379
+    gas_internal_energy = json.loads(response.json()["gas_internalenergy"])
+    assert type(gas_internal_energy) is list
+    assert gas_internal_energy[0] == 163354.578125
+    assert len(gas_internal_energy) == 513379
 
 
-def test_get_gas_h2fraction_negative():
+def test_get_gas_internal_energy_negative():
     # missing required parameters
-    utils.test_get_missing_input(251, "gas", "H2Fraction", 300)
-    utils.test_get_missing_input(271, "gas", "H2Fraction", 300)
+    utils.test_get_missing_input(251, "gas", "InternalEnergy", 300)
+    utils.test_get_missing_input(271, "gas", "InternalEnergy", 300)
     # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-    utils.test_get_invalid_input(251, "gas", "H2Fraction", -2)
-    utils.test_get_invalid_input(251, "gas", "H2Fraction", 286036302)
-    utils.test_get_invalid_input(271, "gas", "H2Fraction", -200)
-    utils.test_get_invalid_input(271, "gas", "H2Fraction", 294288060)
+    utils.test_get_invalid_input(251, "gas", "InternalEnergy", -2)
+    utils.test_get_invalid_input(251, "gas", "InternalEnergy", 286036302)
+    utils.test_get_invalid_input(271, "gas", "InternalEnergy", -200)
+    utils.test_get_invalid_input(271, "gas", "InternalEnergy", 294288060)
     # pig id not in folder
-    utils.test_get_invalid_input(-1, "gas", "H2Fraction", 10000)
+    utils.test_get_invalid_input(-1, "gas", "InternalEnergy", 10000)
     # invalid feature
     utils.test_get_invalid_input(10, "gas", "Jmom", 100)
+
+
+### endpoint: /pig/{id}/gas/Density/{group_id}
+# Basic positive tests
+def test_get_gas_density_251():
+    response = client.get("/pig/251/gas/Density/1")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    gas_density = json.loads(response.json()["gas_density"])
+    assert type(gas_density) is list
+    assert gas_density[0] == 2.9312253957414214e-08
+    assert gas_density[:4] == [2.9312253957414214e-08, 3.0495591829549085e-08, 3.838168538550235e-08, 4.375229067932196e-08]
+    assert len(gas_density) == 446499
+
+
+def test_get_gas_density_271():
+    response = client.get("/pig/271/gas/Density/1")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    gas_density = json.loads(response.json()["gas_density"])
+    assert type(gas_density) is list
+    assert gas_density[0] == 2.121526954113051e-08
+    assert gas_density[:4] == [2.121526954113051e-08, 2.48780214207045e-08, 3.295386008517198e-08, 3.252150193588932e-08]
+    assert len(gas_density) == 513379
+
+
+def test_get_gas_density_negative():
+    # missing required parameters
+    utils.test_get_missing_input(251, "gas", "Density", 120)
+    utils.test_get_missing_input(271, "gas", "Density", 120)
+    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
+    utils.test_get_invalid_input(251, "gas", "Density", 0)
+    utils.test_get_invalid_input(251, "gas", "Density", 286036303)
+    utils.test_get_invalid_input(271, "gas", "Density", -200)
+    utils.test_get_invalid_input(271, "gas", "Density", 294288061)
+    # pig id not in folder
+    utils.test_get_invalid_input(-1, "gas", "Density", 120)
+    # invalid feature
+    utils.test_get_invalid_input(10, "gas", "Jmom", 120)
