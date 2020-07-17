@@ -282,3 +282,40 @@ def test_get_gas_juv_negative():
     utils.test_get_invalid_input(333, "gas", "JUV", 400)
     # invalid feature
     utils.test_get_invalid_input(10, "gas", "xyz", 400)
+
+
+### endpoint: /pig/{id}/gas/NeutralHydrogenFraction/{group_id}
+# Basic positive tests
+def test_get_gas_nhf_251():
+    response = client.get("/pig/251/gas/NeutralHydrogenFraction/20")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    gas_nhf = json.loads(response.json()["gas_neutralhydrogenfraction"])
+    assert type(gas_nhf) is list
+    assert gas_nhf[0] == 1.5026954542918247e-06
+    assert len(gas_nhf) == 102446
+
+
+def test_get_gas_nhf_271():
+    response = client.get("/pig/271/gas/NeutralHydrogenFraction/20")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    gas_nhf = json.loads(response.json()["gas_neutralhydrogenfraction"])
+    assert type(gas_nhf) is list
+    assert gas_nhf[0] == 6.849857072666055e-06
+    assert len(gas_nhf) == 119976
+
+
+def test_get_gas_nhf_negative():
+    # missing required parameters
+    utils.test_get_missing_input(251, "gas", "NeutralHydrogenFraction", 20)
+    utils.test_get_missing_input(271, "gas", "NeutralHydrogenFraction", 20)
+    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
+    utils.test_get_invalid_input(251, "gas", "NeutralHydrogenFraction", 0)
+    utils.test_get_invalid_input(251, "gas", "NeutralHydrogenFraction", 286036500)
+    utils.test_get_invalid_input(271, "gas", "NeutralHydrogenFraction", -2)
+    utils.test_get_invalid_input(271, "gas", "NeutralHydrogenFraction", 294288200)
+    # pig id not in folder
+    utils.test_get_invalid_input(333, "gas", "NeutralHydrogenFraction", 20)
+    # invalid feature
+    utils.test_get_invalid_input(10, "gas", "xyz", 20)
