@@ -119,23 +119,13 @@ async def read_obh(id: int, halo_id: int):
 
 
 ###################################################################
-#                        Gas Queries                               #
+#                        Generic Queries                          #
 ###################################################################
-# Get the position of each particle in a particular group and pig folder
-@app.get("/pig/{id}/gas/{feature}/{group_id}")
-async def read_gas_data(id: int, group_id: int,feature:str):
-    utils.check_feature(pig_id = id, ptype = 'gas', feature = feature)
-    data = utils.get_gas_data(pig_id=id, group_id=group_id, feature=feature)
-    return {('gas_'+feature.lower()): data}
+# Regular query for particle data in a Group={group_id} of type={ptype}
+@app.get("/pig/{id}/{ptype}/{feature}/{group_id}")
+async def read_particle_data(id: int, group_id: int,ptype: str, feature:str):
+    data = utils.get_particle_data(pig_id=id, group_id=group_id, ptype = ptype, feature=feature)
+    return {(ptype+'_'+feature.lower()): data}
 
 
-###################################################################
-#                        DM Queries                               #
-###################################################################
-# Get the position of each particle in a particular group and pig folder
-@app.get("/pig/{id}/dm/{feature}/{group_id}")
-async def read_dm_data(id: int, group_id: int,feature:str):
-    utils.check_feature(pig_id = id, ptype = 'dm', feature = feature)
-    data = utils.get_dm_data(pig_id=id, group_id=group_id, feature=feature)
-    return {('dm_'+feature.lower()): data}
 

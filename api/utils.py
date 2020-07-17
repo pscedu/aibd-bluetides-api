@@ -42,45 +42,34 @@ def check_halo_id_range(pig, halo_id: int):
 
 
 def check_type_name(ptype:str):
-    type_list = ['gas','dm','star','gas']
+    type_list = ['gas','dm','star','bh']
     if ptype not in type_list:
         raise HTTPException(status_code=404, detail="Particle type {} does not exist, should be in {}".format(ptype,type_list))
         
         
         
-def get_gas_data(pig_id: int, group_id: int, feature: str):
+def get_particle_data(pig_id: int, group_id: int, ptype: str, feature: str):
     check_pig_id(pig_id=pig_id)
     pig = get_pig_data(pig_id)
+    
     check_group_id_range(pig=pig, group_id=group_id)
     lbt = pig.open('FOFGroups/LengthByType')[:group_id]
     obt = numpy.cumsum(lbt, axis=0).astype(int)
     obt = get_obt(pig_id, group_id)
-    path = '0/' + feature
+    
+    check_feature(pig_id = pig_id, ptype = ptype, feature = feature)
+    type_ind = {'gas':0,'dm':1,'star':4,'bh':5}
+    ind = type_ind[ptype]
+
+    
+    path = str(ind)+'/' + feature
     if group_id == 1:
-        gas_data = pig.open(path)[:obt[0][0]]
+        data = pig.open(path)[:obt[0][ind]]
     else:
-        gas_data = pig.open(path)[obt[-2][0]:obt[-1][0]]
-    numpy_array_gas_data = numpy.array(gas_data)
-    encoded_numpy_gas_data = json.dumps(numpy_array_gas_data, cls=NumpyArrayEncoder)
-    return encoded_numpy_gas_data
-
-
-
-def get_dm_data(pig_id: int, group_id: int, feature: str):
-    check_pig_id(pig_id)
-    pig = get_pig_data(pig_id)
-    check_group_id_range(pig, group_id)
-    lbt = pig.open('FOFGroups/LengthByType')[:group_id]
-    obt = numpy.cumsum(lbt,axis=0).astype(int)
-    obt = get_obt(pig_id, group_id)
-    path = '1/' + feature
-    if group_id==1:
-        dm_data = pig.open(path)[:obt[0][1]]
-    else:
-        dm_data = pig.open(path)[obt[-2][1]:obt[-1][1]]
-    numpyArrayDMData = numpy.array(dm_data)
-    encodedNumpyDMData = json.dumps(numpyArrayDMData, cls=NumpyArrayEncoder)
-    return encodedNumpyDMData
+        data = pig.open(path)[obt[-2][ind]:obt[-1][ind]]
+    numpy_array_data = numpy.array(data)
+    encoded_numpy_data = json.dumps(numpy_array_data, cls=NumpyArrayEncoder)
+    return encoded_numpy_data
 
 
 
