@@ -358,3 +358,40 @@ def test_get_gas_pressure_negative():
     utils.test_get_invalid_input(333, "gas", "Pressure", 30)
     # invalid feature
     utils.test_get_invalid_input(10, "gas", "MassCenterVelocity", 30)
+
+
+### endpoint: /pig/{id}/gas/Velocity/{group_id}
+# Basic positive tests
+def test_get_gas_velocity_251():
+    response = client.get("/pig/251/gas/Velocity/30")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    gas_velocity = json.loads(response.json()["gas_velocity"])
+    assert type(gas_velocity) is list
+    assert gas_velocity[0] == [-65.1724624633789, 24.529680252075195, 38.377403259277344]
+    assert len(gas_velocity) == 83500
+
+
+def test_get_gas_velocity_271():
+    response = client.get("/pig/271/gas/Velocity/30")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    gas_velocity = json.loads(response.json()["gas_velocity"])
+    assert type(gas_velocity) is list
+    assert gas_velocity[0] == [61.37261962890625, 30.83819007873535, 15.464899063110352]
+    assert len(gas_velocity) == 102438
+
+
+def test_get_gas_velocity_negative():
+    # missing required parameters
+    utils.test_get_missing_input(251, "gas", "Velocity", 30)
+    utils.test_get_missing_input(271, "gas", "Velocity", 30)
+    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
+    utils.test_get_invalid_input(251, "gas", "Velocity", 0)
+    utils.test_get_invalid_input(251, "gas", "Velocity", 286036600)
+    utils.test_get_invalid_input(271, "gas", "Velocity", 0)
+    utils.test_get_invalid_input(271, "gas", "Velocity", 294288300)
+    # pig id not in folder
+    utils.test_get_invalid_input(555, "gas", "Velocity", 30)
+    # invalid feature
+    utils.test_get_invalid_input(10, "gas", "Velocity", 30)
