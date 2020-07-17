@@ -47,7 +47,6 @@ def check_type_name(ptype:str):
         raise HTTPException(status_code=404, detail="Particle type {} does not exist, should be in {}".format(ptype,type_list))
 
 
-
 # Get the list of PIG folders
 def get_pig_folders():
     subdirectories = []
@@ -89,6 +88,7 @@ def get_obt(pig_id: int, group_id: int):
     obt = numpy.cumsum(lbt, axis=0).astype(int)
     return obt
 
+
 def get_part_subfield(pig_id:int, ptype:str):
     check_pig_id(pig_id = pig_id)
     check_type_name(ptype)
@@ -107,22 +107,22 @@ def get_part_subfield(pig_id:int, ptype:str):
 def get_fof_subfield(pig_id:int):
     check_pig_id(pig_id = pig_id)
     subdirectories = []
-    directory_contents = os.listdir(constants.PIG_BASE_DIR + 'PIG_' + str(pig_id) + '/FoFGroups')
+    directory_contents = os.listdir(constants.PIG_BASE_DIR + 'PIG_' + str(pig_id) + '/FOFGroups')
     for item in directory_contents:
         subdirectories.append(item)
     return subdirectories
 
 
 def check_feature(pig_id:int, ptype:str,feature:str):
-    if ptype in ['gas','dm','star','bh']:
+    type_list = ['gas','dm','star','bh']
+    if ptype in type_list:
         subdirectories = get_part_subfield(pig_id = pig_id, ptype = ptype)
-    else if ptype=='fofgroup':
+    elif ptype=='fofgroup':
         subdirectories = get_fof_subfield(pig_id = pig_id)
     else:
         raise HTTPException(status_code=404, detail="Particle type {} does not exist, should be in {}".format(ptype,type_list))
     if feature not in subdirectories:
         raise HTTPException(status_code=404, detail="Feature {} does not exist, should be in {}".format(feature,subdirectories))
-    
     
     
 def get_particle_data(pig_id: int, group_id: int, ptype: str, feature: str):
@@ -151,7 +151,6 @@ def get_particle_data(pig_id: int, group_id: int, ptype: str, feature: str):
 def get_fofgroup_data(pig_id: int, group_id: int, feature: str):
     check_pig_id(pig_id=pig_id)
     pig = get_pig_data(pig_id)
-
     check_group_id_range(pig=pig, group_id=group_id)
     check_feature(pig_id = pig_id, ptype = 'fofgroup', feature = feature)
     data = pig.open('FOFGroups/'+ feature)[group_id-1]

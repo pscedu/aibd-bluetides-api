@@ -126,6 +126,16 @@ async def read_obh(id: int, halo_id: int):
 
 
 ###################################################################
+#                        FoF Group Queries                        #
+###################################################################
+# Regular query for particle data in a Group={group_id} of type={ptype}
+@app.get("/pig/{id}/fofgroup/{feature}/{group_id}")
+async def read_fofgroup_data(id: int, group_id: int, feature:str):
+    data = utils.get_fofgroup_data(pig_id=id, group_id=group_id, feature=feature)
+    return {('fofgroup'+'_'+feature.lower()): data}
+
+
+###################################################################
 #                        Particle Queries                         #
 ###################################################################
 # Regular query for particle data in a Group={group_id} of type={ptype}
@@ -133,16 +143,6 @@ async def read_obh(id: int, halo_id: int):
 async def read_particle_data(id: int, group_id: int,ptype: str, feature:str):
     data = utils.get_particle_data(pig_id=id, group_id=group_id, ptype = ptype, feature=feature)
     return {(ptype+'_'+feature.lower()): data}
-
-
-###################################################################
-#                        FoF Group Queries                        #
-###################################################################
-# Regular query for particle data in a Group={group_id} of type={ptype}
-@app.get("/pig/{id}/fofgroup/{feature}/{group_id}")
-async def read_particle_data(id: int, group_id: int, feature:str):
-    data = utils.get_fofgroup_data(pig_id=id, group_id=group_id, feature=feature)
-    return {('fofgroup'+'_'+feature.lower()): data}
 
 
 ###################################################################
