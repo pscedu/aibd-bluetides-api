@@ -318,4 +318,43 @@ def test_get_gas_nhf_negative():
     # pig id not in folder
     utils.test_get_invalid_input(333, "gas", "NeutralHydrogenFraction", 20)
     # invalid feature
-    utils.test_get_invalid_input(10, "gas", "xyz", 20)
+    utils.test_get_invalid_input(10, "gas", "MassCenterPosition", 20)
+
+
+### endpoint: /pig/{id}/gas/Pressure/{group_id}
+# Basic positive tests
+def test_get_gas_pressure_251():
+    response = client.get("/pig/251/gas/Pressure/30")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    gas_pressure = json.loads(response.json()["gas_pressure"])
+    assert type(gas_pressure) is list
+    assert gas_pressure[0] == 1.6903873984119855e-05
+    assert gas_pressure[:4] == [1.6903873984119855e-05, 1.3225580005382653e-05, 1.914056383611751e-06, 4.885966973233735e-06]
+    assert len(gas_pressure) == 83500
+
+
+def test_get_gas_pressure_271():
+    response = client.get("/pig/271/gas/Pressure/30")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    gas_pressure = json.loads(response.json()["gas_pressure"])
+    assert type(gas_pressure) is list
+    assert gas_pressure[0] == 6.205591773777996e-08
+    assert gas_pressure[:4] == [6.205591773777996e-08, 1.3783197800876223e-06, 3.136743202958314e-07, 1.2491647112256032e-06]
+    assert len(gas_pressure) == 102438
+
+
+def test_get_gas_pressure_negative():
+    # missing required parameters
+    utils.test_get_missing_input(251, "gas", "Pressure", 30)
+    utils.test_get_missing_input(271, "gas", "Pressure", 30)
+    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
+    utils.test_get_invalid_input(251, "gas", "Pressure", 0)
+    utils.test_get_invalid_input(251, "gas", "Pressure", 286036600)
+    utils.test_get_invalid_input(271, "gas", "Pressure", 0)
+    utils.test_get_invalid_input(271, "gas", "Pressure", 294288300)
+    # pig id not in folder
+    utils.test_get_invalid_input(333, "gas", "Pressure", 30)
+    # invalid feature
+    utils.test_get_invalid_input(10, "gas", "MassCenterVelocity", 30)
