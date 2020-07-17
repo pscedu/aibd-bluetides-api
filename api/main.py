@@ -40,9 +40,10 @@ async def read_snapshot_info(id: int):
     utils.check_pig_id(pig_id=id)
     pig = utils.get_pig_data(id)
     total_part = pig['Header'].attrs['NumPartInGroupTotal']
-    numpy_array_data = numpy.array(total_part)
-    encoded_numpy_data = json.dumps(numpy_array_data, cls=utils.NumpyArrayEncoder)
-    return {'subdirs':['gas','dm','star','bh'], 'total_number':encoded_numpy_data}
+    num_part = numpy.array(total_part)
+    return {'subdirs':['fofgroup','gas','dm','star','bh'],\
+            'num_gas':num_part[0],'num_dm':num_part[1],\
+            'num_star':num_part[4],'num_bh':num_part[5]}
 
 
 @app.get("/pig/{id}/{ptype}")
@@ -50,7 +51,13 @@ async def read_snapshot_type_info(id: int, ptype: str):
     subfields = utils.get_part_subfield(pig_id = id,ptype = ptype)
     return {'type':ptype, 'subdirs':subfields}
 
-    
+
+@app.get("/pig/{id}/fofgroup")
+async def read_snapshot_fof_info(id: int, ptype: str):
+    subfields = utils.get_fof_subfield(pig_id = id)
+    return {'fof_subdirs':subfields}    
+
+
 
 # Route
 # Get the first n lengthByType data in a particular pig folder.
@@ -119,13 +126,28 @@ async def read_obh(id: int, halo_id: int):
 
 
 ###################################################################
-#                        Generic Queries                          #
+#                        Particle Queries                         #
 ###################################################################
 # Regular query for particle data in a Group={group_id} of type={ptype}
 @app.get("/pig/{id}/{ptype}/{feature}/{group_id}")
 async def read_particle_data(id: int, group_id: int,ptype: str, feature:str):
     data = utils.get_particle_data(pig_id=id, group_id=group_id, ptype = ptype, feature=feature)
     return {(ptype+'_'+feature.lower()): data}
+
+
+###################################################################
+#                        FoF Group Queries                        #
+###################################################################
+# Regular query for particle data in a Group={group_id} of type={ptype}
+@app.get("/pig/{id}/fofgroup/{feature}/{group_id}")
+async def read_particle_data(id: int, group_id: int, feature:str):
+    data = utils.get_fofgroup_data(pig_id=id, group_id=group_id, feature=feature)
+    return {('fofgroup'+'_'+feature.lower()): data}
+
+
+###################################################################
+#                     Search by Criterion Queries                 #
+###################################################################
 
 
 
