@@ -445,3 +445,26 @@ def test_get_gas_generation_271():
     assert type(gas_generation) is list
     assert gas_generation[15000] == 0
     assert len(gas_generation) == 51832
+
+
+### endpoint: /pig/{id}/gas/Mass/{group_id}
+# Basic positive tests
+def test_get_gas_mass_251():
+    response = client.get("/pig/251/gas/Mass/40")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    gas_mass = json.loads(response.json()["gas_mass"])
+    assert type(gas_mass) is list
+    assert gas_mass[10000] == 1
+    assert len(gas_mass) == 75980
+
+
+def test_get_gas_mass_271():
+    response = client.get("/pig/271/gas/Mass/50")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    gas_mass = json.loads(response.json()["gas_mass"])
+    assert type(gas_mass) is list
+    assert gas_mass[0] == 0.00023622244771104306
+    assert gas_mass[:4] == [0.00023622244771104306, 0.00023622244771104306, 0.00023622244771104306, 0.00023622244771104306]
+    assert len(gas_mass) == 51832
