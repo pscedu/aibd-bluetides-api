@@ -8,11 +8,96 @@ from . import utils
 client = TestClient(app)
 
 
+### endpoint: /pig/{id}/fofgroup/MinID/{group_id}
+# Basic positive tests
+def test_get_fofgroup_minid_251():
+    response = client.get("/pig/251/fofgroup/MinID/10") # test boundary case
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    fof_data = json.loads(response.json()["fofgroup_minid"])
+    assert type(fof_data) is int
+    assert fof_data == 597130367454
 
-### endpoint: /pig/{id}/fofgroup/MassByType/{group_id}
+
+def test_get_fofgroup_minid_271():
+    response = client.get("/pig/271/fofgroup/MinID/20")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    fof_data = json.loads(response.json()["fofgroup_minid"])
+    assert type(fof_data) is int
+    assert fof_data == 437900381799
+
+
+### endpoint: /pig/{id}/fofgroup/BlackholeMass/{group_id}
+# Basic positive tests
+def test_get_fofgroup_bhmass_251():
+    response = client.get("/pig/251/fofgroup/BlackholeMass/10") # test boundary case
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    fof_data = json.loads(response.json()["fofgroup_blackholemass"])
+    assert type(fof_data) is float
+    assert fof_data == 0.020697657018899918
+
+
+def test_get_fofgroup_bhmass_271():
+    response = client.get("/pig/271/fofgroup/BlackholeMass/20")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    fof_data = json.loads(response.json()["fofgroup_blackholemass"])
+    assert type(fof_data) is float
+    assert fof_data == 0.013113398104906082
+    
+    
+    
+    
+### endpoint: /pig/{id}/fofgroup/StarFormationRate/{group_id}
+# Basic positive tests
+def test_get_fofgroup_sfr_251():
+    response = client.get("/pig/251/fofgroup/StarFormationRate/10") # test boundary case
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    fof_data = json.loads(response.json()["fofgroup_starformationrate"])
+    assert type(fof_data) is float
+    assert fof_data == 73.0089416503906250
+
+
+def test_get_fofgroup_sfr_271():
+    response = client.get("/pig/271/fofgroup/StarFormationRate/20")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    fof_data = json.loads(response.json()["fofgroup_starformationrate"])
+    assert type(fof_data) is float
+    assert fof_data == 101.4774246215820312
+    
+    
+    
+    
+
+### endpoint: /pig/{id}/fofgroup/Mass/{group_id}
+# Basic positive tests
+def test_get_fofgroup_mass_251():
+    response = client.get("/pig/251/fofgroup/Mass/286036300") # test boundary case
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    fof_data = json.loads(response.json()["fofgroup_mass"])
+    assert type(fof_data) is float
+    assert fof_data == 0.023881886154413223
+
+
+def test_get_fofgroup_mass_271():
+    response = client.get("/pig/271/fofgroup/Mass/20")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    fof_data = json.loads(response.json()["fofgroup_mass"])
+    assert type(fof_data) is float
+    assert fof_data == 181.4469909667968750
+
+
+
+### endpoint: /pig/{id}/fofgroup/BlackholeAccretionRate/{group_id}
 # Basic positive tests
 def test_get_fofgroup_bhacc_251():
-    response = client.get("/pig/251/fofgroup/BlackholeAccretionRate/10") # test boundary case
+    response = client.get("/pig/251/fofgroup/BlackholeAccretionRate/10")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
     fof_data = json.loads(response.json()["fofgroup_blackholeaccretionrate"])
@@ -104,7 +189,7 @@ def test_get_fofgroup_mcv_271():
     
 def test_get_fofgroup_negative():
     # missing required parameters
-    for field in ['MassCenterVelocity','MassCenterPosition','MassByType']:
+    for field in ['MassCenterVelocity','MassCenterPosition','MassByType','Mass','BlackholeMass','MinID']:
         utils.test_get_missing_input(251, "FoFGroup", field, 400)
         utils.test_get_missing_input(271, "FoFGroup", field, 400)
         # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
