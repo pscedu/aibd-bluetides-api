@@ -8,7 +8,7 @@ import json
 import numpy
 from fastapi import FastAPI
 
-import utils
+from . import utils
 
 # Init
 app = FastAPI()
