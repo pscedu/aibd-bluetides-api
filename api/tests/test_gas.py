@@ -423,3 +423,25 @@ def test_get_gas_egywtdensity_271():
     assert gas_egywtdensity[0] == 1.3695033374006016e-07
     assert gas_egywtdensity[:4] == [1.3695033374006016e-07, 1.5859635595916188e-06, 4.7282750159638454e-08, 3.3221699595742393e-06]
     assert len(gas_egywtdensity) == 51832
+
+
+### endpoint: /pig/{id}/gas/Generation/{group_id}
+# Basic positive tests
+def test_get_gas_generation_251():
+    response = client.get("/pig/251/gas/Generation/40")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    gas_generation = json.loads(response.json()["gas_generation"])
+    assert type(gas_generation) is list
+    assert gas_generation[10000] == 1
+    assert len(gas_generation) == 75980
+
+
+def test_get_gas_generation_271():
+    response = client.get("/pig/271/gas/Generation/40")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    gas_generation = json.loads(response.json()["gas_generation"])
+    assert type(gas_generation) is list
+    assert gas_generation[15000] == 0
+    assert len(gas_generation) == 51832
