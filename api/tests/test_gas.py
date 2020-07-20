@@ -357,7 +357,7 @@ def test_get_gas_pressure_negative():
     # pig id not in folder
     utils.test_get_invalid_input(333, "gas", "Pressure", 30)
     # invalid feature
-    utils.test_get_invalid_input(10, "gas", "MassCenterVelocity", 30)
+    utils.test_get_invalid_input(271, "gas", "MassCenterVelocity", 30)
 
 
 ### endpoint: /pig/{id}/gas/Velocity/{group_id}
@@ -394,4 +394,32 @@ def test_get_gas_velocity_negative():
     # pig id not in folder
     utils.test_get_invalid_input(555, "gas", "Velocity", 30)
     # invalid feature
-    utils.test_get_invalid_input(10, "gas", "Velocity", 30)
+    utils.test_get_invalid_input(271, "gas", "xyz", 30)
+
+
+def test_get_negative_gas():
+    utils.test_get_negative("gas")
+
+
+### endpoint: /pig/{id}/gas/EgyWtDensity/{group_id}
+# Basic positive tests
+def test_get_gas_egywtdensity_251():
+    response = client.get("/pig/251/gas/EgyWtDensity/40")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    gas_egywtdensity = json.loads(response.json()["gas_egywtdensity"])
+    assert type(gas_egywtdensity) is list
+    assert gas_egywtdensity[0] == 1.1311906078503853e-08
+    assert gas_egywtdensity[:4] == [1.1311906078503853e-08, 1.0542879458341758e-08, 4.6664844433053077e-08, 6.323491419379934e-08]
+    assert len(gas_egywtdensity) == 75980
+
+
+def test_get_gas_egywtdensity_271():
+    response = client.get("/pig/271/gas/EgyWtDensity/40")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    gas_egywtdensity = json.loads(response.json()["gas_egywtdensity"])
+    assert type(gas_egywtdensity) is list
+    assert gas_egywtdensity[0] == 1.3695033374006016e-07
+    assert gas_egywtdensity[:4] == [1.3695033374006016e-07, 1.5859635595916188e-06, 4.7282750159638454e-08, 3.3221699595742393e-06]
+    assert len(gas_egywtdensity) == 51832
