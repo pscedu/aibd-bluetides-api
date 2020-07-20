@@ -6,7 +6,7 @@ import bigfile
 import numpy
 from fastapi import HTTPException
 
-import constants
+from . import constants
 
 
 # JSON serializer
