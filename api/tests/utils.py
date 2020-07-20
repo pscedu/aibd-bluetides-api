@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 from ..main import app
+from .. import utils
 
 client = TestClient(app)
 
@@ -30,3 +31,27 @@ def test_get_invalid_input(id: int, type: str, attribute: str, group_id: int):
     response = client.get("/pig/{id}/{type}/{attribute}/{group_id}".format(id = id, type = type, attribute = attribute, group_id = group_id))
     assert response.status_code == 404
 
+
+def test_get_negative(type: str):
+    pig_subdirectories = utils.get_pig_folders()
+    for pig_subdir in pig_subdirectories:
+        pig_id = pig_subdir.replace("PIG_", "")
+        max_groupid = get_max_groupid(pig_id)
+        field = utils.get_part_subfield(int(pig_id), type)
+        # missing required parameters
+        test_get_missing_input(pig_id, type, field, 30)
+        # group_id not in [1,max_groupid] for this pig folder
+        test_get_invalid_input(pig_id, type, field, -10)
+        test_get_invalid_input(pig_id, type, field, 0)
+        test_get_invalid_input(pig_id, type, field, max_groupid+1)
+        # pig id not in folder
+        test_get_invalid_input(5555, type, field, 30)
+        test_get_invalid_input(-100, type, field, 30)
+        # invalid feature
+        test_get_invalid_input(pig_id, type, "xyz", 30)
+
+
+def get_max_groupid(id: int):
+    pig = utils.get_pig_data(id)
+    total_group = pig.open('FOFGroups/LengthByType').size
+    return total_group
