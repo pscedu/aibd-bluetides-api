@@ -137,7 +137,7 @@ def test_get_gas_h2fraction_negative():
 def test_get_gas_internal_energy_251():
     response = client.get("/pig/251/gas/InternalEnergy/1")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas InternalEnergy data should be a 446499*1 array list
     gas_internal_energy = json.loads(response.json()["gas_internalenergy"])
     assert type(gas_internal_energy) is list
     assert gas_internal_energy[0] == 112487.609375
@@ -147,7 +147,7 @@ def test_get_gas_internal_energy_251():
 def test_get_gas_internal_energy_271():
     response = client.get("/pig/271/gas/InternalEnergy/1")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas InternalEnergy data should be a 513379*1 array list
     gas_internal_energy = json.loads(response.json()["gas_internalenergy"])
     assert type(gas_internal_energy) is list
     assert gas_internal_energy[0] == 163354.578125
@@ -174,7 +174,7 @@ def test_get_gas_internal_energy_negative():
 def test_get_gas_density_251():
     response = client.get("/pig/251/gas/Density/1")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Density data should be a 446499*1 array list
     gas_density = json.loads(response.json()["gas_density"])
     assert type(gas_density) is list
     assert gas_density[0] == 2.9312253957414214e-08
@@ -185,7 +185,7 @@ def test_get_gas_density_251():
 def test_get_gas_density_271():
     response = client.get("/pig/271/gas/Density/1")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Density data should be a 513379*1 array list
     gas_density = json.loads(response.json()["gas_density"])
     assert type(gas_density) is list
     assert gas_density[0] == 2.121526954113051e-08
@@ -213,7 +213,7 @@ def test_get_gas_density_negative():
 def test_get_gas_entropy_251():
     response = client.get("/pig/251/gas/Entropy/100")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 68419*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Entropy data should be a 68419*1 array list
     gas_entropy = json.loads(response.json()["gas_entropy"])
     assert type(gas_entropy) is list
     assert gas_entropy[0] == 2959285.5
@@ -224,7 +224,7 @@ def test_get_gas_entropy_251():
 def test_get_gas_entropy_271():
     response = client.get("/pig/271/gas/Entropy/100")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 77457*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Entropy data should be a 77457*1 array list
     gas_entropy = json.loads(response.json()["gas_entropy"])
     assert type(gas_entropy) is list
     assert gas_entropy[0] == 40433988.0
@@ -252,7 +252,7 @@ def test_get_gas_entropy_negative():
 def test_get_gas_juv_251():
     response = client.get("/pig/251/gas/JUV/10")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 134377*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas JUV data should be a 134377*1 array list
     gas_juv = json.loads(response.json()["gas_juv"])
     assert type(gas_juv) is list
     assert gas_juv[0] == 9.999999682655225e-22
@@ -262,7 +262,7 @@ def test_get_gas_juv_251():
 def test_get_gas_juv_271():
     response = client.get("/pig/271/gas/JUV/10")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 145402*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas JUV data should be a 145402*1 array list
     gas_juv = json.loads(response.json()["gas_juv"])
     assert type(gas_juv) is list
     assert gas_juv[0] == 9.999999682655225e-22
@@ -289,7 +289,7 @@ def test_get_gas_juv_negative():
 def test_get_gas_nhf_251():
     response = client.get("/pig/251/gas/NeutralHydrogenFraction/20")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 102446*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas NeutralHydrogenFraction data should be a 102446*1 array list
     gas_nhf = json.loads(response.json()["gas_neutralhydrogenfraction"])
     assert type(gas_nhf) is list
     assert gas_nhf[0] == 1.5026954542918247e-06
@@ -299,7 +299,7 @@ def test_get_gas_nhf_251():
 def test_get_gas_nhf_271():
     response = client.get("/pig/271/gas/NeutralHydrogenFraction/20")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 119976*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas NeutralHydrogenFraction data should be a 119976*1 array list
     gas_nhf = json.loads(response.json()["gas_neutralhydrogenfraction"])
     assert type(gas_nhf) is list
     assert gas_nhf[0] == 6.849857072666055e-06
@@ -326,7 +326,7 @@ def test_get_gas_nhf_negative():
 def test_get_gas_pressure_251():
     response = client.get("/pig/251/gas/Pressure/30")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 83500*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Pressure data should be a 83500*1 array list
     gas_pressure = json.loads(response.json()["gas_pressure"])
     assert type(gas_pressure) is list
     assert gas_pressure[0] == 1.6903873984119855e-05
@@ -337,7 +337,7 @@ def test_get_gas_pressure_251():
 def test_get_gas_pressure_271():
     response = client.get("/pig/271/gas/Pressure/30")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 102438*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Pressure data should be a 102438*1 array list
     gas_pressure = json.loads(response.json()["gas_pressure"])
     assert type(gas_pressure) is list
     assert gas_pressure[0] == 6.205591773777996e-08
@@ -365,7 +365,7 @@ def test_get_gas_pressure_negative():
 def test_get_gas_velocity_251():
     response = client.get("/pig/251/gas/Velocity/30")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 83500*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Velocity data should be a 83500*1 array list
     gas_velocity = json.loads(response.json()["gas_velocity"])
     assert type(gas_velocity) is list
     assert gas_velocity[0] == [-65.1724624633789, 24.529680252075195, 38.377403259277344]
@@ -375,7 +375,7 @@ def test_get_gas_velocity_251():
 def test_get_gas_velocity_271():
     response = client.get("/pig/271/gas/Velocity/30")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 102438*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Velocity data should be a 102438*1 array list
     gas_velocity = json.loads(response.json()["gas_velocity"])
     assert type(gas_velocity) is list
     assert gas_velocity[0] == [61.37261962890625, 30.83819007873535, 15.464899063110352]
@@ -406,7 +406,7 @@ def test_get_negative_gas():
 def test_get_gas_egywtdensity_251():
     response = client.get("/pig/251/gas/EgyWtDensity/40")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 75980*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas EgyWtDensity data should be a 75980*1 array list
     gas_egywtdensity = json.loads(response.json()["gas_egywtdensity"])
     assert type(gas_egywtdensity) is list
     assert gas_egywtdensity[0] == 1.1311906078503853e-08
@@ -417,7 +417,7 @@ def test_get_gas_egywtdensity_251():
 def test_get_gas_egywtdensity_271():
     response = client.get("/pig/271/gas/EgyWtDensity/40")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 51832*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas EgyWtDensity data should be a 51832*1 array list
     gas_egywtdensity = json.loads(response.json()["gas_egywtdensity"])
     assert type(gas_egywtdensity) is list
     assert gas_egywtdensity[0] == 1.3695033374006016e-07
@@ -430,7 +430,7 @@ def test_get_gas_egywtdensity_271():
 def test_get_gas_generation_251():
     response = client.get("/pig/251/gas/Generation/40")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 75980*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Generation data should be a 75980*1 array list
     gas_generation = json.loads(response.json()["gas_generation"])
     assert type(gas_generation) is list
     assert gas_generation[10000] == 1
@@ -440,7 +440,7 @@ def test_get_gas_generation_251():
 def test_get_gas_generation_271():
     response = client.get("/pig/271/gas/Generation/40")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 51832*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Generation data should be a 51832*1 array list
     gas_generation = json.loads(response.json()["gas_generation"])
     assert type(gas_generation) is list
     assert gas_generation[15000] == 0
@@ -452,7 +452,7 @@ def test_get_gas_generation_271():
 def test_get_gas_mass_251():
     response = client.get("/pig/251/gas/Mass/50")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 75980*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Mass data should be a 75980*1 array list
     gas_mass = json.loads(response.json()["gas_mass"])
     assert type(gas_mass) is list
     assert gas_mass[0] == 0.00023622244771104306
@@ -463,7 +463,7 @@ def test_get_gas_mass_251():
 def test_get_gas_mass_271():
     response = client.get("/pig/271/gas/Mass/50")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 51832*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Mass data should be a 51832*1 array list
     gas_mass = json.loads(response.json()["gas_mass"])
     assert type(gas_mass) is list
     assert gas_mass[0] == 0.00023622244771104306
@@ -476,7 +476,7 @@ def test_get_gas_mass_271():
 def test_get_gas_smoothinglength_251():
     response = client.get("/pig/251/gas/SmoothingLength/60")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas SmoothingLength data should be a 446499*1 array list
     gas_smoothinglength = json.loads(response.json()["gas_smoothinglength"])
     assert type(gas_smoothinglength) is list
     assert gas_smoothinglength[0] == 57.098350524902344
@@ -487,9 +487,33 @@ def test_get_gas_smoothinglength_251():
 def test_get_gas_smoothinglength_271():
     response = client.get("/pig/271/gas/SmoothingLength/60")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas SmoothingLength data should be a 513379*1 array list
     gas_smoothinglength = json.loads(response.json()["gas_smoothinglength"])
     assert type(gas_smoothinglength) is list
     assert gas_smoothinglength[0] == 84.1534652709961
     assert gas_smoothinglength[:4] == [84.1534652709961, 97.58158874511719, 94.68399810791016, 81.02495574951172]
     assert len(gas_smoothinglength) == 96354
+
+
+### endpoint: /pig/{id}/gas/GroupID/{group_id}
+# Basic positive tests
+def test_get_gas_groupid_251():
+    response = client.get("/pig/251/gas/GroupID/70")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas GroupID data should be a 446499*1 array list
+    gas_groupid = json.loads(response.json()["gas_groupid"])
+    assert type(gas_groupid) is list
+    assert gas_groupid[100] == 70
+    assert gas_groupid[500] == 70
+    assert len(gas_groupid) == 84132
+
+
+def test_get_gas_groupid_271():
+    response = client.get("/pig/271/gas/GroupID/80")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas GroupID data should be a 513379*1 array list
+    gas_groupid = json.loads(response.json()["gas_groupid"])
+    assert type(gas_groupid) is list
+    assert gas_groupid[1000] == 80
+    assert gas_groupid[2000] == 80
+    assert len(gas_groupid) == 95309
