@@ -552,7 +552,7 @@ def test_get_gas_potential_251():
     gas_potential = json.loads(response.json()["gas_potential"])
     assert type(gas_potential) is list
     assert gas_potential[0] == -332538.125
-    assert gas_potential[4] ==  -334103.46875
+    assert gas_potential[4] == -334103.46875
     assert len(gas_potential) == 93123
 
 
@@ -565,3 +565,27 @@ def test_get_gas_potential_271():
     assert gas_potential[0] == -155053.03125
     assert gas_potential[:4] == [-155053.03125, -155029.625, -155162.640625, -155010.75]
     assert len(gas_potential) == 50143
+
+
+### endpoint: /pig/{id}/gas/StarFormationRate/{group_id}
+# Basic positive tests
+def test_get_gas_starformationrate_251():
+    response = client.get("/pig/251/gas/StarFormationRate/100")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas StarFormationRate data should be a 68419*1 array list
+    gas_starformationrate = json.loads(response.json()["gas_starformationrate"])
+    assert type(gas_starformationrate) is list
+    assert gas_starformationrate[1000] == 0
+    assert gas_starformationrate[5000] == 0.0003683421527966857
+    assert len(gas_starformationrate) == 68419
+
+
+def test_get_gas_starformationrate_271():
+    response = client.get("/pig/271/gas/StarFormationRate/100")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas StarFormationRate data should be a 50143*1 array list
+    gas_starformationrate = json.loads(response.json()["gas_starformationrate"])
+    assert type(gas_starformationrate) is list
+    assert gas_starformationrate[15000] == 0.016309794038534164
+    assert gas_starformationrate[10000] == 0
+    assert len(gas_starformationrate) == 77457
