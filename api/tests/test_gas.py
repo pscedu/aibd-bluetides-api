@@ -535,9 +535,33 @@ def test_get_gas_metallicity_251():
 def test_get_gas_metallicity_271():
     response = client.get("/pig/271/gas/Metallicity/80")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- gas Metallicity data should be a 513379*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Metallicity data should be a 95309*1 array list
     gas_metallicity = json.loads(response.json()["gas_metallicity"])
     assert type(gas_metallicity) is list
     assert gas_metallicity[2] == 0.010519527830183506
     assert gas_metallicity[100] == 0.0
     assert len(gas_metallicity) == 95309
+
+
+### endpoint: /pig/{id}/gas/Potential/{group_id}
+# Basic positive tests
+def test_get_gas_potential_251():
+    response = client.get("/pig/251/gas/Potential/90")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Potential data should be a 93123*1 array list
+    gas_potential = json.loads(response.json()["gas_potential"])
+    assert type(gas_potential) is list
+    assert gas_potential[0] == -332538.125
+    assert gas_potential[4] ==  -334103.46875
+    assert len(gas_potential) == 93123
+
+
+def test_get_gas_potential_271():
+    response = client.get("/pig/271/gas/Potential/90")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- gas Potential data should be a 50143*1 array list
+    gas_potential = json.loads(response.json()["gas_potential"])
+    assert type(gas_potential) is list
+    assert gas_potential[0] == -155053.03125
+    assert gas_potential[:4] == [-155053.03125, -155029.625, -155162.640625, -155010.75]
+    assert len(gas_potential) == 50143
