@@ -173,3 +173,27 @@ def test_get_star_potential_271():
     assert star_potential[0] == 67014.3359375
     assert star_potential[4] == 66768.3671875
     assert len(star_potential) == 88416
+
+
+### endpoint: /pig/{id}/star/StarFormationTime/{group_id}
+# Basic positive tests
+def test_get_star_starformationtime_251():
+    response = client.get("/pig/251/star/StarFormationTime/9")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- star StarFormationTime data should be a 112659*1 array list
+    star_starformationtime = json.loads(response.json()["star_starformationtime"])
+    assert type(star_starformationtime) is list
+    assert star_starformationtime[0] == 0.11749737709760666
+    assert star_starformationtime[:4] == [0.11749737709760666, 0.11677927523851395, 0.12459807097911835, 0.12012547254562378]
+    assert len(star_starformationtime) == 103097
+
+
+def test_get_star_starformationtime_271():
+    response = client.get("/pig/271/star/StarFormationTime/9")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- star StarFormationTime data should be a 88416*1 array list
+    star_starformationtime = json.loads(response.json()["star_starformationtime"])
+    assert type(star_starformationtime) is list
+    assert star_starformationtime[0] == 0.12901991605758667
+    assert star_starformationtime[:4] == [0.12901991605758667, 0.12974964082241058, 0.12079867720603943, 0.10510993748903275]
+    assert len(star_starformationtime) == 102714
