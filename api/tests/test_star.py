@@ -84,7 +84,7 @@ def test_get_star_groupid_271():
 def test_get_star_mass_251():
     response = client.get("/pig/251/star/Mass/5")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- star Mass data should be a 76352*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- star Mass data should be a 83207*1 array list
     star_mass = json.loads(response.json()["star_mass"])
     assert type(star_mass) is list
     assert star_mass[0] == 5.9055611927760765e-05
@@ -95,7 +95,7 @@ def test_get_star_mass_251():
 def test_get_star_mass_271():
     response = client.get("/pig/271/star/Mass/5")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- star Mass data should be a 86405*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- star Mass data should be a 129814*1 array list
     star_mass = json.loads(response.json()["star_mass"])
     assert type(star_mass) is list
     assert star_mass[0] == 5.9055611927760765e-05
@@ -108,7 +108,7 @@ def test_get_star_mass_271():
 def test_get_star_metallicity_251():
     response = client.get("/pig/251/star/Metallicity/6")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- star Metallicity data should be a 76352*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- star Metallicity data should be a 112913*1 array list
     star_metallicity = json.loads(response.json()["star_metallicity"])
     assert type(star_metallicity) is list
     assert star_metallicity[0] == 0.00014949783508200198
@@ -119,9 +119,33 @@ def test_get_star_metallicity_251():
 def test_get_star_metallicity_271():
     response = client.get("/pig/271/star/Metallicity/6")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- star Metallicity data should be a 86405*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- star Metallicity data should be a 166805*1 array list
     star_metallicity = json.loads(response.json()["star_metallicity"])
     assert type(star_metallicity) is list
     assert star_metallicity[0] == 0.0005383077659644186
     assert star_metallicity[:4] == [0.0005383077659644186, 0.00023857371706981212, 9.642468648962677e-05, 0.00032759408350102603]
     assert len(star_metallicity) == 166805
+
+
+### endpoint: /pig/{id}/star/Position/{group_id}
+# Basic positive tests
+def test_get_star_position_251():
+    response = client.get("/pig/251/star/Position/7")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- star Position data should be a 76352*1 array list
+    star_position = json.loads(response.json()["star_position"])
+    assert type(star_position) is list
+    assert star_position[0] == [15306.750499744992, 146851.4949004134, 290343.8793858092]
+    assert star_position[1] == [15299.60735418374, 146849.01632511956, 290340.75453723327]
+    assert len(star_position) == 72130
+
+
+def test_get_star_position_271():
+    response = client.get("/pig/271/star/Position/7")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- star Position data should be a 86405*1 array list
+    star_position = json.loads(response.json()["star_position"])
+    assert type(star_position) is list
+    assert star_position[0] == [15291.412338536844, 146606.6175727497, 290255.58836157114]
+    assert star_position[1] == [15291.47553922203, 146606.87190717706, 290255.52017585444]
+    assert len(star_position) == 87826
