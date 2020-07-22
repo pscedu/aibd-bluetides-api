@@ -53,3 +53,27 @@ def test_get_star_generation_271():
     assert type(star_generation) is list
     assert star_generation == [1, 3, 1, 1, 1, 1, 1]
     assert len(star_generation) == 7
+
+
+### endpoint: /pig/{id}/star/GroupID/{group_id}
+# Basic positive tests
+def test_get_star_groupid_251():
+    response = client.get("/pig/251/star/GroupID/3")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- star GroupID data should be a 1*1 array list
+    star_groupid = json.loads(response.json()["star_groupid"])
+    assert type(star_groupid) is list
+    assert star_groupid[0] == 3
+    assert star_groupid[1000] == 3
+    assert len(star_groupid) == 173607
+
+
+def test_get_star_groupid_271():
+    response = client.get("/pig/271/star/GroupID/4")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- star GroupID data should be a 7*1 array list
+    star_groupid = json.loads(response.json()["star_groupid"])
+    assert type(star_groupid) is list
+    assert star_groupid[0] == 4
+    assert star_groupid[4000] == 4
+    assert len(star_groupid) == 232226
