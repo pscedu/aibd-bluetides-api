@@ -132,7 +132,7 @@ def test_get_star_metallicity_271():
 def test_get_star_position_251():
     response = client.get("/pig/251/star/Position/7")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- star Position data should be a 76352*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- star Position data should be a 72130*1 array list
     star_position = json.loads(response.json()["star_position"])
     assert type(star_position) is list
     assert star_position[0] == [15306.750499744992, 146851.4949004134, 290343.8793858092]
@@ -143,9 +143,33 @@ def test_get_star_position_251():
 def test_get_star_position_271():
     response = client.get("/pig/271/star/Position/7")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- star Position data should be a 86405*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- star Position data should be a 87826*1 array list
     star_position = json.loads(response.json()["star_position"])
     assert type(star_position) is list
     assert star_position[0] == [15291.412338536844, 146606.6175727497, 290255.58836157114]
     assert star_position[1] == [15291.47553922203, 146606.87190717706, 290255.52017585444]
     assert len(star_position) == 87826
+
+
+### endpoint: /pig/{id}/star/Potential/{group_id}
+# Basic positive tests
+def test_get_star_potential_251():
+    response = client.get("/pig/251/star/Potential/8")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- star Potential data should be a 112659*1 array list
+    star_potential = json.loads(response.json()["star_potential"])
+    assert type(star_potential) is list
+    assert star_potential[0] == -325438.15625
+    assert star_potential[4] == -323459.0
+    assert len(star_potential) == 112659
+
+
+def test_get_star_potential_271():
+    response = client.get("/pig/271/star/Potential/8")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- star Potential data should be a 88416*1 array list
+    star_potential = json.loads(response.json()["star_potential"])
+    assert type(star_potential) is list
+    assert star_potential[0] == 67014.3359375
+    assert star_potential[4] == 66768.3671875
+    assert len(star_potential) == 88416
