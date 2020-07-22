@@ -60,7 +60,7 @@ def test_get_star_generation_271():
 def test_get_star_groupid_251():
     response = client.get("/pig/251/star/GroupID/3")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- star GroupID data should be a 1*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- star GroupID data should be a 173607*1 array list
     star_groupid = json.loads(response.json()["star_groupid"])
     assert type(star_groupid) is list
     assert star_groupid[0] == 3
@@ -71,9 +71,33 @@ def test_get_star_groupid_251():
 def test_get_star_groupid_271():
     response = client.get("/pig/271/star/GroupID/4")
     utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- star GroupID data should be a 7*1 array list
+    # Validate payload: Response is a well-formed JSON object and response data -- star GroupID data should be a 232226*1 array list
     star_groupid = json.loads(response.json()["star_groupid"])
     assert type(star_groupid) is list
     assert star_groupid[0] == 4
     assert star_groupid[4000] == 4
     assert len(star_groupid) == 232226
+
+
+### endpoint: /pig/{id}/star/Mass/{group_id}
+# Basic positive tests
+def test_get_star_mass_251():
+    response = client.get("/pig/251/star/Mass/5")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- star Mass data should be a 76352*1 array list
+    star_mass = json.loads(response.json()["star_mass"])
+    assert type(star_mass) is list
+    assert star_mass[0] == 5.9055611927760765e-05
+    assert star_mass[:4] == [5.9055611927760765e-05, 5.9055611927760765e-05, 5.9055611927760765e-05, 5.9055611927760765e-05]
+    assert len(star_mass) == 83207
+
+
+def test_get_star_mass_271():
+    response = client.get("/pig/271/star/Mass/5")
+    utils.common_positive_tests(response)
+    # Validate payload: Response is a well-formed JSON object and response data -- star Mass data should be a 86405*1 array list
+    star_mass = json.loads(response.json()["star_mass"])
+    assert type(star_mass) is list
+    assert star_mass[0] == 5.9055611927760765e-05
+    assert star_mass[:4] == [5.9055611927760765e-05, 5.9055611927760765e-05, 5.9055611927760765e-05, 5.9055611927760765e-05]
+    assert len(star_mass) == 129814
