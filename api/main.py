@@ -6,7 +6,8 @@
 import json
 
 import numpy
-from fastapi import FastAPI
+from typing import List
+from fastapi import FastAPI, Query, HTTPException
 
 import utils
 
@@ -130,7 +131,7 @@ async def read_obh(id: int, halo_id: int):
 ###################################################################
 # Regular query for particle data in a Group={group_id} of type={ptype}
 @app.get("/pig/{id}/fofgroup/{feature}/{group_id}")
-async def read_fofgroup_data(id: int, group_id: int, feature:str):
+async def read_fofgroup_data(id: int, group_id: int, feature: str):
     data = utils.get_fofgroup_data(pig_id=id, group_id=group_id, feature=feature)
     return {('fofgroup'+'_'+feature.lower()): data}
 
@@ -140,10 +141,18 @@ async def read_fofgroup_data(id: int, group_id: int, feature:str):
 ###################################################################
 # Regular query for particle data in a Group={group_id} of type={ptype}
 @app.get("/pig/{id}/{ptype}/{feature}/{group_id}")
-async def read_particle_data(id: int, group_id: int,ptype: str, feature:str):
+async def read_particle_data_by_groupid(id: int, group_id: int,ptype: str, feature:str):
     data = utils.get_particle_data(pig_id=id, group_id=group_id, ptype = ptype, feature=feature)
     return {(ptype+'_'+feature.lower()): data}
 
+@app.get("/pig/{id}/{ptype}/{feature}/")
+async def read_particle_data_by_groupid_list(id: int, ptype: str, feature: str, groupid_list: List[int] = Query(None)):
+    data = {}
+    if groupid_list is None:
+        raise HTTPException(status_code=404, detail="GroupID is needed. Please input a valid one.")
+    for group_id in groupid_list:
+        data[group_id] = utils.get_particle_data(pig_id=id, group_id=group_id, ptype = ptype, feature=feature)
+    return {(ptype+'_'+feature.lower()): data}
 
 ###################################################################
 #                     Search by Criterion Queries                 #
