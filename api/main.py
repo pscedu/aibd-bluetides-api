@@ -19,6 +19,7 @@ app = FastAPI()
 async def read_main():
     return {"msg": "COSMO, a REST API for the BlueTides3 Cosmology Simulation Data"}
 
+
 # Get the list of PIG folders available for querying
 @app.get("/pig/")
 async def read_pig():
@@ -33,7 +34,6 @@ async def read_pig():
         pig_dict["time"] = float(utils.get_pig_redshift(subdir))
         pig_list.append(pig_dict)
     return {"LIST": pig_list}
-
 
 
 @app.get("/pig/{id}")
@@ -59,7 +59,6 @@ async def read_snapshot_fof_info(id: int, ptype: str):
     return {'fof_subdirs':subfields}    
 
 
-
 # Route
 # Get the first n lengthByType data in a particular pig folder.
 @app.get("/pig/{id}/lengthbytype/n={num}")
@@ -82,14 +81,19 @@ async def read_lbt_file(id: int, num: int):
 
 # Get the number of all gas type particles in the nth halo of a particular pig folder
 @app.get("/pig/{id}/lengthbytype/{halo_id}/")
-async def read_lbh(id: int, halo_id: int):
-    utils.check_pig_id(pig_id=id)
-    pig = utils.get_pig_data(id)
-    utils.check_halo_id_range(pig=pig, halo_id=halo_id)
-    nhalo = pig.open('FOFGroups/LengthByType')[halo_id]
-    numpy_array_type_data = numpy.array(nhalo)
-    encoded_numpy_type_data = json.dumps(numpy_array_type_data, cls=utils.NumpyArrayEncoder)
-    return {"halo_id": halo_id, "type_length": encoded_numpy_type_data}
+async def read_lbt_by_haloid(id: int, halo_id: int):
+    data = utils.get_lbt_by_haloid(pig_id=id, halo_id=halo_id)
+    return {"halo_id": halo_id, "type_length": data}
+
+
+# Get the number of all gas type particles in a halo list of a particular pig folder
+@app.get("/pig/{id}/lengthbytype/")
+async def read_lbt_by_haloid_list(id: int, haloid_list: List[int] = Query(None)):
+    data = {}
+    utils.check_query_list(haloid_list)
+    for halo_id in haloid_list:
+        data[halo_id] = utils.get_lbt_by_haloid(pig_id=id, halo_id=halo_id)
+    return data
 
 
 # Get the number of a specific gas type particles in the nth halo of a particular pig folder
@@ -148,8 +152,7 @@ async def read_particle_data_by_groupid(id: int, group_id: int,ptype: str, featu
 @app.get("/pig/{id}/{ptype}/{feature}/")
 async def read_particle_data_by_groupid_list(id: int, ptype: str, feature: str, groupid_list: List[int] = Query(None)):
     data = {}
-    if groupid_list is None:
-        raise HTTPException(status_code=404, detail="GroupID is needed. Please input a valid one.")
+    utils.check_query_list(groupid_list)
     for group_id in groupid_list:
         data[group_id] = utils.get_particle_data(pig_id=id, group_id=group_id, ptype = ptype, feature=feature)
     return {(ptype+'_'+feature.lower()): data}

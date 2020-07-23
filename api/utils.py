@@ -47,6 +47,11 @@ def check_type_name(ptype:str):
         raise HTTPException(status_code=404, detail="Particle type {} does not exist, should be in {}".format(ptype,type_list))
 
 
+def check_query_list(id_list):
+    if id_list is None:
+        raise HTTPException(status_code=404, detail="ID list is needed. Please input a valid one.")
+
+
 # Get the list of PIG folders
 def get_pig_folders():
     subdirectories = []
@@ -78,6 +83,16 @@ def get_pig_data(pig_id: int):
     pig_dir = constants.PIG_BASE_DIR + "PIG_" + str(pig_id) + "/"
     pig = bigfile.File(pig_dir)
     return pig
+
+
+def get_lbt_by_haloid(pig_id: int, halo_id: int):
+    check_pig_id(pig_id=pig_id)
+    pig = get_pig_data(pig_id)
+    check_halo_id_range(pig=pig, halo_id=halo_id)
+    nhalo = pig.open('FOFGroups/LengthByType')[halo_id]
+    numpy_array_type_data = numpy.array(nhalo)
+    encoded_numpy_type_data = json.dumps(numpy_array_type_data, cls=NumpyArrayEncoder)
+    return encoded_numpy_type_data
 
 
 def get_obt(pig_id: int, group_id: int):
