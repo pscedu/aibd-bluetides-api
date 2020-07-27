@@ -9,7 +9,7 @@ import numpy
 from typing import List, Optional
 from fastapi import FastAPI, Query, HTTPException
 
-import utils
+from . import utils
 
 # Init
 app = FastAPI()
