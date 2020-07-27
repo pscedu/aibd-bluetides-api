@@ -8,6 +8,10 @@ from . import utils
 client = TestClient(app)
 
 
+def test_get_negative_gas():
+    utils.test_get_negative("gas")
+
+
 ### endpoint: /pig/{id}/gas/position/{group_id}
 # Basic positive tests
 def test_get_gas_position_251():
@@ -42,21 +46,6 @@ def test_get_gas_position_largeID():
     assert len(gas_position) == 804
 
 
-def test_get_gas_position_negative():
-    # missing required parameters
-    utils.test_get_missing_input(251, "gas", "Position", 10)
-    utils.test_get_missing_input(271, "gas", "Position", 10)
-    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-    utils.test_get_invalid_input(251, "gas", "Position", 0)
-    utils.test_get_invalid_input(251, "gas", "Position", 286036301)
-    utils.test_get_invalid_input(271, "gas", "Position", 0)
-    utils.test_get_invalid_input(271, "gas", "Position", 294288057)
-    # pig id not in folder
-    utils.test_get_invalid_input(1, "gas", "Position", 10000)
-    # invalid feature
-    utils.test_get_invalid_input(10, "gas", "XXX", 100)
-
-
 ### endpoint: /pig/{id}/gas/electron/{group_id}
 # Basic positive tests
 def test_get_gas_electron_251():
@@ -77,21 +66,6 @@ def test_get_gas_electron_271():
     assert type(gas_electron) is list
     assert gas_electron[0] == 1.157894492149353
     assert len(gas_electron) == 513379
-
-
-def test_get_gas_electron_negative():
-    # missing required parameters
-    utils.test_get_missing_input(251, "gas", "ElectronAbundance", 100)
-    utils.test_get_missing_input(271, "gas", "ElectronAbundance", 100)
-    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-    utils.test_get_invalid_input(251, "gas", "ElectronAbundance", 0)
-    utils.test_get_invalid_input(251, "gas", "ElectronAbundance", 286036301)
-    utils.test_get_invalid_input(271, "gas", "ElectronAbundance", 0)
-    utils.test_get_invalid_input(271, "gas", "ElectronAbundance", 294288060)
-    # pig id not in folder
-    utils.test_get_invalid_input(1000, "gas", "ElectronAbundance", 10000)
-    # invalid feature
-    utils.test_get_invalid_input(10, "gas", "Imom", 100)
 
 
 ### endpoint: /pig/{id}/gas/H2fraction/{group_id}
@@ -117,21 +91,6 @@ def test_get_gas_h2fraction_271():
     assert len(gas_h2fraction) == 513379
 
 
-def test_get_gas_h2fraction_negative():
-    # missing required parameters
-    utils.test_get_missing_input(251, "gas", "H2Fraction", 200)
-    utils.test_get_missing_input(271, "gas", "H2Fraction", 200)
-    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-    utils.test_get_invalid_input(251, "gas", "H2Fraction", -1)
-    utils.test_get_invalid_input(251, "gas", "H2Fraction", 286036301)
-    utils.test_get_invalid_input(271, "gas", "H2Fraction", -100)
-    utils.test_get_invalid_input(271, "gas", "H2Fraction", 294288060)
-    # pig id not in folder
-    utils.test_get_invalid_input(2000, "gas", "H2Fraction", 10000)
-    # invalid feature
-    utils.test_get_invalid_input(10, "gas", "Imom", 100)
-
-
 ### endpoint: /pig/{id}/gas/InternalEnergy/{group_id}
 # Basic positive tests
 def test_get_gas_internal_energy_251():
@@ -152,21 +111,6 @@ def test_get_gas_internal_energy_271():
     assert type(gas_internal_energy) is list
     assert gas_internal_energy[0] == 163354.578125
     assert len(gas_internal_energy) == 513379
-
-
-def test_get_gas_internal_energy_negative():
-    # missing required parameters
-    utils.test_get_missing_input(251, "gas", "InternalEnergy", 300)
-    utils.test_get_missing_input(271, "gas", "InternalEnergy", 300)
-    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-    utils.test_get_invalid_input(251, "gas", "InternalEnergy", -2)
-    utils.test_get_invalid_input(251, "gas", "InternalEnergy", 286036302)
-    utils.test_get_invalid_input(271, "gas", "InternalEnergy", -200)
-    utils.test_get_invalid_input(271, "gas", "InternalEnergy", 294288060)
-    # pig id not in folder
-    utils.test_get_invalid_input(-1, "gas", "InternalEnergy", 10000)
-    # invalid feature
-    utils.test_get_invalid_input(10, "gas", "Jmom", 100)
 
 
 ### endpoint: /pig/{id}/gas/Density/{group_id}
@@ -193,21 +137,6 @@ def test_get_gas_density_271():
     assert len(gas_density) == 513379
 
 
-def test_get_gas_density_negative():
-    # missing required parameters
-    utils.test_get_missing_input(251, "gas", "Density", 120)
-    utils.test_get_missing_input(271, "gas", "Density", 120)
-    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-    utils.test_get_invalid_input(251, "gas", "Density", 0)
-    utils.test_get_invalid_input(251, "gas", "Density", 286036303)
-    utils.test_get_invalid_input(271, "gas", "Density", -200)
-    utils.test_get_invalid_input(271, "gas", "Density", 294288061)
-    # pig id not in folder
-    utils.test_get_invalid_input(-1, "gas", "Density", 120)
-    # invalid feature
-    utils.test_get_invalid_input(10, "gas", "Jmom", 120)
-
-
 ### endpoint: /pig/{id}/gas/Entropy/{group_id}
 # Basic positive tests
 def test_get_gas_entropy_251():
@@ -232,21 +161,6 @@ def test_get_gas_entropy_271():
     assert len(gas_entropy) == 77457
 
 
-def test_get_gas_entropy_negative():
-    # missing required parameters
-    utils.test_get_missing_input(251, "gas", "Entropy", 330)
-    utils.test_get_missing_input(271, "gas", "Entropy", 330)
-    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-    utils.test_get_invalid_input(251, "gas", "Entropy", 0)
-    utils.test_get_invalid_input(251, "gas", "Entropy", 286036400)
-    utils.test_get_invalid_input(271, "gas", "Entropy", -10)
-    utils.test_get_invalid_input(271, "gas", "Entropy", 294288100)
-    # pig id not in folder
-    utils.test_get_invalid_input(333, "gas", "Entropy", 330)
-    # invalid feature
-    utils.test_get_invalid_input(10, "gas", "abcd", 330)
-
-
 ### endpoint: /pig/{id}/gas/JUV/{group_id}
 # Basic positive tests
 def test_get_gas_juv_251():
@@ -269,21 +183,6 @@ def test_get_gas_juv_271():
     assert len(gas_juv) == 145402
 
 
-def test_get_gas_juv_negative():
-    # missing required parameters
-    utils.test_get_missing_input(251, "gas", "JUV", 400)
-    utils.test_get_missing_input(271, "gas", "JUV", 400)
-    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-    utils.test_get_invalid_input(251, "gas", "JUV", -30)
-    utils.test_get_invalid_input(251, "gas", "JUV", 286036400)
-    utils.test_get_invalid_input(271, "gas", "JUV", 0)
-    utils.test_get_invalid_input(271, "gas", "JUV", 294288100)
-    # pig id not in folder
-    utils.test_get_invalid_input(333, "gas", "JUV", 400)
-    # invalid feature
-    utils.test_get_invalid_input(10, "gas", "xyz", 400)
-
-
 ### endpoint: /pig/{id}/gas/NeutralHydrogenFraction/{group_id}
 # Basic positive tests
 def test_get_gas_nhf_251():
@@ -304,21 +203,6 @@ def test_get_gas_nhf_271():
     assert type(gas_nhf) is list
     assert gas_nhf[0] == 6.849857072666055e-06
     assert len(gas_nhf) == 119976
-
-
-def test_get_gas_nhf_negative():
-    # missing required parameters
-    utils.test_get_missing_input(251, "gas", "NeutralHydrogenFraction", 20)
-    utils.test_get_missing_input(271, "gas", "NeutralHydrogenFraction", 20)
-    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-    utils.test_get_invalid_input(251, "gas", "NeutralHydrogenFraction", 0)
-    utils.test_get_invalid_input(251, "gas", "NeutralHydrogenFraction", 286036500)
-    utils.test_get_invalid_input(271, "gas", "NeutralHydrogenFraction", -2)
-    utils.test_get_invalid_input(271, "gas", "NeutralHydrogenFraction", 294288200)
-    # pig id not in folder
-    utils.test_get_invalid_input(333, "gas", "NeutralHydrogenFraction", 20)
-    # invalid feature
-    utils.test_get_invalid_input(10, "gas", "MassCenterPosition", 20)
 
 
 ### endpoint: /pig/{id}/gas/Pressure/{group_id}
@@ -345,21 +229,6 @@ def test_get_gas_pressure_271():
     assert len(gas_pressure) == 102438
 
 
-def test_get_gas_pressure_negative():
-    # missing required parameters
-    utils.test_get_missing_input(251, "gas", "Pressure", 30)
-    utils.test_get_missing_input(271, "gas", "Pressure", 30)
-    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-    utils.test_get_invalid_input(251, "gas", "Pressure", 0)
-    utils.test_get_invalid_input(251, "gas", "Pressure", 286036600)
-    utils.test_get_invalid_input(271, "gas", "Pressure", 0)
-    utils.test_get_invalid_input(271, "gas", "Pressure", 294288300)
-    # pig id not in folder
-    utils.test_get_invalid_input(333, "gas", "Pressure", 30)
-    # invalid feature
-    utils.test_get_invalid_input(271, "gas", "MassCenterVelocity", 30)
-
-
 ### endpoint: /pig/{id}/gas/Velocity/{group_id}
 # Basic positive tests
 def test_get_gas_velocity_251():
@@ -380,25 +249,6 @@ def test_get_gas_velocity_271():
     assert type(gas_velocity) is list
     assert gas_velocity[0] == [61.37261962890625, 30.83819007873535, 15.464899063110352]
     assert len(gas_velocity) == 102438
-
-
-def test_get_gas_velocity_negative():
-    # missing required parameters
-    utils.test_get_missing_input(251, "gas", "Velocity", 30)
-    utils.test_get_missing_input(271, "gas", "Velocity", 30)
-    # pig 251 group_id not in [1,286036300] or pig 271 group_id not [1,294288056]
-    utils.test_get_invalid_input(251, "gas", "Velocity", 0)
-    utils.test_get_invalid_input(251, "gas", "Velocity", 286036600)
-    utils.test_get_invalid_input(271, "gas", "Velocity", 0)
-    utils.test_get_invalid_input(271, "gas", "Velocity", 294288300)
-    # pig id not in folder
-    utils.test_get_invalid_input(555, "gas", "Velocity", 30)
-    # invalid feature
-    utils.test_get_invalid_input(271, "gas", "xyz", 30)
-
-
-def test_get_negative_gas():
-    utils.test_get_negative("gas")
 
 
 ### endpoint: /pig/{id}/gas/EgyWtDensity/{group_id}
