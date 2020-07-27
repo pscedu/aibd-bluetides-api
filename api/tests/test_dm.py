@@ -12,6 +12,8 @@ client = TestClient(app)
 #                           DM Tests                              #
 ################################################################### 
 
+def test_get_negative_dm():
+    utils.test_get_negative("dm")
 
 #DM POSITION
 ### endpoint: /pig/{id}/dm/position/{group_id}
@@ -38,21 +40,6 @@ def test_get_dm_position_271():
     assert len(dm_position) == 158970
 
 
-def test_get_dm_position_negative():
-    # missing required parameters
-    utils.test_get_missing_input(244, "dm", "Position", 10)
-    utils.test_get_missing_input(271, "dm", "Position", 10)
-    # pig 271 group_id not in [1,294288056]
-    utils.test_get_invalid_input(244, "dm", "Position", 0)
-    utils.test_get_invalid_input(244, "dm", "Position", 282939567)
-    utils.test_get_invalid_input(271, "dm", "Position", 0)
-    utils.test_get_invalid_input(271, "dm", "Position", 294288057)
-    # pig id not in folder
-    utils.test_get_invalid_input(10, "dm", "Position", 10000)
-    # invalid feature
-    utils.test_get_invalid_input(10, "dm", "H2Fraction", 10000)
-
-
 #DM VELOCITY
 def test_get_dm_velocity_244():
     response = client.get("/pig/244/dm/Velocity/1862")
@@ -76,19 +63,6 @@ def test_get_dm_velocity_271():
     assert len(data) == 158970
 
 
-def test_get_dm_velocity_negative():
-    # missing required parameters
-    utils.test_get_missing_input(244, "dm", "Velocity", 10)
-    utils.test_get_missing_input(271, "dm", "Velocity", 10)
-    # pig 271 group_id not in [1,294288056]
-    utils.test_get_invalid_input(244, "dm", "Velocity", 0)
-    utils.test_get_invalid_input(244, "dm", "Velocity", 282939567)
-    utils.test_get_invalid_input(271, "dm", "Velocity", 0)
-    utils.test_get_invalid_input(271, "dm", "Velocity", 294288057)
-    # pig id not in folder
-    utils.test_get_invalid_input(10, "dm", "Velocity", 10000)
-
-
 #DM MASS
 def test_get_dm_mass_271():
     response = client.get("/pig/271/dm/Mass/10")
@@ -99,15 +73,6 @@ def test_get_dm_mass_271():
     assert data[0] == 0.0011963852448388934
     assert data[:4] == [0.0011963852448388934, 0.0011963852448388934, 0.0011963852448388934, 0.0011963852448388934]
     assert len(data) == 158970
-
-def test_get_dm_mass_negative():
-    # missing required parameters
-    utils.test_get_missing_input(271, "dm", "Mass", 10)
-    # pig 271 group_id not in [1,294288056]
-    utils.test_get_invalid_input(271, "dm", "Mass", 0)
-    utils.test_get_invalid_input(271, "dm", "Mass", 294288057)
-    # pig id not in folder
-    utils.test_get_invalid_input(20, "dm", "Mass", 203940)
 
 
 #DM POTENTIAL
@@ -121,15 +86,6 @@ def test_get_dm_potential_271():
     assert data[:4] == [-330457.6875, -329781.90625, -330611.59375, -330459.625]
     assert len(data) == 158970
 
-def test_get_dm_potential_negative():
-    # missing required parameters
-    utils.test_get_missing_input(271, "dm", "Potential", 10)
-    # pig 271 group_id not in [1,294288056]
-    utils.test_get_invalid_input(271, "dm", "Potential", 0)
-    utils.test_get_invalid_input(271, "dm", "Potential", 294288057)
-    # pig id not in folder
-    utils.test_get_invalid_input(200, "dm", "Potential", 1)
-
 
 #DM GENERATION
 def test_get_dm_generation_271():
@@ -142,15 +98,6 @@ def test_get_dm_generation_271():
     assert data[:4] == [0, 0, 0, 0]
     assert len(data) == 158970
 
-def test_get_dm_generation_negative():
-    # missing required parameters
-    utils.test_get_missing_input(271, "dm", "Generation", 5)
-    # pig 271 group_id not in [1,294288056]
-    utils.test_get_invalid_input(271, "dm", "Generation", 0)
-    utils.test_get_invalid_input(271, "dm", "Generation", 294288057)
-    # pig id not in folder
-    utils.test_get_invalid_input(200, "dm", "Generation", -5)
-
 
 #DM GROUPID
 def test_get_dm_groupid_271():
@@ -162,12 +109,3 @@ def test_get_dm_groupid_271():
     assert data[0] == 10
     assert data[:4] == [10, 10, 10, 10]
     assert len(data) == 158970
-
-def test_get_dm_groupid_negative():
-    # missing required parameters
-    utils.test_get_missing_input(271, "dm", "GroupID", 500)
-    # pig 271 group_id not in [1,294288056]
-    utils.test_get_invalid_input(271, "dm", "GroupID", 0)
-    utils.test_get_invalid_input(271, "dm", "GroupID", 294288057)
-    # pig id not in folder
-    utils.test_get_invalid_input(200, "dm", "GroupID", 000)
