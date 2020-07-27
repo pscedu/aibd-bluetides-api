@@ -6,7 +6,7 @@
 import json
 
 import numpy
-from typing import List
+from typing import List, Optional
 from fastapi import FastAPI, Query, HTTPException
 
 import utils
@@ -141,6 +141,29 @@ async def read_fofgroup_data(id: int, group_id: int, feature: str):
 
 
 ###################################################################
+#                     Search by Criterion Queries                 #
+###################################################################
+@app.get("/pig/{id}/criterion/{feature}/{ptype}")
+async def read_haloid_by_criterion(id: int, feature: str, ptype: str, min_range: Optional[float] = None, max_range: Optional[float] = None):
+    utils.check_pig_id(pig_id=id)
+    #utils.check_feature(pig_id = id, ptype = ptype, feature = feature)
+    type_ind = {'gas':0,'dm':1,'star':4,'bh':5}
+    ind = type_ind[ptype]
+    pig = utils.get_pig_data(id)
+    data = pig.open('FOFGroups/'+ feature)[:][:, ind]
+    if min_range and max_range:
+        res = numpy.where((data <= max_range) & (data >= min_range))
+    elif min_range:
+        res = numpy.where(data >= min_range)
+    elif max_range:
+        res = numpy.where(data <= max_range)
+    else:
+        res = data
+    encoded_numpy_data = json.dumps(res, cls=utils.NumpyArrayEncoder)
+    return {"IDlist":encoded_numpy_data}
+
+
+###################################################################
 #                        Particle Queries                         #
 ###################################################################
 # Regular query for particle data in a Group={group_id} of type={ptype}
@@ -156,10 +179,5 @@ async def read_particle_data_by_groupid_list(id: int, ptype: str, feature: str, 
     for group_id in groupid_list:
         data[group_id] = utils.get_particle_data(pig_id=id, group_id=group_id, ptype = ptype, feature=feature)
     return {(ptype+'_'+feature.lower()): data}
-
-###################################################################
-#                     Search by Criterion Queries                 #
-###################################################################
-
 
 
