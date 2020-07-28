@@ -439,3 +439,123 @@ def test_get_gas_starformationrate_271():
     assert gas_starformationrate[15000] == 0.016309794038534164
     assert gas_starformationrate[10000] == 0
     assert len(gas_starformationrate) == 77457
+
+
+### advanced lengthbytype query tests: /pig/{id}/{ptype}/{feature}/
+def test_get_advanced_gas_density_251():
+    response = client.get("/pig/251/gas/Density/", params = {'groupid_list': [1,2,3]})
+    utils.common_positive_tests(response)
+    gas_density_1 = json.loads(response.json()["gas_density"]["1"])
+    assert type(gas_density_1) is list
+    assert gas_density_1[:4] == [2.9312253957414214e-08, 3.0495591829549085e-08, 3.838168538550235e-08, 4.375229067932196e-08]
+    assert len(gas_density_1) == 446499
+    gas_density_2 = json.loads(response.json()["gas_density"]["2"])
+    assert type(gas_density_2) is list
+    assert gas_density_2[:4] == [6.8903700523037514e-09, 6.851533118634734e-09, 8.200615297937475e-09, 7.598972118216807e-09]
+    assert len(gas_density_2) == 700225
+    gas_density_3 = json.loads(response.json()["gas_density"]["3"])
+    assert type(gas_density_3) is list
+    assert gas_density_3[:4] == [2.12554578382651e-08, 2.075496752240724e-08, 2.7879844211042837e-08, 2.678831378943869e-08]
+    assert len(gas_density_3) == 239021
+
+
+def test_get_advanced_gas_entropy_251():
+    response = client.get("/pig/251/gas/Entropy/", params = {'groupid_list': [4,5,6]})
+    utils.common_positive_tests(response)
+    gas_entropy_4 = json.loads(response.json()["gas_entropy"]["4"])
+    assert type(gas_entropy_4) is list
+    assert gas_entropy_4[:4] == [9321008.0, 53421.7734375, 63790.05859375, 53965.58984375]
+    assert len(gas_entropy_4) == 125966
+    gas_entropy_5 = json.loads(response.json()["gas_entropy"]["5"])
+    assert type(gas_entropy_5) is list
+    assert gas_entropy_5[:4] == [411603.28125, 146572.4375, 255028.5625, 110186.3046875]
+    assert len(gas_entropy_5) == 172170
+    gas_entropy_6 = json.loads(response.json()["gas_entropy"]["6"])
+    assert type(gas_entropy_6) is list
+    assert gas_entropy_6[:4] == [81743.9140625, 132288.1875, 73330.1796875, 104180.6171875]
+    assert len(gas_entropy_6) == 154147
+
+
+def test_get_advanced_gas_h2fraction_251():
+    response = client.get("/pig/251/gas/H2Fraction/", params = {'groupid_list': [7,8,9]})
+    utils.common_positive_tests(response)
+    gas_h2fraction_7 = json.loads(response.json()["gas_h2fraction"]["7"])
+    assert type(gas_h2fraction_7) is list
+    assert gas_h2fraction_7[10000:10004] == [0.009490085765719414, 0, 0, 0]
+    assert len(gas_h2fraction_7) == 177623
+    gas_h2fraction_8 = json.loads(response.json()["gas_h2fraction"]["8"])
+    assert type(gas_h2fraction_8) is list
+    assert gas_h2fraction_8[20000:20004] == [0, 0, 0, 0.04939519986510277]
+    assert len(gas_h2fraction_8) == 142821
+    gas_h2fraction_9 = json.loads(response.json()["gas_h2fraction"]["9"])
+    assert type(gas_h2fraction_9) is list
+    assert gas_h2fraction_9[15000:15004] == [0.15932804346084595, 0, 0.0031604496762156487, 0]
+    assert len(gas_h2fraction_9) == 140981
+
+
+def test_get_advanced_gas_juv_251():
+    response = client.get("/pig/251/gas/JUV/", params = {'groupid_list': [10,11,12]})
+    utils.common_positive_tests(response)
+    gas_juv_10 = json.loads(response.json()["gas_juv"]["10"])
+    assert type(gas_juv_10) is list
+    assert gas_juv_10[10000:10004] == [9.999999682655225e-22, 9.999999682655225e-22, 9.999999682655225e-22, 9.999999682655225e-22]
+    assert len(gas_juv_10) == 134377
+    gas_juv_11 = json.loads(response.json()["gas_juv"]["11"])
+    assert type(gas_juv_11) is list
+    assert gas_juv_11[20000] == 9.999999682655225e-22
+    assert len(gas_juv_11) == 102244
+    gas_juv_12 = json.loads(response.json()["gas_juv"]["12"])
+    assert type(gas_juv_12) is list
+    assert gas_juv_12[15000] == 9.999999682655225e-22
+    assert len(gas_juv_12) == 91408
+
+
+def test_get_advanced_gas_nhf_251():
+    response = client.get("/pig/251/gas/NeutralHydrogenFraction/", params = {'groupid_list': [13,14,15]})
+    utils.common_positive_tests(response)
+    gas_nhf_13 = json.loads(response.json()["gas_neutralhydrogenfraction"]["13"])
+    assert type(gas_nhf_13) is list
+    assert gas_nhf_13[:4] == [0.00016779893485363573, 0.001974311890080571, 0.0013231453485786915, 0.004058866761624813]
+    assert len(gas_nhf_13) == 109887
+    gas_nhf_14 = json.loads(response.json()["gas_neutralhydrogenfraction"]["14"])
+    assert type(gas_nhf_14) is list
+    assert gas_nhf_14[:4] == [1.6623314422758995e-06, 3.881593784171855e-06, 1.4636433661507908e-05, 0.021240321919322014]
+    assert len(gas_nhf_14) == 101137
+    gas_nhf_15 = json.loads(response.json()["gas_neutralhydrogenfraction"]["15"])
+    assert type(gas_nhf_15) is list
+    assert gas_nhf_15[:4] == [0.006793433800339699, 0.005498229991644621, 0.009771108627319336, 0.007732793223112822]
+    assert len(gas_nhf_15) == 99544
+
+
+def test_get_advanced_gas_pressure_251():
+    response = client.get("/pig/251/gas/Pressure/", params = {'groupid_list': [16,17,18]})
+    utils.common_positive_tests(response)
+    gas_pressure_16 = json.loads(response.json()["gas_pressure"]["16"])
+    assert type(gas_pressure_16) is list
+    assert gas_pressure_16[:4] == [3.65005826097331e-06, 7.030094479887339e-07, 8.947169476414274e-07, 1.1282971854598145e-06]
+    assert len(gas_pressure_16) == 119751
+    gas_pressure_17 = json.loads(response.json()["gas_pressure"]["17"])
+    assert type(gas_pressure_17) is list
+    assert gas_pressure_17[:4] == [1.4249569630919723e-06, 1.5151192656048806e-06, 8.5890900436425e-07, 5.033523393649375e-07]
+    assert len(gas_pressure_17) == 123411
+    gas_pressure_18 = json.loads(response.json()["gas_pressure"]["18"])
+    assert type(gas_pressure_18) is list
+    assert gas_pressure_18[:4] == [1.0433600436954293e-06, 1.858478412941622e-06, 2.476672761986265e-06, 4.140899363846984e-06]
+    assert len(gas_pressure_18) == 119046
+
+
+def test_get_advanced_gas_velocity_251():
+    response = client.get("/pig/251/gas/Velocity/", params = {'groupid_list': [19,20,21]})
+    utils.common_positive_tests(response)
+    gas_velocity_19 = json.loads(response.json()["gas_velocity"]["19"])
+    assert type(gas_velocity_19) is list
+    assert gas_velocity_19[0] == [-10.421012878417969, -11.563729286193848, -8.927306175231934]
+    assert len(gas_velocity_19) == 87054
+    gas_velocity_20 = json.loads(response.json()["gas_velocity"]["20"])
+    assert type(gas_velocity_20) is list
+    assert gas_velocity_20[0] == [55.109683990478516, 4.177705764770508, -14.314995765686035]
+    assert len(gas_velocity_20) == 102446
+    gas_velocity_21 = json.loads(response.json()["gas_velocity"]["21"])
+    assert type(gas_velocity_21) is list
+    assert gas_velocity_21[0] == [-34.447486877441406, -1.5274184942245483, 37.998382568359375]
+    assert len(gas_velocity_21) == 70998
