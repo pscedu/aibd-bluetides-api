@@ -197,3 +197,140 @@ def test_get_star_starformationtime_271():
     assert star_starformationtime[0] == 0.12901991605758667
     assert star_starformationtime[:4] == [0.12901991605758667, 0.12974964082241058, 0.12079867720603943, 0.10510993748903275]
     assert len(star_starformationtime) == 102714
+
+
+### advanced star query tests: /pig/{id}/{ptype}/{feature}/
+def test_get_advanced_star_generation_251():
+    response = client.get("/pig/251/star/Generation/", params = {'groupid_list': [1,2,3]})
+    utils.common_positive_tests(response)
+    star_generation_1 = json.loads(response.json()["star_generation"]["1"])
+    assert type(star_generation_1) is list
+    assert star_generation_1[:4] == [2, 1, 1, 1]
+    assert len(star_generation_1) == 561897
+    star_generation_2 = json.loads(response.json()["star_generation"]["2"])
+    assert type(star_generation_2) is list
+    assert star_generation_2 == [1]
+    assert len(star_generation_2) == 1
+    star_generation_3 = json.loads(response.json()["star_generation"]["3"])
+    assert type(star_generation_3) is list
+    assert star_generation_3[:4] == [1, 1, 1, 1]
+    assert len(star_generation_3) == 173607
+
+
+def test_get_advanced_star_groupid_251():
+    response = client.get("/pig/251/star/GroupID/", params = {'groupid_list': [4,5,6]})
+    utils.common_positive_tests(response)
+    star_groupid_4 = json.loads(response.json()["star_groupid"]["4"])
+    assert type(star_groupid_4) is list
+    assert star_groupid_4[1000:1004] == [4, 4, 4, 4]
+    assert len(star_groupid_4) == 206388
+    star_groupid_5 = json.loads(response.json()["star_groupid"]["5"])
+    assert type(star_groupid_5) is list
+    assert star_groupid_5[:4] == [5, 5, 5, 5]
+    assert len(star_groupid_5) == 83207
+    star_groupid_6 = json.loads(response.json()["star_groupid"]["6"])
+    assert type(star_groupid_6) is list
+    assert star_groupid_6[:4] == [6, 6, 6, 6]
+    assert len(star_groupid_6) == 112913
+
+
+def test_get_advanced_star_position_251():
+    response = client.get("/pig/251/star/Position/", params = {'groupid_list': [7,8,9]})
+    utils.common_positive_tests(response)
+    star_position_7 = json.loads(response.json()["star_position"]["7"])
+    assert type(star_position_7) is list
+    assert star_position_7[0] == [15306.750499744992, 146851.4949004134, 290343.8793858092]
+    assert len(star_position_7) == 72130
+    star_position_8 = json.loads(response.json()["star_position"]["8"])
+    assert type(star_position_8) is list
+    assert star_position_8[0] == [72839.80296707667, 195137.84803168938, 229726.26036081064]
+    assert len(star_position_8) == 112659
+    star_position_9 = json.loads(response.json()["star_position"]["9"])
+    assert type(star_position_9) is list
+    assert star_position_9[0] == [40394.3379824241, 38879.60468057035, 388657.5242690556]
+    assert len(star_position_9) == 103097
+
+
+def test_get_advanced_star_potential_251():
+    response = client.get("/pig/251/star/Potential/", params = {'groupid_list': [10,11,12]})
+    utils.common_positive_tests(response)
+    star_potential_10 = json.loads(response.json()["star_potential"]["10"])
+    assert type(star_potential_10) is list
+    assert star_potential_10[:4] == [-293036.9375, -289590.84375, -292476.09375, -292596.40625]
+    assert len(star_potential_10) == 98685
+    star_potential_11 = json.loads(response.json()["star_potential"]["11"])
+    assert type(star_potential_11) is list
+    assert star_potential_11[:4] == [109452.8671875, 76191.0546875, 75398.890625, 77083.0703125]
+    assert len(star_potential_11) == 140880
+    star_potential_12 = json.loads(response.json()["star_potential"]["12"])
+    assert type(star_potential_12) is list
+    assert star_potential_12[:4] == [-336633.625, -331236.21875, -327860.375, -327338.78125]
+    assert len(star_potential_12) == 154946
+
+
+def test_get_advanced_star_velocity_251():
+    response = client.get("/pig/251/star/Velocity/", params = {'groupid_list': [13,14,15]})
+    utils.common_positive_tests(response)
+    star_velocity_13 = json.loads(response.json()["star_velocity"]["13"])
+    assert type(star_velocity_13) is list
+    assert star_velocity_13[0] == [85.484130859375, -6.347171306610107, -15.724801063537598]
+    assert len(star_velocity_13) == 124345
+    star_velocity_14 = json.loads(response.json()["star_velocity"]["14"])
+    assert type(star_velocity_14) is list
+    assert star_velocity_14[0] == [29.978708267211914, 6.427834510803223, -15.628321647644043]
+    assert len(star_velocity_14) == 137328
+    star_velocity_15 = json.loads(response.json()["star_velocity"]["15"])
+    assert type(star_velocity_15) is list
+    assert star_velocity_15[0] == [37.52377700805664, -45.30293273925781, 40.19329833984375]
+    assert len(star_velocity_15) == 133705
+
+
+def test_get_advanced_star_mass_251():
+    response = client.get("/pig/251/star/Mass/", params = {'groupid_list': [16,17,18]})
+    utils.common_positive_tests(response)
+    star_mass_16 = json.loads(response.json()["star_mass"]["16"])
+    assert type(star_mass_16) is list
+    assert star_mass_16[0] == 5.9055611927760765e-05
+    assert len(star_mass_16) == 90938
+    star_mass_17 = json.loads(response.json()["star_mass"]["17"])
+    assert type(star_mass_17) is list
+    assert star_mass_17[0] == 5.9055611927760765e-05
+    assert len(star_mass_17) == 84443
+    star_mass_18 = json.loads(response.json()["star_mass"]["18"])
+    assert type(star_mass_18) is list
+    assert star_mass_18[0] == 5.9055611927760765e-05
+    assert len(star_mass_18) == 91087
+
+
+def test_get_advanced_star_metallicity_251():
+    response = client.get("/pig/251/star/Metallicity/", params = {'groupid_list': [19,20,21]})
+    utils.common_positive_tests(response)
+    star_metallicity_19 = json.loads(response.json()["star_metallicity"]["19"])
+    assert type(star_metallicity_19) is list
+    assert star_metallicity_19[:4] == [0.0012646712129935622, 6.0607515479205176e-05, 3.3099680877057835e-05, 2.955297168227844e-05]
+    assert len(star_metallicity_19) == 124501
+    star_metallicity_20 = json.loads(response.json()["star_metallicity"]["20"])
+    assert type(star_metallicity_20) is list
+    assert star_metallicity_20[:4] == [0.0029382354114204645, 0.00031041487818583846, 0.0022197291254997253, 0.003966968506574631]
+    assert len(star_metallicity_20) == 91037
+    star_metallicity_21 = json.loads(response.json()["star_metallicity"]["21"])
+    assert type(star_metallicity_21) is list
+    assert star_metallicity_21[:4] == [3.0326231353683397e-05, 5.4236138566921e-06, 0.00040298831299878657, 0.0008918109233491123]
+    assert len(star_metallicity_21) == 130522
+
+
+def test_get_advanced_star_starformationtime_251():
+    response = client.get("/pig/251/star/StarFormationTime/", params = {'groupid_list': [22,23,24]})
+    utils.common_positive_tests(response)
+    star_sft_22 = json.loads(response.json()["star_starformationtime"]["22"])
+    assert type(star_sft_22) is list
+    assert star_sft_22[:4] == [0.12779149413108826, 0.1142561063170433, 0.11241203546524048, 0.10575153678655624]
+    assert len(star_sft_22) == 61896
+    star_sft_23 = json.loads(response.json()["star_starformationtime"]["23"])
+    assert type(star_sft_23) is list
+    assert star_sft_23[:4] == [0.10786198079586029, 0.07991418242454529, 0.08404412865638733, 0.10528453439474106]
+    assert len(star_sft_23) == 122115
+    star_sft_24 = json.loads(response.json()["star_starformationtime"]["24"])
+    assert type(star_sft_24) is list
+    assert star_sft_24[:4] == [0.1294180303812027, 0.12327970564365387, 0.12431872636079788, 0.12420389801263809]
+    assert len(star_sft_24) == 75418
