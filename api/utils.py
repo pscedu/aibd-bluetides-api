@@ -12,9 +12,14 @@ import constants
 # JSON serializer
 class NumpyArrayEncoder(JSONEncoder):
     def default(self, obj):
-        if isinstance(obj, numpy.ndarray):
+        if isinstance(obj, numpy.integer):
+            return int(obj)
+        elif isinstance(obj, numpy.floating):
+            return float(obj)
+        elif isinstance(obj, numpy.ndarray):
             return obj.tolist()
-        return JSONEncoder.default(self, obj)
+        else:
+            return super(NpEncoder, self).default(obj)
 
 
 def check_pig_id(pig_id: int):
