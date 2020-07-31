@@ -43,21 +43,23 @@ async def read_snapshot_info(id: int):
     total_part = pig['Header'].attrs['NumPartInGroupTotal']
     num_part = numpy.array(total_part)
     return {'subdirs':['fofgroup','gas','dm','star','bh'],\
-            'num_gas':num_part[0],'num_dm':num_part[1],\
-            'num_star':num_part[4],'num_bh':num_part[5]}
+            'num_gas':json.dumps(num_part[0], cls=utils.NumpyArrayEncoder),\
+            'num_dm':json.dumps(num_part[1], cls=utils.NumpyArrayEncoder),\
+            'num_star':json.dumps(num_part[4], cls=utils.NumpyArrayEncoder),\
+            'num_bh':json.dumps(num_part[5], cls=utils.NumpyArrayEncoder)}
+
+
+@app.get("/pig/{id}/fofgroup")
+async def read_snapshot_fof_info(id: int):
+    subfields = utils.get_fof_subfield(pig_id = id)
+    return {'fof_subdirs':subfields} 
 
 
 @app.get("/pig/{id}/{ptype}")
 async def read_snapshot_type_info(id: int, ptype: str):
     subfields = utils.get_part_subfield(pig_id = id,ptype = ptype)
     return {'type':ptype, 'subdirs':subfields}
-
-
-@app.get("/pig/{id}/fofgroup")
-async def read_snapshot_fof_info(id: int, ptype: str):
-    subfields = utils.get_fof_subfield(pig_id = id)
-    return {'fof_subdirs':subfields}    
-
+   
 
 # Route
 # Get the first n lengthByType data in a particular pig folder.
