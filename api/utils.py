@@ -144,6 +144,12 @@ def check_feature(pig_id:int, ptype:str,feature:str):
     if feature not in subdirectories:
         raise HTTPException(status_code=404, detail="Feature {} does not exist, should be in {}".format(feature,subdirectories))
     
+def check_criterion(criterion:str):
+    # for now we only have limited criterions
+    criterion_list = ['bh_mass','gas_mass','dm_mass','star_mass','bh_mdot']
+    if criterion not in criterion_list:
+        raise HTTPException(status_code=404, detail="Search criterion {} does not exist, should be in {}".format(criterion,criterion_list))
+        
     
 def get_particle_data(pig_id: int, group_id: int, ptype: str, feature: str):
     check_pig_id(pig_id=pig_id)
@@ -166,6 +172,42 @@ def get_particle_data(pig_id: int, group_id: int, ptype: str, feature: str):
     numpy_array_data = numpy.array(data)
     encoded_numpy_data = json.dumps(numpy_array_data, cls=NumpyArrayEncoder)
     return encoded_numpy_data
+
+
+def get_particle_data_criterion(pig_id: int, ptype: str, \
+                                feature: str,criterion:str,\
+                                min_range:float,max_range:float):
+    check_pig_id(pig_id=pig_id)
+    pig = get_pig_data(pig_id)
+    check_criterion(criterion)
+    check_feature(pig_id = pig_id, ptype = ptype, feature = feature)
+    lbt = pig.open('FOFGroups/LengthByType')[:]
+    obt = numpy.cumsum(lbt, axis=0).astype(int)
+    obt = numpy.concatenate((numpy.zeros((1,6)),obt)).astype(int)
+    
+    type_ind = {'gas':0,'dm':1,'star':4,'bh':5}
+    ind = type_ind[ptype]
+    path = str(ind)+'/' + feature
+    if criterion == 'gas_mass':
+        id_list = ((pig.open('FOFGroups/MassByType')[:,0] >= min_range) \
+                & (pig.open('FOFGroups/MassByType')[:,0] <= max_range)).nonzero()[0]
+    elif criterion == 'dm_mass':
+        id_list = ((pig.open('FOFGroups/MassByType')[:,1] >= min_range) \
+                & (pig.open('FOFGroups/MassByType')[:,1] <= max_range)).nonzero()[0]
+    elif criterion == 'star_mass':
+        id_list = ((pig.open('FOFGroups/MassByType')[:,4] >= min_range) \
+                & (pig.open('FOFGroups/MassByType')[:,4] <= max_range)).nonzero()[0]
+    elif criterion == 'bh_mass':  # need to use individual BH mass instead of MBT
+        index = (pig.open('5/BlackholeMass')[:] >= min_range) & (pig.open('5/BlackholeMass')[:] <= max_range)
+        id_list = list(set(pig.open('5/GroupID')[:][index]-1))
+    elif criterion == 'bh_mdot': 
+        index = (pig.open('5/BlackholeAccretionRate')[:] >= min_range) & (pig.open('5/BlackholeAccretionRate')[:] <= max_range)
+        id_list = list(set(pig.open('5/GroupID')[:][index]-1))
+    data = {i: json.dumps(pig.open(path)[obt[i,ind]:obt[i+1,ind]], cls=NumpyArrayEncoder) for i in id_list}
+    return data
+        
+    
+    
 
 
 def get_fofgroup_data(pig_id: int, group_id: int, feature: str):
