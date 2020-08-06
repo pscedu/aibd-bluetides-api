@@ -162,7 +162,7 @@ async def read_haloid_by_criterion(id: int, feature: str, ptype: str, min_range:
     else:
         res = data
     
-    encoded_numpy_data = json.dumps(res+1, cls=utils.NumpyArrayEncoder)
+    encoded_numpy_data = json.dumps(res, cls=utils.NumpyArrayEncoder)
     return {"IDlist":encoded_numpy_data}
 
 
