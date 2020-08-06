@@ -239,3 +239,24 @@ def test_get_advanced_dm_velocity_251():
     assert type(dm_velocity_15) is list
     assert dm_velocity_15[0] == [33.94892501831055, -33.81675720214844, 34.32453536987305]
     assert len(dm_velocity_15) == 111295
+
+
+def test_post_advanced_dm_velocity_251():
+    groupid_list = []
+    for i in range(1,100):
+        groupid_list.append(str(i))
+    response = client.post("/pig/251/dm/Velocity/", data = '[' + ', '.join(groupid_list) + ']')
+    # response = client.post("/pig/251/dm/Velocity/", json={"id_list": [13, 14, 15]})
+    utils.common_positive_tests(response)
+    dm_velocity_13 = json.loads(response.json()["dm_velocity"]["13"])
+    assert type(dm_velocity_13) is list
+    assert dm_velocity_13[0] == [77.28153228759766, -19.17745018005371, -11.987783432006836]
+    assert len(dm_velocity_13) == 122785
+    dm_velocity_14 = json.loads(response.json()["dm_velocity"]["14"])
+    assert type(dm_velocity_14) is list
+    assert dm_velocity_14[0] == [16.777849197387695, 9.605594635009766, -19.376659393310547]
+    assert len(dm_velocity_14) == 118147
+    dm_velocity_15 = json.loads(response.json()["dm_velocity"]["15"])
+    assert type(dm_velocity_15) is list
+    assert dm_velocity_15[0] == [33.94892501831055, -33.81675720214844, 34.32453536987305]
+    assert len(dm_velocity_15) == 111295
