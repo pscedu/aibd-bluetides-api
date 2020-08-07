@@ -188,25 +188,27 @@ def get_particle_data_criterion(pig_id: int, ptype: str, \
     type_ind = {'gas':0,'dm':1,'star':4,'bh':5}
     ind = type_ind[ptype]
     path = str(ind)+'/' + feature
+    
     if criterion == 'gas_mass':
-        id_list = ((pig.open('FOFGroups/MassByType')[:,0] >= min_range) \
-                & (pig.open('FOFGroups/MassByType')[:,0] <= max_range)).nonzero()[0]
+        mbt = pig.open('FOFGroups/MassByType')[:]
+        id_list = ((mbt[:,0] >= min_range) & (mbt[:,0] <= max_range)).nonzero()[0]
     elif criterion == 'dm_mass':
-        id_list = ((pig.open('FOFGroups/MassByType')[:,1] >= min_range) \
-                & (pig.open('FOFGroups/MassByType')[:,1] <= max_range)).nonzero()[0]
+        mbt = pig.open('FOFGroups/MassByType')[:]
+        id_list = ((mbt[:,1] >= min_range) & (mbt[:,1] <= max_range)).nonzero()[0]
     elif criterion == 'star_mass':
-        id_list = ((pig.open('FOFGroups/MassByType')[:,4] >= min_range) \
-                & (pig.open('FOFGroups/MassByType')[:,4] <= max_range)).nonzero()[0]
+        mbt = pig.open('FOFGroups/MassByType')[:]
+        id_list = ((mbt[:,4] >= min_range) & (mbt[:,4] <= max_range)).nonzero()[0]
     elif criterion == 'bh_mass':  # need to use individual BH mass instead of MBT
-        index = (pig.open('5/BlackholeMass')[:] >= min_range) & (pig.open('5/BlackholeMass')[:] <= max_range)
+        bhm = pig.open('5/BlackholeMass')[:]
+        index = (bhm >= min_range) & (bhm <= max_range)
         id_list = list(set(pig.open('5/GroupID')[:][index]-1))
     elif criterion == 'bh_mdot': 
-        index = (pig.open('5/BlackholeAccretionRate')[:] >= min_range) & (pig.open('5/BlackholeAccretionRate')[:] <= max_range)
+        bhacc = pig.open('5/BlackholeAccretionRate')[:]
+        index = (bhacc >= min_range) & (bhacc <= max_range)
         id_list = list(set(pig.open('5/GroupID')[:][index]-1))
-    data = {i: json.dumps(pig.open(path)[obt[i,ind]:obt[i+1,ind]], cls=NumpyArrayEncoder) for i in id_list}
+    data = {str(i): json.dumps(pig.open(path)[obt[i,ind]:obt[i+1,ind]], cls=NumpyArrayEncoder) for i in id_list}
     return data
         
-    
     
 
 
