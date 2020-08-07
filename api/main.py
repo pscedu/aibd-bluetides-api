@@ -162,7 +162,7 @@ async def read_haloid_by_criterion(id: int, feature: str, ptype: str, min_range:
     else:
         res = data
     
-    encoded_numpy_data = json.dumps(res+1, cls=utils.NumpyArrayEncoder)
+    encoded_numpy_data = json.dumps(res, cls=utils.NumpyArrayEncoder)
     return {"IDlist":encoded_numpy_data}
 
 
@@ -173,10 +173,6 @@ async def read_particle_data_by_criterion(id: int, ptype: str, feature:str, crit
                                 feature=feature,criterion=criterion,\
                                 min_range=min_range,max_range=max_range)
     return data
-
-
-
-
 
 
 ###################################################################
@@ -190,7 +186,7 @@ async def read_particle_data_by_groupid(id: int, group_id: int,ptype: str, featu
 
 
 
-
+### bulk query get
 @app.get("/pig/{id}/{ptype}/{feature}/")
 async def read_particle_data_by_groupid_list(id: int, ptype: str, feature: str, groupid_list: List[int] = Query(None)):
     data = {}
@@ -200,3 +196,11 @@ async def read_particle_data_by_groupid_list(id: int, ptype: str, feature: str, 
     return {(ptype+'_'+feature.lower()): data}
 
 
+### bulk query post
+@app.post("/pig/{id}/{ptype}/{feature}/")
+async def read_particle_data_by_post_groupid_list(id: int, ptype: str, feature: str, groupid_list: List[int]):
+    data = {}
+    utils.check_query_list(groupid_list)
+    for group_id in groupid_list:
+        data[group_id] = utils.get_particle_data(pig_id=id, group_id=group_id, ptype = ptype, feature=feature)
+    return {(ptype+'_'+feature.lower()): data}
