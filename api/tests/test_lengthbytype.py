@@ -105,6 +105,7 @@ def test_get_lbt_missing_input():
     response = client.get("/pig/271/lengthbytype/")
     assert response.status_code == 404
 
+
 # Invalid value for endpoint parameters. E.g. pig 251 halo_id not in [0,286036300) and pig 271 halo_id not in [0,294288056)
 def test_get_lbt_invalid_num():
     # Validate the status code: 400
@@ -173,7 +174,7 @@ def test_get_lbh_invalid_pig_id():
 
 ### advanced lengthbytype query tests: /pig/{id}/lengthbytype/
 def test_get_advanced_lbt_251():
-    response = client.get("/pig/251/lengthbytype/", params = {'haloid_list': [1,2,3]})
+    response = client.get("/pig/251/lengthbytype/", params={'haloid_list': [1, 2, 3]})
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- haloids and their length should match the file data.
     assert response.json() == {
@@ -184,7 +185,7 @@ def test_get_advanced_lbt_251():
 
 
 def test_get_advanced_lbt_271():
-    response = client.get("/pig/271/lengthbytype/", params = {'haloid_list': [100,200,300]})
+    response = client.get("/pig/271/lengthbytype/", params={'haloid_list': [100, 200, 300]})
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- haloids and their length should match the file data.
     assert response.json() == {

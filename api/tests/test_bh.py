@@ -12,6 +12,7 @@ BlackholeDensity        BlackholeLastMergerID  BlackholePressure     ID        S
 BlackholeEntropy        BlackholeMass          BlackholeProgenitors  Mass      Velocity
 BlackholeGasVel         BlackholeMinPotPos     Generation                      Position    """
 
+
 def test_get_negative_bh():
     utils.test_get_negative("bh")
 
@@ -34,9 +35,7 @@ def test_get_bh_position_271():
     data = json.loads(response.json()["bh_position"])
     assert type(data) is list
     assert len(data) == 5
-    assert data[0] == [72656.0567335518135224,194831.9271345908055082,229774.9501834622642491]
-
-
+    assert data[0] == [72656.0567335518135224, 194831.9271345908055082, 229774.9501834622642491]
 
 
 ### endpoint: /pig/{id}/bh/Velocity/{group_id}
@@ -48,7 +47,7 @@ def test_get_bh_velocity_251():
     data = json.loads(response.json()["bh_velocity"])
     assert type(data) is list
     assert len(data) == 8
-    assert data[0] == [54.4735107421875000,-16.7231864929199219,-10.2117156982421875]
+    assert data[0] == [54.4735107421875000, -16.7231864929199219, -10.2117156982421875]
 
 
 def test_get_bh_velocity_271():
@@ -58,8 +57,7 @@ def test_get_bh_velocity_271():
     data = json.loads(response.json()["bh_velocity"])
     assert type(data) is list
     assert len(data) == 7
-    assert data[0] == [24.9600467681884766,37.8858528137207031,-24.7577743530273438]
-
+    assert data[0] == [24.9600467681884766, 37.8858528137207031, -24.7577743530273438]
 
 
 ### endpoint: /pig/{id}/bh/Generation/{group_id}
@@ -71,7 +69,6 @@ def test_get_bh_generation_251():
     data = json.loads(response.json()["bh_generation"])
     assert type(data) is list
     assert data == [1, 1, 1, 1, 2, 1, 2, 1]
-
 
 
 def test_get_bh_generation_271():
@@ -145,8 +142,8 @@ def test_get_bh_blackholemass_271():
     # Validate payload: Response is a well-formed JSON object and response data -- bh Metallicity data should be a 112913*1 array list
     data = json.loads(response.json()["bh_blackholemass"])
     assert type(data) is list
-    assert abs(data[0] - 0.0001511774753453) <1e-8
-    
+    assert abs(data[0] - 0.0001511774753453) < 1e-8
+
     assert len(data) == 8
 
 
@@ -172,7 +169,6 @@ def test_get_bh_potential_271():
     assert len(data) == 10
 
 
-
 ### endpoint: /pig/{id}/bh/ID/{group_id}
 # Basic positive tests
 def test_get_bh_id_251():
@@ -195,7 +191,6 @@ def test_get_bh_id_271():
     assert len(data) == 10
 
 
-
 ### endpoint: /pig/{id}/bh/BlackholeProgenitors/{group_id}
 # Basic positive tests
 def test_get_bh_blackholeprogenitors_251():
@@ -204,8 +199,7 @@ def test_get_bh_blackholeprogenitors_251():
     # Validate payload: Response is a well-formed JSON object and response data -- bh Metallicity data should be a 112913*1 array list
     data = json.loads(response.json()["bh_blackholeprogenitors"])
     assert type(data) is list
-    assert data == [0,0]
-
+    assert data == [0, 0]
 
 
 def test_get_bh_blackholeprogenitors_271():
@@ -218,8 +212,6 @@ def test_get_bh_blackholeprogenitors_271():
     assert len(data) == 10
 
 
-
-
 ### endpoint: /pig/{id}/bh/BlackholeMinPotVel/{group_id}
 # Basic positive tests
 def test_get_bh_blackholeminpotvel_251():
@@ -228,8 +220,9 @@ def test_get_bh_blackholeminpotvel_251():
     # Validate payload: Response is a well-formed JSON object and response data -- bh Metallicity data should be a 112913*1 array list
     data = json.loads(response.json()["bh_blackholeminpotvel"])
     assert type(data) is list
-    assert data[0] == [30.8339633941650391,-8.3439722061157227,-1.4297494888305664]
+    assert data[0] == [30.8339633941650391, -8.3439722061157227, -1.4297494888305664]
     assert len(data) == 5
+
 
 def test_get_bh_blackholeminpotvel_271():
     response = client.get("/pig/271/bh/BlackholeMinPotVel/14")
@@ -237,9 +230,8 @@ def test_get_bh_blackholeminpotvel_271():
     # Validate payload: Response is a well-formed JSON object and response data -- bh Metallicity data should be a 112913*1 array list
     data = json.loads(response.json()["bh_blackholeminpotvel"])
     assert type(data) is list
-    assert data[0] == [-68.5757751464843750,-48.4527740478515625,22.2900638580322266]
+    assert data[0] == [-68.5757751464843750, -48.4527740478515625, 22.2900638580322266]
     assert len(data) == 6
-
 
 
 ### endpoint: /pig/{id}/bh/BlackholeMinPotPos/{group_id}
@@ -250,8 +242,9 @@ def test_get_bh_blackholeminpotpos_251():
     # Validate payload: Response is a well-formed JSON object and response data -- bh Metallicity data should be a 112913*1 array list
     data = json.loads(response.json()["bh_blackholeminpotpos"])
     assert type(data) is list
-    assert data[0] == [385029.0029749941313639,386472.4315522146061994,188237.1807050006464124]
+    assert data[0] == [385029.0029749941313639, 386472.4315522146061994, 188237.1807050006464124]
     assert len(data) == 7
+
 
 def test_get_bh_blackholeminpotpos_271():
     response = client.get("/pig/271/bh/BlackholeMinPotPos/16")
@@ -259,9 +252,8 @@ def test_get_bh_blackholeminpotpos_271():
     # Validate payload: Response is a well-formed JSON object and response data -- bh Metallicity data should be a 112913*1 array list
     data = json.loads(response.json()["bh_blackholeminpotpos"])
     assert type(data) is list
-    assert data[0] == [321746.1416593762696721,45754.5331728641976952,119495.5197756342240609]
+    assert data[0] == [321746.1416593762696721, 45754.5331728641976952, 119495.5197756342240609]
     assert len(data) == 6
-
 
 
 ### endpoint: /pig/{id}/bh/BlackholeLastMergerID/{group_id}
@@ -272,7 +264,7 @@ def test_get_bh_blackholelastmergerid_251():
     # Validate payload: Response is a well-formed JSON object and response data -- bh Metallicity data should be a 112913*1 array list
     data = json.loads(response.json()["bh_blackholelastmergerid"])
     assert type(data) is list
-    assert data == [0,0,0,0,0]
+    assert data == [0, 0, 0, 0, 0]
 
 
 def test_get_bh_blackholelastmergerid_271():
@@ -281,9 +273,7 @@ def test_get_bh_blackholelastmergerid_271():
     # Validate payload: Response is a well-formed JSON object and response data -- bh Metallicity data should be a 112913*1 array list
     data = json.loads(response.json()["bh_blackholelastmergerid"])
     assert type(data) is list
-    assert data == [0,72057930757709835,0,0,0]
-
-
+    assert data == [0, 72057930757709835, 0, 0, 0]
 
 
 ### endpoint: /pig/{id}/bh/BlackholeGasVel/{group_id}
@@ -294,8 +284,9 @@ def test_get_bh_blackholegasvel_251():
     # Validate payload: Response is a well-formed JSON object and response data -- bh Metallicity data should be a 112913*1 array list
     data = json.loads(response.json()["bh_blackholegasvel"])
     assert type(data) is list
-    assert data[0] == [59.5527992248535156,-23.2456321716308594,-10.0467796325683594]
+    assert data[0] == [59.5527992248535156, -23.2456321716308594, -10.0467796325683594]
     assert len(data) == 8
+
 
 def test_get_bh_blackholegasvel_271():
     response = client.get("/pig/271/bh/BlackholeGasVel/20")
@@ -303,7 +294,7 @@ def test_get_bh_blackholegasvel_271():
     # Validate payload: Response is a well-formed JSON object and response data -- bh Metallicity data should be a 112913*1 array list
     data = json.loads(response.json()["bh_blackholegasvel"])
     assert type(data) is list
-    assert data[0] == [17.7611846923828125,44.2505416870117188,-26.4937973022460938]
+    assert data[0] == [17.7611846923828125, 44.2505416870117188, -26.4937973022460938]
     assert len(data) == 7
 
 
@@ -318,6 +309,7 @@ def test_get_bh_blackholeentropy_251():
     assert data[0] == 267099.3125
     assert len(data) == 7
 
+
 def test_get_bh_blackholeentropy_271():
     response = client.get("/pig/271/bh/BlackholeEntropy/22")
     utils.common_positive_tests(response)
@@ -326,7 +318,6 @@ def test_get_bh_blackholeentropy_271():
     assert type(data) is list
     assert data[0] == 439651.875
     assert len(data) == 6
-
 
 
 ### endpoint: /pig/{id}/bh/BlackholeDensity/{group_id}
@@ -339,6 +330,7 @@ def test_get_bh_blackholedensity_251():
     assert type(data) is list
     assert abs(data[0] - 0.0003469409130048) < 1e-8
     assert len(data) == 4
+
 
 def test_get_bh_blackholedensity_271():
     response = client.get("/pig/271/bh/BlackholeDensity/24")
@@ -361,6 +353,7 @@ def test_get_bh_blackholeaccretionrate_251():
     assert abs(data[0] - 0.0025596539489925) < 1e-8
     assert len(data) == 3
 
+
 def test_get_bh_blackholeaccretionrate_271():
     response = client.get("/pig/271/bh/BlackholeAccretionRate/26")
     utils.common_positive_tests(response)
@@ -370,10 +363,11 @@ def test_get_bh_blackholeaccretionrate_271():
     assert abs(data[0] - 0.0007860922487453) < 1e-8
     assert len(data) == 8
 
+
 #################################################################################################
 ### advanced bh query tests: /pig/{id}/{ptype}/{feature}/
 def test_get_advanced_bh_generation_251():
-    response = client.get("/pig/251/bh/Generation/", params = {'groupid_list': [1,2,3]})
+    response = client.get("/pig/251/bh/Generation/", params={'groupid_list': [1, 2, 3]})
     utils.common_positive_tests(response)
     bh_generation_1 = json.loads(response.json()["bh_generation"]["1"])
     assert type(bh_generation_1) is list
@@ -390,7 +384,7 @@ def test_get_advanced_bh_generation_251():
 
 
 def test_get_advanced_bh_groupid_251():
-    response = client.get("/pig/251/bh/GroupID/", params = {'groupid_list': [4,5,6]})
+    response = client.get("/pig/251/bh/GroupID/", params={'groupid_list': [4, 5, 6]})
     utils.common_positive_tests(response)
     bh_groupid_4 = json.loads(response.json()["bh_groupid"]["4"])
     assert type(bh_groupid_4) is list
@@ -407,7 +401,7 @@ def test_get_advanced_bh_groupid_251():
 
 
 def test_get_advanced_bh_position_251():
-    response = client.get("/pig/251/bh/Position/", params = {'groupid_list': [7,8,9]})
+    response = client.get("/pig/251/bh/Position/", params={'groupid_list': [7, 8, 9]})
     utils.common_positive_tests(response)
     bh_position_7 = json.loads(response.json()["bh_position"]["7"])
     assert type(bh_position_7) is list
@@ -424,7 +418,7 @@ def test_get_advanced_bh_position_251():
 
 
 def test_get_advanced_bh_potential_251():
-    response = client.get("/pig/251/bh/Potential/", params = {'groupid_list': [10,11,12]})
+    response = client.get("/pig/251/bh/Potential/", params={'groupid_list': [10, 11, 12]})
     utils.common_positive_tests(response)
     bh_potential_10 = json.loads(response.json()["bh_potential"]["10"])
     assert type(bh_potential_10) is list
@@ -441,7 +435,7 @@ def test_get_advanced_bh_potential_251():
 
 
 def test_get_advanced_bh_velocity_251():
-    response = client.get("/pig/251/bh/Velocity/", params = {'groupid_list': [13,14,15]})
+    response = client.get("/pig/251/bh/Velocity/", params={'groupid_list': [13, 14, 15]})
     utils.common_positive_tests(response)
     bh_velocity_13 = json.loads(response.json()["bh_velocity"]["13"])
     assert type(bh_velocity_13) is list
@@ -458,11 +452,12 @@ def test_get_advanced_bh_velocity_251():
 
 
 def test_get_advanced_bh_mass_251():
-    response = client.get("/pig/251/bh/Mass/", params = {'groupid_list': [16,17,18]})
+    response = client.get("/pig/251/bh/Mass/", params={'groupid_list': [16, 17, 18]})
     utils.common_positive_tests(response)
     bh_mass_16 = json.loads(response.json()["bh_mass"]["16"])
     assert type(bh_mass_16) is list
-    assert bh_mass_16[:4] == [0.00023622244771104306, 0.013051284477114677, 0.00023622244771104306, 0.00023622244771104306]
+    assert bh_mass_16[:4] == [0.00023622244771104306, 0.013051284477114677, 0.00023622244771104306,
+                              0.00023622244771104306]
     assert len(bh_mass_16) == 7
     bh_mass_17 = json.loads(response.json()["bh_mass"]["17"])
     assert type(bh_mass_17) is list
@@ -475,7 +470,7 @@ def test_get_advanced_bh_mass_251():
 
 
 def test_get_advanced_bh_starformationtime_251():
-    response = client.get("/pig/251/bh/StarFormationTime/", params = {'groupid_list': [22,23,24]})
+    response = client.get("/pig/251/bh/StarFormationTime/", params={'groupid_list': [22, 23, 24]})
     utils.common_positive_tests(response)
     bh_sft_22 = json.loads(response.json()["bh_starformationtime"]["22"])
     assert type(bh_sft_22) is list
@@ -492,7 +487,7 @@ def test_get_advanced_bh_starformationtime_251():
 
 
 def test_get_advanced_bh_blackholeaccretionrate_251():
-    response = client.get("/pig/251/bh/BlackholeAccretionRate/", params = {'groupid_list': [25,26,27]})
+    response = client.get("/pig/251/bh/BlackholeAccretionRate/", params={'groupid_list': [25, 26, 27]})
     utils.common_positive_tests(response)
     bh_bar_25 = json.loads(response.json()["bh_blackholeaccretionrate"]["25"])
     assert type(bh_bar_25) is list
@@ -509,7 +504,7 @@ def test_get_advanced_bh_blackholeaccretionrate_251():
 
 
 def test_get_advanced_bh_blackholejumptominpot_251():
-    response = client.get("/pig/251/bh/BlackholeJumpToMinPot/", params = {'groupid_list': [28,29,30]})
+    response = client.get("/pig/251/bh/BlackholeJumpToMinPot/", params={'groupid_list': [28, 29, 30]})
     utils.common_positive_tests(response)
     bh_bjtmp_28 = json.loads(response.json()["bh_blackholejumptominpot"]["28"])
     assert type(bh_bjtmp_28) is list
@@ -526,7 +521,7 @@ def test_get_advanced_bh_blackholejumptominpot_251():
 
 
 def test_get_advanced_bh_blackholeminpotvel_251():
-    response = client.get("/pig/251/bh/BlackholeMinPotVel/", params = {'groupid_list': [31,32,33]})
+    response = client.get("/pig/251/bh/BlackholeMinPotVel/", params={'groupid_list': [31, 32, 33]})
     utils.common_positive_tests(response)
     bh_bmpv_31 = json.loads(response.json()["bh_blackholeminpotvel"]["31"])
     assert type(bh_bmpv_31) is list
@@ -543,7 +538,7 @@ def test_get_advanced_bh_blackholeminpotvel_251():
 
 
 def test_get_advanced_bh_blackholedensity_251():
-    response = client.get("/pig/251/bh/BlackholeDensity/", params = {'groupid_list': [34,35,36]})
+    response = client.get("/pig/251/bh/BlackholeDensity/", params={'groupid_list': [34, 35, 36]})
     utils.common_positive_tests(response)
     bh_bd_34 = json.loads(response.json()["bh_blackholedensity"]["34"])
     assert type(bh_bd_34) is list
@@ -560,7 +555,7 @@ def test_get_advanced_bh_blackholedensity_251():
 
 
 def test_get_advanced_bh_blackholelastmergerid_251():
-    response = client.get("/pig/251/bh/BlackholeLastMergerID/", params = {'groupid_list': [37,38,39]})
+    response = client.get("/pig/251/bh/BlackholeLastMergerID/", params={'groupid_list': [37, 38, 39]})
     utils.common_positive_tests(response)
     bh_blmid_37 = json.loads(response.json()["bh_blackholelastmergerid"]["37"])
     assert type(bh_blmid_37) is list
@@ -577,7 +572,7 @@ def test_get_advanced_bh_blackholelastmergerid_251():
 
 
 def test_get_advanced_bh_blackholepressure_251():
-    response = client.get("/pig/251/bh/BlackholePressure/", params = {'groupid_list': [40,41,42]})
+    response = client.get("/pig/251/bh/BlackholePressure/", params={'groupid_list': [40, 41, 42]})
     utils.common_positive_tests(response)
     bh_bp_40 = json.loads(response.json()["bh_blackholepressure"]["40"])
     assert type(bh_bp_40) is list
@@ -593,10 +588,8 @@ def test_get_advanced_bh_blackholepressure_251():
     assert len(bh_bp_42) == 4
 
 
-
-
 def test_get_advanced_bh_blackholeentropy_251():
-    response = client.get("/pig/251/bh/BlackholeEntropy/", params = {'groupid_list': [43,44,45]})
+    response = client.get("/pig/251/bh/BlackholeEntropy/", params={'groupid_list': [43, 44, 45]})
     utils.common_positive_tests(response)
     bh_be_43 = json.loads(response.json()["bh_blackholeentropy"]["43"])
     assert type(bh_be_43) is list
@@ -613,7 +606,7 @@ def test_get_advanced_bh_blackholeentropy_251():
 
 
 def test_get_advanced_bh_blackholemass_251():
-    response = client.get("/pig/251/bh/BlackholeMass/", params = {'groupid_list': [46,47,48]})
+    response = client.get("/pig/251/bh/BlackholeMass/", params={'groupid_list': [46, 47, 48]})
     utils.common_positive_tests(response)
     bh_bm_46 = json.loads(response.json()["bh_blackholemass"]["46"])
     assert type(bh_bm_46) is list
@@ -630,7 +623,7 @@ def test_get_advanced_bh_blackholemass_251():
 
 
 def test_get_advanced_bh_blackholeprogenitors_251():
-    response = client.get("/pig/251/bh/BlackholeProgenitors/", params = {'groupid_list': [49,50,51]})
+    response = client.get("/pig/251/bh/BlackholeProgenitors/", params={'groupid_list': [49, 50, 51]})
     utils.common_positive_tests(response)
     bh_bp_49 = json.loads(response.json()["bh_blackholeprogenitors"]["49"])
     assert type(bh_bp_49) is list
@@ -647,7 +640,7 @@ def test_get_advanced_bh_blackholeprogenitors_251():
 
 
 def test_get_advanced_bh_blackholegasvel_251():
-    response = client.get("/pig/251/bh/BlackholeGasVel/", params = {'groupid_list': [52,53,54]})
+    response = client.get("/pig/251/bh/BlackholeGasVel/", params={'groupid_list': [52, 53, 54]})
     utils.common_positive_tests(response)
     bh_bgv_52 = json.loads(response.json()["bh_blackholegasvel"]["52"])
     assert type(bh_bgv_52) is list
@@ -664,7 +657,7 @@ def test_get_advanced_bh_blackholegasvel_251():
 
 
 def test_get_advanced_bh_blackholeminpotpos_251():
-    response = client.get("/pig/251/bh/BlackholeMinPotPos/", params = {'groupid_list': [55,56,57]})
+    response = client.get("/pig/251/bh/BlackholeMinPotPos/", params={'groupid_list': [55, 56, 57]})
     utils.common_positive_tests(response)
     bh_bmpp_55 = json.loads(response.json()["bh_blackholeminpotpos"]["55"])
     assert type(bh_bmpp_55) is list
@@ -678,14 +671,16 @@ def test_get_advanced_bh_blackholeminpotpos_251():
     assert type(bh_bmpp_57) is list
     assert bh_bmpp_57[0] == [36850.991004548894, 44258.21038807316, 42993.6106879176]
     assert len(bh_bmpp_57) == 3
+
+
 #################################################################################################
 
 ### tests for advanced bh query with post method
 def test_post_advanced_bh_generation_251():
     groupid_list = []
-    for i in range(1,300):
+    for i in range(1, 300):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/Generation/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/Generation/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/Generation/", params = {'groupid_list': [1,2,3]})
     utils.common_positive_tests(response)
     bh_generation_1 = json.loads(response.json()["bh_generation"]["1"])
@@ -704,9 +699,9 @@ def test_post_advanced_bh_generation_251():
 
 def test_post_advanced_bh_groupid_251():
     groupid_list = []
-    for i in range(4,10):
+    for i in range(4, 10):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/GroupID/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/GroupID/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/GroupID/", params = {'groupid_list': [4,5,6]})
     utils.common_positive_tests(response)
     bh_groupid_4 = json.loads(response.json()["bh_groupid"]["4"])
@@ -725,10 +720,10 @@ def test_post_advanced_bh_groupid_251():
 
 def test_post_advanced_bh_position_251():
     groupid_list = []
-    for i in range(7,20):
+    for i in range(7, 20):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/Position/", data = '[' + ', '.join(groupid_list) + ']')
-    #response = client.get("/pig/251/bh/Position/", params = {'groupid_list': [7,8,9]})
+    response = client.post("/pig/251/bh/Position/", data='[' + ', '.join(groupid_list) + ']')
+    # response = client.get("/pig/251/bh/Position/", params = {'groupid_list': [7,8,9]})
     utils.common_positive_tests(response)
     bh_position_7 = json.loads(response.json()["bh_position"]["7"])
     assert type(bh_position_7) is list
@@ -746,9 +741,9 @@ def test_post_advanced_bh_position_251():
 
 def test_post_advanced_bh_potential_251():
     groupid_list = []
-    for i in range(10,25):
+    for i in range(10, 25):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/Potential/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/Potential/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/Potential/", params = {'groupid_list': [10,11,12]})
     utils.common_positive_tests(response)
     bh_potential_10 = json.loads(response.json()["bh_potential"]["10"])
@@ -767,9 +762,9 @@ def test_post_advanced_bh_potential_251():
 
 def test_post_advanced_bh_velocity_251():
     groupid_list = []
-    for i in range(13,25):
+    for i in range(13, 25):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/Velocity/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/Velocity/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/Velocity/", params = {'groupid_list': [13,14,15]})
     utils.common_positive_tests(response)
     bh_velocity_13 = json.loads(response.json()["bh_velocity"]["13"])
@@ -788,14 +783,15 @@ def test_post_advanced_bh_velocity_251():
 
 def test_post_advanced_bh_mass_251():
     groupid_list = []
-    for i in range(15,25):
+    for i in range(15, 25):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/Mass/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/Mass/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/Mass/", params = {'groupid_list': [16,17,18]})
     utils.common_positive_tests(response)
     bh_mass_16 = json.loads(response.json()["bh_mass"]["16"])
     assert type(bh_mass_16) is list
-    assert bh_mass_16[:4] == [0.00023622244771104306, 0.013051284477114677, 0.00023622244771104306, 0.00023622244771104306]
+    assert bh_mass_16[:4] == [0.00023622244771104306, 0.013051284477114677, 0.00023622244771104306,
+                              0.00023622244771104306]
     assert len(bh_mass_16) == 7
     bh_mass_17 = json.loads(response.json()["bh_mass"]["17"])
     assert type(bh_mass_17) is list
@@ -809,9 +805,9 @@ def test_post_advanced_bh_mass_251():
 
 def test_post_advanced_bh_starformationtime_251():
     groupid_list = []
-    for i in range(20,30):
+    for i in range(20, 30):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/StarFormationTime/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/StarFormationTime/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/StarFormationTime/", params = {'groupid_list': [22,23,24]})
     utils.common_positive_tests(response)
     bh_sft_22 = json.loads(response.json()["bh_starformationtime"]["22"])
@@ -830,9 +826,9 @@ def test_post_advanced_bh_starformationtime_251():
 
 def test_post_advanced_bh_blackholeaccretionrate_251():
     groupid_list = []
-    for i in range(25,30):
+    for i in range(25, 30):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/BlackholeAccretionRate/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/BlackholeAccretionRate/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/BlackholeAccretionRate/", params = {'groupid_list': [25,26,27]})
     utils.common_positive_tests(response)
     bh_bar_25 = json.loads(response.json()["bh_blackholeaccretionrate"]["25"])
@@ -851,10 +847,10 @@ def test_post_advanced_bh_blackholeaccretionrate_251():
 
 def test_post_advanced_bh_blackholejumptominpot_251():
     groupid_list = []
-    for i in range(25,35):
+    for i in range(25, 35):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/BlackholeJumpToMinPot/", data = '[' + ', '.join(groupid_list) + ']')
-    #response = client.get("/pig/251/bh/BlackholeJumpToMinPot/", params = {'groupid_list': [28,29,30]})
+    response = client.post("/pig/251/bh/BlackholeJumpToMinPot/", data='[' + ', '.join(groupid_list) + ']')
+    # response = client.get("/pig/251/bh/BlackholeJumpToMinPot/", params = {'groupid_list': [28,29,30]})
     utils.common_positive_tests(response)
     bh_bjtmp_28 = json.loads(response.json()["bh_blackholejumptominpot"]["28"])
     assert type(bh_bjtmp_28) is list
@@ -872,9 +868,9 @@ def test_post_advanced_bh_blackholejumptominpot_251():
 
 def test_post_advanced_bh_blackholeminpotvel_251():
     groupid_list = []
-    for i in range(30,35):
+    for i in range(30, 35):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/BlackholeMinPotVel/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/BlackholeMinPotVel/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/BlackholeMinPotVel/", params = {'groupid_list': [31,32,33]})
     utils.common_positive_tests(response)
     bh_bmpv_31 = json.loads(response.json()["bh_blackholeminpotvel"]["31"])
@@ -893,9 +889,9 @@ def test_post_advanced_bh_blackholeminpotvel_251():
 
 def test_post_advanced_bh_blackholedensity_251():
     groupid_list = []
-    for i in range(30,40):
+    for i in range(30, 40):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/BlackholeDensity/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/BlackholeDensity/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/BlackholeDensity/", params = {'groupid_list': [34,35,36]})
     utils.common_positive_tests(response)
     bh_bd_34 = json.loads(response.json()["bh_blackholedensity"]["34"])
@@ -914,9 +910,9 @@ def test_post_advanced_bh_blackholedensity_251():
 
 def test_post_advanced_bh_blackholelastmergerid_251():
     groupid_list = []
-    for i in range(35,40):
+    for i in range(35, 40):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/BlackholeLastMergerID/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/BlackholeLastMergerID/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/BlackholeLastMergerID/", params = {'groupid_list': [37,38,39]})
     utils.common_positive_tests(response)
     bh_blmid_37 = json.loads(response.json()["bh_blackholelastmergerid"]["37"])
@@ -935,9 +931,9 @@ def test_post_advanced_bh_blackholelastmergerid_251():
 
 def test_post_advanced_bh_blackholepressure_251():
     groupid_list = []
-    for i in range(40,47):
+    for i in range(40, 47):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/BlackholePressure/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/BlackholePressure/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/BlackholePressure/", params = {'groupid_list': [40,41,42]})
     utils.common_positive_tests(response)
     bh_bp_40 = json.loads(response.json()["bh_blackholepressure"]["40"])
@@ -954,13 +950,11 @@ def test_post_advanced_bh_blackholepressure_251():
     assert len(bh_bp_42) == 4
 
 
-
-
 def test_post_advanced_bh_blackholeentropy_251():
     groupid_list = []
-    for i in range(43,53):
+    for i in range(43, 53):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/BlackholeEntropy/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/BlackholeEntropy/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/BlackholeEntropy/", params = {'groupid_list': [43,44,45]})
     utils.common_positive_tests(response)
     bh_be_43 = json.loads(response.json()["bh_blackholeentropy"]["43"])
@@ -979,10 +973,10 @@ def test_post_advanced_bh_blackholeentropy_251():
 
 def test_post_advanced_bh_blackholemass_251():
     groupid_list = []
-    for i in range(45,55):
+    for i in range(45, 55):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/BlackholeMass/", data = '[' + ', '.join(groupid_list) + ']')
-    #response = client.get("/pig/251/bh/BlackholeMass/", params = {'groupid_list': [46,47,48]})
+    response = client.post("/pig/251/bh/BlackholeMass/", data='[' + ', '.join(groupid_list) + ']')
+    # response = client.get("/pig/251/bh/BlackholeMass/", params = {'groupid_list': [46,47,48]})
     utils.common_positive_tests(response)
     bh_bm_46 = json.loads(response.json()["bh_blackholemass"]["46"])
     assert type(bh_bm_46) is list
@@ -1000,9 +994,9 @@ def test_post_advanced_bh_blackholemass_251():
 
 def test_post_advanced_bh_blackholeprogenitors_251():
     groupid_list = []
-    for i in range(45,55):
+    for i in range(45, 55):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/BlackholeProgenitors/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/BlackholeProgenitors/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/BlackholeProgenitors/", params = {'groupid_list': [49,50,51]})
     utils.common_positive_tests(response)
     bh_bp_49 = json.loads(response.json()["bh_blackholeprogenitors"]["49"])
@@ -1021,10 +1015,10 @@ def test_post_advanced_bh_blackholeprogenitors_251():
 
 def test_post_advanced_bh_blackholegasvel_251():
     groupid_list = []
-    for i in range(50,55):
+    for i in range(50, 55):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/BlackholeGasVel/", data = '[' + ', '.join(groupid_list) + ']')
-    #response = client.get("/pig/251/bh/BlackholeGasVel/", params = {'groupid_list': [52,53,54]})
+    response = client.post("/pig/251/bh/BlackholeGasVel/", data='[' + ', '.join(groupid_list) + ']')
+    # response = client.get("/pig/251/bh/BlackholeGasVel/", params = {'groupid_list': [52,53,54]})
     utils.common_positive_tests(response)
     bh_bgv_52 = json.loads(response.json()["bh_blackholegasvel"]["52"])
     assert type(bh_bgv_52) is list
@@ -1042,9 +1036,9 @@ def test_post_advanced_bh_blackholegasvel_251():
 
 def test_post_advanced_bh_blackholeminpotpos_251():
     groupid_list = []
-    for i in range(55,60):
+    for i in range(55, 60):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/bh/BlackholeMinPotPos/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/bh/BlackholeMinPotPos/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/bh/BlackholeMinPotPos/", params = {'groupid_list': [55,56,57]})
     utils.common_positive_tests(response)
     bh_bmpp_55 = json.loads(response.json()["bh_blackholeminpotpos"]["55"])

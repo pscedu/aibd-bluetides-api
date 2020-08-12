@@ -15,7 +15,8 @@ client = TestClient(app)
 def test_get_negative_dm():
     utils.test_get_negative("dm")
 
-#DM POSITION
+
+# DM POSITION
 ### endpoint: /pig/{id}/dm/position/{group_id}
 # Basic positive tests
 def test_get_dm_position_244():
@@ -24,7 +25,7 @@ def test_get_dm_position_244():
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 2585*3 array list
     dm_position = json.loads(response.json()["dm_position"])
     assert type(dm_position) is list
-    assert dm_position[456] == [394903.89612031489, 43208.98194487528,257613.16877157817]
+    assert dm_position[456] == [394903.89612031489, 43208.98194487528, 257613.16877157817]
     assert len(dm_position[0]) == 3
     assert len(dm_position) == 2585
 
@@ -40,14 +41,14 @@ def test_get_dm_position_271():
     assert len(dm_position) == 158970
 
 
-#DM VELOCITY
+# DM VELOCITY
 def test_get_dm_velocity_244():
     response = client.get("/pig/244/dm/Velocity/1862")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas position data should be a 26324*3 array list
     data = json.loads(response.json()["dm_velocity"])
     assert type(data) is list
-    assert data[2000] == [14.788228034973145, 49.952144622802734,23.566410064697266]
+    assert data[2000] == [14.788228034973145, 49.952144622802734, 23.566410064697266]
     assert len(data[0]) == 3
     assert len(data) == 26324
 
@@ -63,7 +64,7 @@ def test_get_dm_velocity_271():
     assert len(data) == 158970
 
 
-#DM MASS
+# DM MASS
 def test_get_dm_mass_265():
     response = client.get("/pig/265/dm/Mass/10")
     utils.common_positive_tests(response)
@@ -86,7 +87,7 @@ def test_get_dm_mass_271():
     assert len(data) == 158970
 
 
-#DM POTENTIAL
+# DM POTENTIAL
 def test_get_dm_potential_244():
     response = client.get("/pig/244/dm/Potential/10")
     utils.common_positive_tests(response)
@@ -109,7 +110,7 @@ def test_get_dm_potential_271():
     assert len(data) == 158970
 
 
-#DM GENERATION
+# DM GENERATION
 def test_get_dm_generation_244():
     response = client.get("/pig/271/dm/Generation/100")
     utils.common_positive_tests(response)
@@ -132,7 +133,7 @@ def test_get_dm_generation_271():
     assert len(data) == 158970
 
 
-#DM GROUPID
+# DM GROUPID
 def test_get_dm_groupid_244():
     response = client.get("/pig/271/dm/GroupID/210")
     utils.common_positive_tests(response)
@@ -154,10 +155,11 @@ def test_get_dm_groupid_271():
     assert data[:4] == [10, 10, 10, 10]
     assert len(data) == 158970
 
+
 #################################################################################################
 ### advanced dm query tests: /pig/{id}/{ptype}/{feature}/
 def test_get_advanced_dm_generation_251():
-    response = client.get("/pig/251/dm/Generation/", params = {'groupid_list': [1,2,3]})
+    response = client.get("/pig/251/dm/Generation/", params={'groupid_list': [1, 2, 3]})
     utils.common_positive_tests(response)
     dm_generation_1 = json.loads(response.json()["dm_generation"]["1"])
     assert type(dm_generation_1) is list
@@ -174,7 +176,7 @@ def test_get_advanced_dm_generation_251():
 
 
 def test_get_advanced_dm_groupid_251():
-    response = client.get("/pig/251/dm/GroupID/", params = {'groupid_list': [4,5,6]})
+    response = client.get("/pig/251/dm/GroupID/", params={'groupid_list': [4, 5, 6]})
     utils.common_positive_tests(response)
     dm_groupid_4 = json.loads(response.json()["dm_groupid"]["4"])
     assert type(dm_groupid_4) is list
@@ -191,7 +193,7 @@ def test_get_advanced_dm_groupid_251():
 
 
 def test_get_advanced_dm_position_251():
-    response = client.get("/pig/251/dm/Position/", params = {'groupid_list': [7,8,9]})
+    response = client.get("/pig/251/dm/Position/", params={'groupid_list': [7, 8, 9]})
     utils.common_positive_tests(response)
     dm_position_7 = json.loads(response.json()["dm_position"]["7"])
     assert type(dm_position_7) is list
@@ -208,7 +210,7 @@ def test_get_advanced_dm_position_251():
 
 
 def test_get_advanced_dm_potential_251():
-    response = client.get("/pig/251/dm/Potential/", params = {'groupid_list': [10,11,12]})
+    response = client.get("/pig/251/dm/Potential/", params={'groupid_list': [10, 11, 12]})
     utils.common_positive_tests(response)
     dm_potential_10 = json.loads(response.json()["dm_potential"]["10"])
     assert type(dm_potential_10) is list
@@ -225,7 +227,7 @@ def test_get_advanced_dm_potential_251():
 
 
 def test_get_advanced_dm_velocity_251():
-    response = client.get("/pig/251/dm/Velocity/", params = {'groupid_list': [13,14,15]})
+    response = client.get("/pig/251/dm/Velocity/", params={'groupid_list': [13, 14, 15]})
     utils.common_positive_tests(response)
     dm_velocity_13 = json.loads(response.json()["dm_velocity"]["13"])
     assert type(dm_velocity_13) is list
@@ -239,15 +241,17 @@ def test_get_advanced_dm_velocity_251():
     assert type(dm_velocity_15) is list
     assert dm_velocity_15[0] == [33.94892501831055, -33.81675720214844, 34.32453536987305]
     assert len(dm_velocity_15) == 111295
+
+
 #################################################################################################
 
 
 ### tests for advanced dm query with post method
 def test_post_advanced_dm_velocity_251():
     groupid_list = []
-    for i in range(1,300):
+    for i in range(1, 300):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/dm/Velocity/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/dm/Velocity/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.post("/pig/251/dm/Velocity/", json={"id_list": [13, 14, 15]})
     utils.common_positive_tests(response)
     dm_velocity_13 = json.loads(response.json()["dm_velocity"]["13"])
@@ -266,9 +270,9 @@ def test_post_advanced_dm_velocity_251():
 
 def test_post_advanced_dm_generation_251():
     groupid_list = []
-    for i in range(1,10):
+    for i in range(1, 10):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/dm/Generation/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/dm/Generation/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/dm/Generation/", params = {'groupid_list': [1,2,3]})
     utils.common_positive_tests(response)
     dm_generation_1 = json.loads(response.json()["dm_generation"]["1"])
@@ -287,10 +291,10 @@ def test_post_advanced_dm_generation_251():
 
 def test_post_advanced_dm_groupid_251():
     groupid_list = []
-    for i in range(3,20):
+    for i in range(3, 20):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/dm/GroupID/", data = '[' + ', '.join(groupid_list) + ']')
-    #response = client.get("/pig/251/dm/GroupID/", params = {'groupid_list': [4,5,6]})
+    response = client.post("/pig/251/dm/GroupID/", data='[' + ', '.join(groupid_list) + ']')
+    # response = client.get("/pig/251/dm/GroupID/", params = {'groupid_list': [4,5,6]})
     utils.common_positive_tests(response)
     dm_groupid_4 = json.loads(response.json()["dm_groupid"]["4"])
     assert type(dm_groupid_4) is list
@@ -308,10 +312,10 @@ def test_post_advanced_dm_groupid_251():
 
 def test_post_advanced_dm_position_251():
     groupid_list = []
-    for i in range(7,40):
+    for i in range(7, 40):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/dm/Position/", data = '[' + ', '.join(groupid_list) + ']')
-    #response = client.get("/pig/251/dm/Position/", params = {'groupid_list': [7,8,9]})
+    response = client.post("/pig/251/dm/Position/", data='[' + ', '.join(groupid_list) + ']')
+    # response = client.get("/pig/251/dm/Position/", params = {'groupid_list': [7,8,9]})
     utils.common_positive_tests(response)
     dm_position_7 = json.loads(response.json()["dm_position"]["7"])
     assert type(dm_position_7) is list
@@ -329,9 +333,9 @@ def test_post_advanced_dm_position_251():
 
 def test_post_advanced_dm_potential_251():
     groupid_list = []
-    for i in range(10,30):
+    for i in range(10, 30):
         groupid_list.append(str(i))
-    response = client.post("/pig/251/dm/Potential/", data = '[' + ', '.join(groupid_list) + ']')
+    response = client.post("/pig/251/dm/Potential/", data='[' + ', '.join(groupid_list) + ']')
     # response = client.get("/pig/251/dm/Potential/", params = {'groupid_list': [10,11,12]})
     utils.common_positive_tests(response)
     dm_potential_10 = json.loads(response.json()["dm_potential"]["10"])

@@ -42,24 +42,24 @@ async def read_snapshot_info(id: int):
     pig = utils.get_pig_data(id)
     total_part = pig['Header'].attrs['NumPartInGroupTotal']
     num_part = numpy.array(total_part)
-    return {'subdirs':['fofgroup','gas','dm','star','bh'],\
-            'num_gas':json.dumps(num_part[0], cls=utils.NumpyArrayEncoder),\
-            'num_dm':json.dumps(num_part[1], cls=utils.NumpyArrayEncoder),\
-            'num_star':json.dumps(num_part[4], cls=utils.NumpyArrayEncoder),\
-            'num_bh':json.dumps(num_part[5], cls=utils.NumpyArrayEncoder)}
+    return {'subdirs': ['fofgroup', 'gas', 'dm', 'star', 'bh'],
+            'num_gas': json.dumps(num_part[0], cls=utils.NumpyArrayEncoder),
+            'num_dm': json.dumps(num_part[1], cls=utils.NumpyArrayEncoder),
+            'num_star': json.dumps(num_part[4], cls=utils.NumpyArrayEncoder),
+            'num_bh': json.dumps(num_part[5], cls=utils.NumpyArrayEncoder)}
 
 
 @app.get("/pig/{id}/fofgroup")
 async def read_snapshot_fof_info(id: int):
-    subfields = utils.get_fof_subfield(pig_id = id)
-    return {'fof_subdirs':subfields} 
+    subfields = utils.get_fof_subfield(pig_id=id)
+    return {'fof_subdirs': subfields}
 
 
 @app.get("/pig/{id}/{ptype}")
 async def read_snapshot_type_info(id: int, ptype: str):
-    subfields = utils.get_part_subfield(pig_id = id,ptype = ptype)
-    return {'type':ptype, 'subdirs':subfields}
-   
+    subfields = utils.get_part_subfield(pig_id=id, ptype=ptype)
+    return {'type': ptype, 'subdirs': subfields}
+
 
 # Route
 # Get the first n lengthByType data in a particular pig folder.
@@ -139,20 +139,21 @@ async def read_obh(id: int, halo_id: int):
 @app.get("/pig/{id}/fofgroup/{feature}/{group_id}")
 async def read_fofgroup_data(id: int, group_id: int, feature: str):
     data = utils.get_fofgroup_data(pig_id=id, group_id=group_id, feature=feature)
-    return {('fofgroup'+'_'+feature.lower()): data}
+    return {('fofgroup' + '_' + feature.lower()): data}
 
 
 ###################################################################
 #                     Search by Criterion Queries                 #
 ###################################################################
 @app.get("/pig/{id}/search_id/{ptype}/{feature}")
-async def read_haloid_by_criterion(id: int, feature: str, ptype: str, min_range: Optional[float] = None, max_range: Optional[float] = None):
+async def read_haloid_by_criterion(id: int, feature: str, ptype: str, min_range: Optional[float] = None,
+                                   max_range: Optional[float] = None):
     utils.check_pig_id(pig_id=id)
-    #utils.check_feature(pig_id = id, ptype = ptype, feature = feature)
-    type_ind = {'gas':0,'dm':1,'star':4,'bh':5}
+    # utils.check_feature(pig_id = id, ptype = ptype, feature = feature)
+    type_ind = {'gas': 0, 'dm': 1, 'star': 4, 'bh': 5}
     ind = type_ind[ptype]
     pig = utils.get_pig_data(id)
-    data = pig.open('FOFGroups/'+ feature)[:][:, ind]
+    data = pig.open('FOFGroups/' + feature)[:][:, ind]
     if min_range and max_range:
         res = numpy.where((data <= max_range) & (data >= min_range))
     elif min_range:
@@ -161,17 +162,17 @@ async def read_haloid_by_criterion(id: int, feature: str, ptype: str, min_range:
         res = numpy.where(data <= max_range)
     else:
         res = data
-    
-    encoded_numpy_data = json.dumps(res, cls=utils.NumpyArrayEncoder)
-    return {"IDlist":encoded_numpy_data}
 
+    encoded_numpy_data = json.dumps(res, cls=utils.NumpyArrayEncoder)
+    return {"IDlist": encoded_numpy_data}
 
 
 @app.get("/pig/{id}/search/{ptype}/{feature}/{criterion}")
-async def read_particle_data_by_criterion(id: int, ptype: str, feature:str, criterion:str, min_range: Optional[float] = None, max_range: Optional[float] = None):
-    data = utils.get_particle_data_criterion(pig_id=id, ptype=ptype, \
-                                feature=feature,criterion=criterion,\
-                                min_range=min_range,max_range=max_range)
+async def read_particle_data_by_criterion(id: int, ptype: str, feature: str, criterion: str,
+                                          min_range: Optional[float] = None, max_range: Optional[float] = None):
+    data = utils.get_particle_data_criterion(pig_id=id, ptype=ptype,
+                                             feature=feature, criterion=criterion,
+                                             min_range=min_range, max_range=max_range)
     return data
 
 
@@ -180,10 +181,9 @@ async def read_particle_data_by_criterion(id: int, ptype: str, feature:str, crit
 ###################################################################
 # Regular query for particle data in a Group={group_id} of type={ptype}
 @app.get("/pig/{id}/{ptype}/{feature}/{group_id}")
-async def read_particle_data_by_groupid(id: int, group_id: int,ptype: str, feature:str):
-    data = utils.get_particle_data(pig_id=id, group_id=group_id, ptype = ptype, feature=feature)
-    return {(ptype+'_'+feature.lower()): data}
-
+async def read_particle_data_by_groupid(id: int, group_id: int, ptype: str, feature: str):
+    data = utils.get_particle_data(pig_id=id, group_id=group_id, ptype=ptype, feature=feature)
+    return {(ptype + '_' + feature.lower()): data}
 
 
 ### bulk query get
@@ -192,8 +192,8 @@ async def read_particle_data_by_groupid_list(id: int, ptype: str, feature: str, 
     data = {}
     utils.check_query_list(groupid_list)
     for group_id in groupid_list:
-        data[group_id] = utils.get_particle_data(pig_id=id, group_id=group_id, ptype = ptype, feature=feature)
-    return {(ptype+'_'+feature.lower()): data}
+        data[group_id] = utils.get_particle_data(pig_id=id, group_id=group_id, ptype=ptype, feature=feature)
+    return {(ptype + '_' + feature.lower()): data}
 
 
 ### bulk query post
@@ -202,5 +202,5 @@ async def read_particle_data_by_post_groupid_list(id: int, ptype: str, feature: 
     data = {}
     utils.check_query_list(groupid_list)
     for group_id in groupid_list:
-        data[group_id] = utils.get_particle_data(pig_id=id, group_id=group_id, ptype = ptype, feature=feature)
-    return {(ptype+'_'+feature.lower()): data}
+        data[group_id] = utils.get_particle_data(pig_id=id, group_id=group_id, ptype=ptype, feature=feature)
+    return {(ptype + '_' + feature.lower()): data}
