@@ -9,8 +9,10 @@ from fastapi import HTTPException
 import constants
 
 
-# JSON serializer
 class NumpyArrayEncoder(JSONEncoder):
+    """
+    A class used to serialize numpy ndarray into json.
+    """
     def default(self, obj):
         if isinstance(obj, numpy.integer):
             return int(obj)
@@ -19,47 +21,127 @@ class NumpyArrayEncoder(JSONEncoder):
         elif isinstance(obj, numpy.ndarray):
             return obj.tolist()
         else:
-            return super(NpEncoder, self).default(obj)
+            return super().default(obj)
 
 
 def check_pig_id(pig_id: int):
+    """
+    Check if pig ID is in the existing pig directory.
+
+    Parameters
+    ----------
+    pig_id : int
+        ID of a pig folder.
+
+    Raises
+    ------
+    HTTPException
+        If pig_id folder does not exist, return 404.
+    """
     subdirectories = get_pig_folders()
     pig_folder = "PIG_" + str(pig_id)
     if pig_folder not in subdirectories:
-        raise HTTPException(status_code=404, detail="PIG folder does not exist, should in {}".format(subdirectories))
+        raise HTTPException(status_code=404, detail="PIG_{} folder does not exist, id should be in {}".format(pig_id, subdirectories))
 
 
 def check_type_id_range(type_id: int):
+    """
+    Check if type_id is in [0, 6), the id range of particle type.
+
+    Parameters
+    ----------
+    type_id : int
+        ID of particle type.
+
+    Raises
+    ------
+    HTTPException
+        If type_id out of range, return 404.
+    """
     if type_id < 0 or type_id >= 6:
-        raise HTTPException(status_code=404, detail="type_id out of range, should be [0,6)")
+        raise HTTPException(status_code=404, detail="type_id out of range, should be in [0,6)")
 
 
 def check_group_id_range(pig, group_id: int):
+    """
+    Check if group_id is in range.
+
+    Parameters
+    ----------
+    group_id : int
+        ID of halo group.
+
+    Raises
+    ------
+    HTTPException
+        If group_id out of range, return 404.
+    """
     total_group = pig.open('FOFGroups/LengthByType').size
     if group_id <= 0 or group_id > total_group:
-        raise HTTPException(status_code=404, detail="group_id out of range, should be [1,{}]".format(total_group))
+        raise HTTPException(status_code=404, detail="group_id out of range, should be in [1,{}]".format(total_group))
 
 
 def check_halo_id_range(pig, halo_id: int):
+    """
+    Check if halo_id is in range.
+
+    Parameters
+    ----------
+    halo_id : int
+        ID of a halo.
+
+    Raises
+    ------
+    HTTPException
+        If halo_id out of range, return 404.
+    """
     total_halo = pig.open('FOFGroups/LengthByType').size
     if halo_id < 0 or halo_id >= total_halo:
-        raise HTTPException(status_code=404, detail="halo_id out of range, should be [0,{})".format(total_halo))
+        raise HTTPException(status_code=404, detail="halo_id out of range, should be in [0,{})".format(total_halo))
 
 
 def check_type_name(ptype: str):
+    """
+    Check if type name in ['gas', 'dm', 'star', 'bh'].
+
+    Parameters
+    ----------
+    ptype : star
+        Particle type name.
+
+    Raises
+    ------
+    HTTPException
+        If particle type does not exist, return 404.
+    """
     type_list = ['gas', 'dm', 'star', 'bh']
     if ptype not in type_list:
         raise HTTPException(status_code=404,
-                            detail="Particle type {} does not exist, should be in {}".format(ptype, type_list))
+                            detail="ptype {} does not exist, should be in {}".format(ptype, type_list))
 
 
 def check_query_list(id_list):
+    """
+    Check if query ID list is not empty.
+
+    Parameters
+    ----------
+    id_list : List Object
+        List of group IDs.
+
+    Raises
+    ------
+    HTTPException
+        If ID list is empty, return 404.
+    """
     if id_list is None:
-        raise HTTPException(status_code=404, detail="ID list is needed. Please input a valid one.")
+        raise HTTPException(status_code=404, detail="ID list is empty. Please input a valid one.")
 
 
-# Get the list of PIG folders
 def get_pig_folders():
+    """
+    Return the list of PIG folders.
+    """
     subdirectories = []
     directory_contents = os.listdir(constants.PIG_BASE_DIR)
     for item in directory_contents:
@@ -69,6 +151,14 @@ def get_pig_folders():
 
 
 def get_pig_numhalo(sub_dir: str):
+    """
+    Return total number of halos in a pig folder directory.
+
+    Parameters
+    ----------
+    sub_dir : str
+        Directory of a pig folder.
+    """
     pig_dir = constants.PIG_BASE_DIR + sub_dir + '/'
     pig = bigfile.File(pig_dir)
     Nhalo = pig['Header'].attrs['NumFOFGroupsTotal'][0]
@@ -76,6 +166,14 @@ def get_pig_numhalo(sub_dir: str):
 
 
 def get_pig_redshift(sub_dir: str):
+    """
+    Return the redshift information(aka time info) in a pig folder directory.
+
+    Parameters
+    ----------
+    sub_dir : str
+        Directory of a pig folder.
+    """
     pig_dir = constants.PIG_BASE_DIR + sub_dir + '/'
     pig = bigfile.File(pig_dir)
     scalefactor = pig['Header'].attrs['Time'][0]
@@ -83,8 +181,15 @@ def get_pig_redshift(sub_dir: str):
     return redshift
 
 
-# Get a particular pig folder data in bigfile format
 def get_pig_data(pig_id: int):
+    """
+    Return a particular pig folder data in bigfile format.
+
+    Parameters
+    ----------
+    pig_id : int
+        ID of a pig folder.
+    """
     # data directory
     pig_dir = constants.PIG_BASE_DIR + "PIG_" + str(pig_id) + "/"
     pig = bigfile.File(pig_dir)
@@ -92,6 +197,16 @@ def get_pig_data(pig_id: int):
 
 
 def get_lbt_by_haloid(pig_id: int, halo_id: int):
+    """
+    Return lengthbytype data in json format.
+
+    Parameters
+    ----------
+    pig_id : int
+        ID of a pig folder.
+    halo_id : int
+        ID of a halo.
+    """
     check_pig_id(pig_id=pig_id)
     pig = get_pig_data(pig_id)
     check_halo_id_range(pig=pig, halo_id=halo_id)
@@ -102,6 +217,16 @@ def get_lbt_by_haloid(pig_id: int, halo_id: int):
 
 
 def get_obt(pig_id: int, group_id: int):
+    """
+    Return offsetbytype data in json format.
+
+    Parameters
+    ----------
+    pig_id : int
+        ID of a pig folder.
+    group_id : int
+        ID of a halo group.
+    """
     check_pig_id(pig_id=pig_id)
     pig = get_pig_data(pig_id)
     check_group_id_range(pig=pig, group_id=group_id)
@@ -111,6 +236,16 @@ def get_obt(pig_id: int, group_id: int):
 
 
 def get_part_subfield(pig_id: int, ptype: str):
+    """
+    Return list of features of a particle type in a particular pig folder.
+
+    Parameters
+    ----------
+    pig_id : int
+        ID of a pig folder.
+    ptype : str
+        Name of particle type.
+    """
     check_pig_id(pig_id=pig_id)
     check_type_name(ptype)
     type_ind = {'gas': 0, 'dm': 1, 'star': 4, 'bh': 5}
@@ -122,6 +257,14 @@ def get_part_subfield(pig_id: int, ptype: str):
 
 
 def get_fof_subfield(pig_id: int):
+    """
+    Return list of features of a fofgroup in a particular pig folder.
+
+    Parameters
+    ----------
+    pig_id : int
+        ID of a pig folder.
+    """
     check_pig_id(pig_id=pig_id)
     subdirectories = []
     directory_contents = os.listdir(constants.PIG_BASE_DIR + 'PIG_' + str(pig_id) + '/FOFGroups')
@@ -131,6 +274,23 @@ def get_fof_subfield(pig_id: int):
 
 
 def check_feature(pig_id: int, ptype: str, feature: str):
+    """
+    Check if particle type and feature exist.
+
+    Parameters
+    ----------
+    pig_id : int
+        ID of a pig folder.
+    ptype : str
+        Name of particle type.
+    feature : str
+        Feature of a particle.
+
+    Raises
+    ------
+    HTTPException
+        If particle type or feature does not exist, return 404.
+    """
     type_list = ['gas', 'dm', 'star', 'bh']
     if ptype in type_list:
         subdirectories = get_part_subfield(pig_id=pig_id, ptype=ptype)
@@ -145,7 +305,23 @@ def check_feature(pig_id: int, ptype: str, feature: str):
 
 
 def check_criterion(criterion: str):
-    # for now we only have limited criterions
+    """
+    Check if criterion exists in ['bh_mass', 'gas_mass', 'dm_mass', 'star_mass', 'bh_mdot'].
+
+    Parameters
+    ----------
+    criterion : str
+        Searching criterion.
+
+    Raises
+    ------
+    HTTPException
+        If criterion does not exist, return 404.
+
+    Note
+    ----
+    For now we only have limited criterions
+    """
     criterion_list = ['bh_mass', 'gas_mass', 'dm_mass', 'star_mass', 'bh_mdot']
     if criterion not in criterion_list:
         raise HTTPException(status_code=404,
@@ -154,6 +330,20 @@ def check_criterion(criterion: str):
 
 
 def get_particle_data(pig_id: int, group_id: int, ptype: str, feature: str):
+    """
+    Return particle feature data in a particular pig folder in json format.
+
+    Parameters
+    ----------
+    pig_id : int
+        ID of a pig folder.
+    group_id : int
+        ID of a halo group.
+    ptype : str
+        Name of particle type.
+    feature : str
+        Feature of a particle.
+    """
     check_pig_id(pig_id=pig_id)
     pig = get_pig_data(pig_id)
 
@@ -213,6 +403,18 @@ def get_particle_data_criterion(pig_id: int, ptype: str,
 
 
 def get_fofgroup_data(pig_id: int, group_id: int, feature: str):
+    """
+    Return fofgroup feature data in a particular pig folder in json format.
+
+    Parameters
+    ----------
+    pig_id : int
+        ID of a pig folder.
+    group_id : int
+        ID of a halo group.
+    feature : str
+        Feature of a particle.
+    """
     check_pig_id(pig_id=pig_id)
     pig = get_pig_data(pig_id)
     check_group_id_range(pig=pig, group_id=group_id)
