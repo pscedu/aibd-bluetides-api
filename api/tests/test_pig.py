@@ -87,6 +87,7 @@ def test_get_fofgroup_251():
         "GroupID",
         "Mass",
         "Jmom",
+        "OffsetByType",
         "BlackholeMass",
         "LengthByType",
         "FirstPos",

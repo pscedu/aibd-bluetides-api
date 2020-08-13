@@ -216,25 +216,6 @@ def get_lbt_by_haloid(pig_id: int, halo_id: int):
     return encoded_numpy_type_data
 
 
-def get_obt(pig_id: int, group_id: int):
-    """
-    Return offsetbytype data in json format.
-
-    Parameters
-    ----------
-    pig_id : int
-        ID of a pig folder.
-    group_id : int
-        ID of a halo group.
-    """
-    check_pig_id(pig_id=pig_id)
-    pig = get_pig_data(pig_id)
-    check_group_id_range(pig=pig, group_id=group_id)
-    lbt = pig.open('FOFGroups/LengthByType')[:group_id]
-    obt = numpy.cumsum(lbt, axis=0).astype(int)
-    return obt
-
-
 def get_part_subfield(pig_id: int, ptype: str):
     """
     Return list of features of a particle type in a particular pig folder.
@@ -348,19 +329,14 @@ def get_particle_data(pig_id: int, group_id: int, ptype: str, feature: str):
     pig = get_pig_data(pig_id)
 
     check_group_id_range(pig=pig, group_id=group_id)
-    lbt = pig.open('FOFGroups/LengthByType')[:group_id]
-    obt = numpy.cumsum(lbt, axis=0).astype(int)
-    obt = get_obt(pig_id, group_id)
-
+    obt = pig.open('FOFGroups/OffsetByType')[group_id-1:group_id+1]
+    
     check_feature(pig_id=pig_id, ptype=ptype, feature=feature)
     type_ind = {'gas': 0, 'dm': 1, 'star': 4, 'bh': 5}
     ind = type_ind[ptype]
 
     path = str(ind) + '/' + feature
-    if group_id == 1:
-        data = pig.open(path)[:obt[0][ind]]
-    else:
-        data = pig.open(path)[obt[-2][ind]:obt[-1][ind]]
+    data = pig.open(path)[obt[0][ind]:obt[1][ind]]
     numpy_array_data = numpy.array(data)
     encoded_numpy_data = json.dumps(numpy_array_data, cls=NumpyArrayEncoder)
     return encoded_numpy_data
@@ -369,13 +345,32 @@ def get_particle_data(pig_id: int, group_id: int, ptype: str, feature: str):
 def get_particle_data_criterion(pig_id: int, ptype: str,
                                 feature: str, criterion: str,
                                 min_range: float, max_range: float):
+    """
+    Return a dictionary of {groupid:data} for data of 'feature' type within
+    the searching criterion.
+    Current available criterions:
+    gas_mass, dm_mass, star_mass, bh_mass, bh_mdot
+
+    Parameters
+    ----------
+    pig_id : int
+        ID of a pig folder.
+    ptype : str
+        Name of particle type for queried data.
+    feature : str
+        Feature of the particle for the queried data.
+    criterion: str
+        Criterion for the search (gas_mass, dm_mass, star_mass, bh_mass, bh_mdot)
+    min_range: float
+        low limit for the search
+    max_range: float
+        upper limit for the search
+    """
     check_pig_id(pig_id=pig_id)
     pig = get_pig_data(pig_id)
     check_criterion(criterion)
     check_feature(pig_id=pig_id, ptype=ptype, feature=feature)
-    lbt = pig.open('FOFGroups/LengthByType')[:]
-    obt = numpy.cumsum(lbt, axis=0).astype(int)
-    obt = numpy.concatenate((numpy.zeros((1, 6)), obt)).astype(int)
+    obt = pig.open('FOFGroups/OffsetByType')[:]
 
     type_ind = {'gas': 0, 'dm': 1, 'star': 4, 'bh': 5}
     ind = type_ind[ptype]
