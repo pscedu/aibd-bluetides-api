@@ -7,12 +7,40 @@ import json
 
 import numpy
 from typing import List, Optional
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, Query, Path, HTTPException
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 import utils
+import constants
+
 
 # Init
-app = FastAPI()
+app = FastAPI(
+    title="COSMO",
+    description="A REST API for the BlueTides3 Cosmology Simulation Data. You can find out more about COSMO at [http://vm041.bridges.psc.edu/cosmo_api/](http://vm041.bridges.psc.edu/cosmo_api/).",
+    openapi_tags=constants.tags_metadata,
+    )
+
+
+class Snapshot(BaseModel):
+    id: int
+    subdirs: list
+    num_gas: int
+    num_dm: int
+    num_star: int
+    num_bh: int
+
+
+class FoFGroup(BaseModel):
+    id: int
+    fof_subdirs: list
+
+
+class Particle(BaseModel):
+    id: int
+    ptype: str
+    subdirs: list
 
 
 @app.get("/")
@@ -20,9 +48,17 @@ async def read_main():
     return {"msg": "COSMO, a REST API for the BlueTides3 Cosmology Simulation Data"}
 
 
-# Get the list of PIG folders available for querying
-@app.get("/pig/")
+@app.get(
+    "/pig/",
+    tags=["pig"],
+    responses={
+            200: constants.response_200["read_pig"],
+        },
+    )
 async def read_pig():
+    """
+    Get the list of PIG folders available for querying along with their halo numbers and redshifts.
+    """
     pig_list = []
     subdirectories = utils.get_pig_folders()
     for subdir in subdirectories:
@@ -36,34 +72,72 @@ async def read_pig():
     return {"LIST": pig_list}
 
 
-@app.get("/pig/{id}")
-async def read_snapshot_info(id: int):
+@app.get("/pig/{id}",
+    tags=["pig"],
+    response_model=Snapshot,
+    responses={
+        404: constants.response_404["pig_id"],
+        200: constants.response_200["read_snapshot_info"],
+        },
+    )
+async def read_snapshot_info(id: int= Path(..., description="ID of a pig folder")):
+    """
+    Get the snapshot info of a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    """
     utils.check_pig_id(pig_id=id)
     pig = utils.get_pig_data(id)
     total_part = pig['Header'].attrs['NumPartInGroupTotal']
     num_part = numpy.array(total_part)
-    return {'subdirs': ['fofgroup', 'gas', 'dm', 'star', 'bh'],
+    return {'id': id,
+            'subdirs': ['fofgroup', 'gas', 'dm', 'star', 'bh'],
             'num_gas': json.dumps(num_part[0], cls=utils.NumpyArrayEncoder),
             'num_dm': json.dumps(num_part[1], cls=utils.NumpyArrayEncoder),
             'num_star': json.dumps(num_part[4], cls=utils.NumpyArrayEncoder),
             'num_bh': json.dumps(num_part[5], cls=utils.NumpyArrayEncoder)}
 
 
-@app.get("/pig/{id}/fofgroup")
-async def read_snapshot_fof_info(id: int):
+@app.get(
+    "/pig/{id}/fofgroup", 
+    tags=["pig"],
+    response_model=FoFGroup,
+    responses={
+        404: constants.response_404["pig_id"],
+        200: constants.response_200["read_snapshot_fof_info"],
+        },)
+async def read_snapshot_fof_info(id: int = Path(..., description="ID of a pig folder")):
+    """
+    Get the FoFGroup info of a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    """
     subfields = utils.get_fof_subfield(pig_id=id)
-    return {'fof_subdirs': subfields}
+    return {'id':id, 'fof_subdirs': subfields}
 
 
-@app.get("/pig/{id}/{ptype}")
-async def read_snapshot_type_info(id: int, ptype: str):
+@app.get(
+    "/pig/{id}/{ptype}", 
+    tags=["pig"],
+    response_model=Particle,
+    responses={
+        404: constants.response_404["read_snapshot_type_info"],
+        200: constants.response_200["read_snapshot_type_info"]
+        },)
+async def read_snapshot_type_info(id: int = Path(..., description="ID of a pig folder"), ptype: str = Path(..., description="Particle type")):
+    """
+    Get the particle feature info of a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    - **ptype**: Type of particle. It should be in ['gas', 'dm', 'star', 'bh'].
+    """
     subfields = utils.get_part_subfield(pig_id=id, ptype=ptype)
-    return {'type': ptype, 'subdirs': subfields}
+    return {'id': id, 'ptype': ptype, 'subdirs': subfields}
 
 
 # Route
 # Get the first n lengthByType data in a particular pig folder.
-@app.get("/pig/{id}/lengthbytype/n={num}")
+@app.get("/pig/{id}/lengthbytype/n={num}", tags=["lengthbytype"])
 async def read_lbt_file(id: int, num: int):
     # Data
     utils.check_pig_id(pig_id=id)
@@ -82,14 +156,14 @@ async def read_lbt_file(id: int, num: int):
 
 
 # Get the number of all gas type particles in the nth halo of a particular pig folder
-@app.get("/pig/{id}/lengthbytype/{halo_id}/")
+@app.get("/pig/{id}/lengthbytype/{halo_id}/", tags=["lengthbytype"])
 async def read_lbt_by_haloid(id: int, halo_id: int):
     data = utils.get_lbt_by_haloid(pig_id=id, halo_id=halo_id)
     return {"halo_id": halo_id, "type_length": data}
 
 
 # Get the number of all gas type particles in a halo list of a particular pig folder
-@app.get("/pig/{id}/lengthbytype/")
+@app.get("/pig/{id}/lengthbytype/", tags=["lengthbytype"])
 async def read_lbt_by_haloid_list(id: int, haloid_list: List[int] = Query(None)):
     data = {}
     utils.check_query_list(haloid_list)
@@ -99,7 +173,7 @@ async def read_lbt_by_haloid_list(id: int, haloid_list: List[int] = Query(None))
 
 
 # Get the number of a specific gas type particles in the nth halo of a particular pig folder
-@app.get("/pig/{id}/lengthbytype/{halo_id}/{type_id}")
+@app.get("/pig/{id}/lengthbytype/{halo_id}/{type_id}", tags=["lengthbytype"])
 async def read_lbht(id: int, halo_id: int, type_id: int):
     utils.check_pig_id(pig_id=id)
     pig = utils.get_pig_data(id)
@@ -113,7 +187,7 @@ async def read_lbht(id: int, halo_id: int, type_id: int):
 
 
 # Get the beginning and the ending index of a particular group and pig folder.
-@app.get("/pig/{id}/offsetbytype/{halo_id}/")
+@app.get("/pig/{id}/offsetbytype/{halo_id}/", tags=["lengthbytype"])
 async def read_obh(id: int, halo_id: int):
     utils.check_pig_id(pig_id=id)
     pig = utils.get_pig_data(id)
@@ -136,7 +210,7 @@ async def read_obh(id: int, halo_id: int):
 #                        FoF Group Queries                        #
 ###################################################################
 # Regular query for particle data in a Group={group_id} of type={ptype}
-@app.get("/pig/{id}/fofgroup/{feature}/{group_id}")
+@app.get("/pig/{id}/fofgroup/{feature}/{group_id}", tags=["particle"])
 async def read_fofgroup_data(id: int, group_id: int, feature: str):
     data = utils.get_fofgroup_data(pig_id=id, group_id=group_id, feature=feature)
     return {('fofgroup' + '_' + feature.lower()): data}
@@ -145,7 +219,7 @@ async def read_fofgroup_data(id: int, group_id: int, feature: str):
 ###################################################################
 #                     Search by Criterion Queries                 #
 ###################################################################
-@app.get("/pig/{id}/search_id/{ptype}/{feature}")
+@app.get("/pig/{id}/search_id/{ptype}/{feature}", tags=["advanced"])
 async def read_haloid_by_criterion(id: int, feature: str, ptype: str, min_range: Optional[float] = None,
                                    max_range: Optional[float] = None):
     utils.check_pig_id(pig_id=id)
@@ -167,7 +241,7 @@ async def read_haloid_by_criterion(id: int, feature: str, ptype: str, min_range:
     return {"IDlist": encoded_numpy_data}
 
 
-@app.get("/pig/{id}/search/{ptype}/{feature}/{criterion}")
+@app.get("/pig/{id}/search/{ptype}/{feature}/{criterion}", tags=["advanced"])
 async def read_particle_data_by_criterion(id: int, ptype: str, feature: str, criterion: str,
                                           min_range: Optional[float] = None, max_range: Optional[float] = None):
     data = utils.get_particle_data_criterion(pig_id=id, ptype=ptype,
@@ -180,24 +254,24 @@ async def read_particle_data_by_criterion(id: int, ptype: str, feature: str, cri
 #                        Particle Queries                         #
 ###################################################################
 # Regular query for particle data in a Group={group_id} of type={ptype}
-@app.get("/pig/{id}/{ptype}/{feature}/{group_id}")
+@app.get("/pig/{id}/{ptype}/{feature}/{group_id}", tags=["particle"])
 async def read_particle_data_by_groupid(id: int, group_id: int, ptype: str, feature: str):
     data = utils.get_particle_data(pig_id=id, group_id=group_id, ptype=ptype, feature=feature)
     return {(ptype + '_' + feature.lower()): data}
 
 
-### bulk query get
-@app.get("/pig/{id}/{ptype}/{feature}/")
-async def read_particle_data_by_groupid_list(id: int, ptype: str, feature: str, groupid_list: List[int] = Query(None)):
-    data = {}
-    utils.check_query_list(groupid_list)
-    for group_id in groupid_list:
-        data[group_id] = utils.get_particle_data(pig_id=id, group_id=group_id, ptype=ptype, feature=feature)
-    return {(ptype + '_' + feature.lower()): data}
+# ### bulk query get
+# @app.get("/pig/{id}/{ptype}/{feature}/")
+# async def read_particle_data_by_groupid_list(id: int, ptype: str, feature: str, groupid_list: List[int] = Query(None)):
+#     data = {}
+#     utils.check_query_list(groupid_list)
+#     for group_id in groupid_list:
+#         data[group_id] = utils.get_particle_data(pig_id=id, group_id=group_id, ptype=ptype, feature=feature)
+#     return {(ptype + '_' + feature.lower()): data}
 
 
 ### bulk query post
-@app.post("/pig/{id}/{ptype}/{feature}/")
+@app.post("/pig/{id}/{ptype}/{feature}/", tags=["advanced"])
 async def read_particle_data_by_post_groupid_list(id: int, ptype: str, feature: str, groupid_list: List[int]):
     data = {}
     utils.check_query_list(groupid_list)

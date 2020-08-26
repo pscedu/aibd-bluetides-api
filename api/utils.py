@@ -41,7 +41,7 @@ def check_pig_id(pig_id: int):
     subdirectories = get_pig_folders()
     pig_folder = "PIG_" + str(pig_id)
     if pig_folder not in subdirectories:
-        raise HTTPException(status_code=404, detail="PIG_{} folder does not exist, id should be in {}".format(pig_id, subdirectories))
+        raise HTTPException(status_code=404, detail="PIG_{} folder does not exist, and should be in {}".format(pig_id, subdirectories))
 
 
 def check_type_id_range(type_id: int):
