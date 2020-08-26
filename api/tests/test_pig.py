@@ -38,10 +38,10 @@ def test_get_pig_244():
         "star",
         "bh"
     ]
-    assert pig_244["num_gas"] == "18949544012"
-    assert pig_244["num_dm"] == "20702705412"
-    assert pig_244["num_star"] == "560638945"
-    assert pig_244["num_bh"] == "219666"
+    assert pig_244["num_gas"] == 18949544012
+    assert pig_244["num_dm"] == 20702705412
+    assert pig_244["num_star"] == 560638945
+    assert pig_244["num_bh"] == 219666
 
 
 def test_get_pig_251():
@@ -55,10 +55,10 @@ def test_get_pig_251():
         "star",
         "bh"
     ]
-    assert pig_251["num_gas"] == "19358022252"
-    assert pig_251["num_dm"] == "21165203462"
-    assert pig_251["num_star"] == "587619843"
-    assert pig_251["num_bh"] == "235967"
+    assert pig_251["num_gas"] == 19358022252
+    assert pig_251["num_dm"] == 21165203462
+    assert pig_251["num_star"] == 587619843
+    assert pig_251["num_bh"] == 235967
 
 
 def test_get_pig_271():
@@ -72,10 +72,10 @@ def test_get_pig_271():
         "star",
         "bh"
     ]
-    assert pig_271["num_gas"] == "20556534261"
-    assert pig_271["num_dm"] == "22490179360"
-    assert pig_271["num_star"] == "670401945"
-    assert pig_271["num_bh"] == "260639"
+    assert pig_271["num_gas"] == 20556534261
+    assert pig_271["num_dm"] == 22490179360
+    assert pig_271["num_star"] == 670401945
+    assert pig_271["num_bh"] == 260639
 
 
 def test_get_fofgroup_251():
@@ -104,7 +104,7 @@ def test_get_dm_244():
     response = client.get("/pig/244/dm")
     utils.common_positive_tests(response)
     pig_244 = response.json()
-    assert pig_244["type"] == "dm"
+    assert pig_244["ptype"] == "dm"
     assert pig_244["subdirs"] == [
         "ID",
         "Generation",
@@ -119,7 +119,7 @@ def test_get_gas_251():
     response = client.get("/pig/251/gas")
     utils.common_positive_tests(response)
     pig_251 = response.json()
-    assert pig_251["type"] == "gas"
+    assert pig_251["ptype"] == "gas"
     assert pig_251["subdirs"] == [
         "JUV",
         "Mass",
@@ -147,7 +147,7 @@ def test_get_star_271():
     response = client.get("/pig/271/star")
     utils.common_positive_tests(response)
     pig_271 = response.json()
-    assert pig_271["type"] == "star"
+    assert pig_271["ptype"] == "star"
     assert pig_271["subdirs"] == [
         "Generation",
         "StarFormationTime",

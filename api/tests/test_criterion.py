@@ -8,17 +8,17 @@ from . import utils
 client = TestClient(app)
 
 
-def test_criterion_positive_bhmass_271():
-    response = client.get("/pig/271/search/bh/BlackholeMass/bh_mass", params={"min_range": 5e-3, "max_range": 1e-2})
-    utils.common_positive_tests(response)
-    idlist = response.json().keys()
-    idlist = sorted([int(i) for i in idlist])
-    idlist = [str(i) for i in idlist]
-    assert idlist[:10] == [str(i) for i in [0, 2, 7, 8, 11, 14, 18, 19, 29, 34]]
-    data = json.loads(response.json()[idlist[10]])
-    assert type(data) is list
-    assert len(data) == 5
-    assert abs(data[2] - 4.1642028e-04) < 1e-10
+# def test_criterion_positive_bhmass_271():
+#     response = client.get("/pig/271/search/bh/BlackholeMass/bh_mass", params={"min_range": 5e-3, "max_range": 1e-2})
+#     utils.common_positive_tests(response)
+#     idlist = response.json().keys()
+#     idlist = sorted([int(i) for i in idlist])
+#     idlist = [str(i) for i in idlist]
+#     assert idlist[:10] == [str(i) for i in [0, 2, 7, 8, 11, 14, 18, 19, 29, 34]]
+#     data = json.loads(response.json()[idlist[10]])
+#     assert type(data) is list
+#     assert len(data) == 5
+#     assert abs(data[2] - 4.1642028e-04) < 1e-10
 
 
 # def test_criterion_positive_bhmass_251():
