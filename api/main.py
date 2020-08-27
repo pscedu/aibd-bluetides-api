@@ -7,7 +7,7 @@ import json
 
 import numpy
 from typing import List, Optional
-from fastapi import FastAPI, Query, Path, HTTPException
+from fastapi import FastAPI, Query, Path, Body, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -18,7 +18,7 @@ import constants
 # Init
 app = FastAPI(
     title="COSMO",
-    description="A REST API for the BlueTides3 Cosmology Simulation Data. You can find out more about COSMO at [http://vm041.bridges.psc.edu/cosmo_api/](http://vm041.bridges.psc.edu/cosmo_api/).",
+    description="A REST API for the BlueTides3 Cosmology Simulation Data. You can find out more about COSMO at [{}]({}).".format(constants.WEB_URL,constants.WEB_URL),
     openapi_tags=constants.tags_metadata,
     )
 
@@ -80,7 +80,7 @@ async def read_pig():
         200: constants.response_200["read_snapshot_info"],
         },
     )
-async def read_snapshot_info(id: int= Path(..., description="ID of a pig folder")):
+async def read_snapshot_info(id: int= Path(..., description="ID of a PIG folder")):
     """
     Get the snapshot info of a PIG folder with all the information:
 
@@ -106,7 +106,7 @@ async def read_snapshot_info(id: int= Path(..., description="ID of a pig folder"
         404: constants.response_404["pig_id"],
         200: constants.response_200["read_snapshot_fof_info"],
         },)
-async def read_snapshot_fof_info(id: int = Path(..., description="ID of a pig folder")):
+async def read_snapshot_fof_info(id: int = Path(..., description="ID of a PIG folder")):
     """
     Get the FoFGroup info of a PIG folder with all the information:
 
@@ -124,7 +124,7 @@ async def read_snapshot_fof_info(id: int = Path(..., description="ID of a pig fo
         404: constants.response_404["read_snapshot_type_info"],
         200: constants.response_200["read_snapshot_type_info"]
         },)
-async def read_snapshot_type_info(id: int = Path(..., description="ID of a pig folder"), ptype: str = Path(..., description="Particle type")):
+async def read_snapshot_type_info(id: int = Path(..., description="ID of a PIG folder"), ptype: str = Path(..., description="Particle type")):
     """
     Get the particle feature info of a PIG folder with all the information:
 
@@ -136,9 +136,15 @@ async def read_snapshot_type_info(id: int = Path(..., description="ID of a pig f
 
 
 # Route
-# Get the first n lengthByType data in a particular pig folder.
+# Get the first n lengthByType data in a particular PIG folder.
 @app.get("/pig/{id}/lengthbytype/n={num}", tags=["lengthbytype"])
-async def read_lbt_file(id: int, num: int):
+async def read_lbt_file(id: int = Path(..., description="ID of a PIG folder"), num: int = Path(..., description="Number of halos")):
+    """
+    Get the length info of the first n halos in a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    - **num**: Number of halos. It should be between 1 to the max halo size.
+    """
     # Data
     utils.check_pig_id(pig_id=id)
     pig = utils.get_pig_data(id)
@@ -155,16 +161,28 @@ async def read_lbt_file(id: int, num: int):
     return {"length_by_type": encoded_numpy_data}
 
 
-# Get the number of all gas type particles in the nth halo of a particular pig folder
+# Get the number of all gas type particles in the nth halo of a particular PIG folder
 @app.get("/pig/{id}/lengthbytype/{halo_id}/", tags=["lengthbytype"])
-async def read_lbt_by_haloid(id: int, halo_id: int):
+async def read_lbt_by_haloid(id: int = Path(..., description="ID of a PIG folder"), halo_id: int = Path(..., description="ID of a halo")):
+    """
+    Get the number of all type particles for the nth halo in a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    - **halo_id**: ID of a halo. ID of a halo. It should be between 0 to the max halo ID.
+    """
     data = utils.get_lbt_by_haloid(pig_id=id, halo_id=halo_id)
     return {"halo_id": halo_id, "type_length": data}
 
 
-# Get the number of all gas type particles in a halo list of a particular pig folder
+# Get the number of all type particles in a halo list of a particular PIG folder
 @app.get("/pig/{id}/lengthbytype/", tags=["lengthbytype"])
-async def read_lbt_by_haloid_list(id: int, haloid_list: List[int] = Query(None)):
+async def read_lbt_by_haloid_list(id: int = Path(..., description="ID of a PIG folder"), haloid_list: List[int] = Query(None, description="A list of group IDs")):
+    """
+    Get the number of all type particles for a halo list in a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    - **haloid_list**: A list of group IDs. It should be a list and be passed as a query parameter.
+    """
     data = {}
     utils.check_query_list(haloid_list)
     for halo_id in haloid_list:
@@ -172,9 +190,15 @@ async def read_lbt_by_haloid_list(id: int, haloid_list: List[int] = Query(None))
     return data
 
 
-# Get the number of a specific gas type particles in the nth halo of a particular pig folder
+# Get the number of a specific type particles in the nth halo of a particular PIG folder
 @app.get("/pig/{id}/lengthbytype/{halo_id}/{type_id}", tags=["lengthbytype"])
-async def read_lbht(id: int, halo_id: int, type_id: int):
+async def read_lbht(id: int = Path(..., description="ID of a PIG folder"), halo_id: int = Path(..., description="ID of a halo"), type_id: int = Path(..., description="ID of a particle type")):
+    """
+    Get the number of a specific type particles for the nth halo in a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    - **haloid_list**: A list of group IDs. It should be a list and be passed as a query parameter.
+    """
     utils.check_pig_id(pig_id=id)
     pig = utils.get_pig_data(id)
     utils.check_halo_id_range(pig=pig, halo_id=halo_id)
@@ -186,9 +210,15 @@ async def read_lbht(id: int, halo_id: int, type_id: int):
     return {"halo_id": halo_id, "type_id": type_id, "length": encoded_numpy_len_data}
 
 
-# Get the beginning and the ending index of a particular group and pig folder.
+# Get the beginning and the ending index of a particular group and PIG folder.
 @app.get("/pig/{id}/offsetbytype/{halo_id}/", tags=["lengthbytype"])
-async def read_obh(id: int, halo_id: int):
+async def read_obh(id: int = Path(..., description="ID of a PIG folder"), halo_id: int = Path(..., description="ID of a halo")):
+    """
+    Get the beginning and the ending index of the nth halo group in a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    - **halo_id**: ID of a halo. It should be between 0 to the max halo ID.
+    """
     utils.check_pig_id(pig_id=id)
     pig = utils.get_pig_data(id)
     utils.check_halo_id_range(pig=pig, halo_id=halo_id)
@@ -207,22 +237,20 @@ async def read_obh(id: int, halo_id: int):
 
 
 ###################################################################
-#                        FoF Group Queries                        #
-###################################################################
-# Regular query for particle data in a Group={group_id} of type={ptype}
-@app.get("/pig/{id}/fofgroup/{feature}/{group_id}", tags=["particle"])
-async def read_fofgroup_data(id: int, group_id: int, feature: str):
-    data = utils.get_fofgroup_data(pig_id=id, group_id=group_id, feature=feature)
-    return {('fofgroup' + '_' + feature.lower()): data}
-
-
-###################################################################
 #                     Search by Criterion Queries                 #
 ###################################################################
 @app.get("/pig/{id}/search_id/{ptype}/{feature}", tags=["advanced"])
-async def read_haloid_by_criterion(id: int, feature: str, ptype: str, min_range: Optional[float] = None,
-                                   max_range: Optional[float] = None):
+async def read_haloid_by_criterion(id: int = Path(..., description="ID of a PIG folder"), feature: str = Path(..., description="Feature of FoFGroup"), 
+    ptype: str = Path(..., description="Name of particle type"), min_range: Optional[float] = Query(None, description="Min range of a searching criterion"), 
+    max_range: Optional[float] = Query(None, description="Min range of a searching criterion")):
     utils.check_pig_id(pig_id=id)
+    """
+    Get all halo IDs of particles matching some searching criterion in a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    - **ptype**: Name of pariticle type. It should be in ['gas', 'dm', 'star', 'bh'].
+    - **feature**: Feature of FoFGroup.
+    """
     # utils.check_feature(pig_id = id, ptype = ptype, feature = feature)
     type_ind = {'gas': 0, 'dm': 1, 'star': 4, 'bh': 5}
     ind = type_ind[ptype]
@@ -242,8 +270,17 @@ async def read_haloid_by_criterion(id: int, feature: str, ptype: str, min_range:
 
 
 @app.get("/pig/{id}/search/{ptype}/{feature}/{criterion}", tags=["advanced"])
-async def read_particle_data_by_criterion(id: int, ptype: str, feature: str, criterion: str,
-                                          min_range: Optional[float] = None, max_range: Optional[float] = None):
+async def read_particle_data_by_criterion(id: int = Path(..., description="ID of a PIG folder"), ptype: str = Path(..., description="Name of particle type"), 
+    feature: str  = Path(..., description="Feature of the particle"), criterion: str = Path(..., description="Searching Criterion"), 
+    min_range: Optional[float] = Query(None, description="Min range of a searching criterion"), max_range: Optional[float] = Query(None, description="Min range of a searching criterion")):
+    """
+    Get a dictionary of {groupid:data} for data of specific particle feature within the searching criterion in a PIG folder:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    - **ptype**: Name of pariticle type. It should be in ['gas', 'dm', 'star', 'bh'].
+    - **feature**: Feature of the particle.
+    - **criterion**: Searching criterion. It should be in ['bh_mass', 'gas_mass', 'dm_mass', 'star_mass', 'bh_mdot'].
+    """
     data = utils.get_particle_data_criterion(pig_id=id, ptype=ptype,
                                              feature=feature, criterion=criterion,
                                              min_range=min_range, max_range=max_range)
@@ -251,28 +288,51 @@ async def read_particle_data_by_criterion(id: int, ptype: str, feature: str, cri
 
 
 ###################################################################
+#                        FoF Group Queries                        #
+###################################################################
+# Regular query for particle data in a Group={group_id} of type={ptype}
+@app.get("/pig/{id}/fofgroup/{feature}/{group_id}", tags=["particle"])
+async def read_fofgroup_data(id: int = Path(..., description="ID of a PIG folder"), group_id: int = Path(..., description="ID of a halo group"), feature: str = Path(..., description="Feature of FoFGroup")):
+    """
+    Get the the FoFGroup feature data of the nth halo group in a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    - **feature**: Feature of FoFGroup.
+    - **group_id**: ID of a halo group. It should be between 1 to the max halo group size.
+    """
+    data = utils.get_fofgroup_data(pig_id=id, group_id=group_id, feature=feature)
+    return {('fofgroup' + '_' + feature.lower()): data}
+
+
+###################################################################
 #                        Particle Queries                         #
 ###################################################################
 # Regular query for particle data in a Group={group_id} of type={ptype}
 @app.get("/pig/{id}/{ptype}/{feature}/{group_id}", tags=["particle"])
-async def read_particle_data_by_groupid(id: int, group_id: int, ptype: str, feature: str):
+async def read_particle_data_by_groupid(id: int = Path(..., description="ID of a PIG folder"), group_id: int = Path(..., description="ID of a halo group"), 
+    ptype: str = Path(..., description="Name of particle type"), feature: str = Path(..., description="Feature of the particle")):
+    """
+    Get the the particle feature data of the nth halo group in a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    - **feature**: Feature of the particle.
+    - **group_id**: ID of a halo group. It should be between 1 to the max halo group size.
+    """
     data = utils.get_particle_data(pig_id=id, group_id=group_id, ptype=ptype, feature=feature)
     return {(ptype + '_' + feature.lower()): data}
 
 
-# ### bulk query get
-# @app.get("/pig/{id}/{ptype}/{feature}/")
-# async def read_particle_data_by_groupid_list(id: int, ptype: str, feature: str, groupid_list: List[int] = Query(None)):
-#     data = {}
-#     utils.check_query_list(groupid_list)
-#     for group_id in groupid_list:
-#         data[group_id] = utils.get_particle_data(pig_id=id, group_id=group_id, ptype=ptype, feature=feature)
-#     return {(ptype + '_' + feature.lower()): data}
-
-
 ### bulk query post
 @app.post("/pig/{id}/{ptype}/{feature}/", tags=["advanced"])
-async def read_particle_data_by_post_groupid_list(id: int, ptype: str, feature: str, groupid_list: List[int]):
+async def read_particle_data_by_post_groupid_list(id: int = Path(..., description="ID of a PIG folder"), ptype: str = Path(..., description="Name of particle type"), 
+    feature: str = Path(..., description="Feature of the particle"), groupid_list: List[int] = Body(..., description="A list of group IDs")):
+    """
+    Get all particle feature data of the a halo group list in a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    - **feature**: Feature of the particle.
+    - **groupid_list**: A list of group IDs. It should be a list and be passed as request body with post method
+    """
     data = {}
     utils.check_query_list(groupid_list)
     for group_id in groupid_list:

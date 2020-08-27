@@ -31,7 +31,7 @@ def check_pig_id(pig_id: int):
     Parameters
     ----------
     pig_id : int
-        ID of a pig folder.
+        ID of a PIG folder.
 
     Raises
     ------
@@ -152,12 +152,12 @@ def get_pig_folders():
 
 def get_pig_numhalo(sub_dir: str):
     """
-    Return total number of halos in a pig folder directory.
+    Return total number of halos in a PIG folder directory.
 
     Parameters
     ----------
     sub_dir : str
-        Directory of a pig folder.
+        Directory of a PIG folder.
     """
     pig_dir = constants.PIG_BASE_DIR + sub_dir + '/'
     pig = bigfile.File(pig_dir)
@@ -167,12 +167,12 @@ def get_pig_numhalo(sub_dir: str):
 
 def get_pig_redshift(sub_dir: str):
     """
-    Return the redshift information(aka time info) in a pig folder directory.
+    Return the redshift information(aka time info) in a PIG folder directory.
 
     Parameters
     ----------
     sub_dir : str
-        Directory of a pig folder.
+        Directory of a PIG folder.
     """
     pig_dir = constants.PIG_BASE_DIR + sub_dir + '/'
     pig = bigfile.File(pig_dir)
@@ -183,12 +183,12 @@ def get_pig_redshift(sub_dir: str):
 
 def get_pig_data(pig_id: int):
     """
-    Return a particular pig folder data in bigfile format.
+    Return a particular PIG folder data in bigfile format.
 
     Parameters
     ----------
     pig_id : int
-        ID of a pig folder.
+        ID of a PIG folder.
     """
     # data directory
     pig_dir = constants.PIG_BASE_DIR + "PIG_" + str(pig_id) + "/"
@@ -203,7 +203,7 @@ def get_lbt_by_haloid(pig_id: int, halo_id: int):
     Parameters
     ----------
     pig_id : int
-        ID of a pig folder.
+        ID of a PIG folder.
     halo_id : int
         ID of a halo.
     """
@@ -218,12 +218,12 @@ def get_lbt_by_haloid(pig_id: int, halo_id: int):
 
 def get_part_subfield(pig_id: int, ptype: str):
     """
-    Return list of features of a particle type in a particular pig folder.
+    Return list of features of a particle type in a particular PIG folder.
 
     Parameters
     ----------
     pig_id : int
-        ID of a pig folder.
+        ID of a PIG folder.
     ptype : str
         Name of particle type.
     """
@@ -239,12 +239,12 @@ def get_part_subfield(pig_id: int, ptype: str):
 
 def get_fof_subfield(pig_id: int):
     """
-    Return list of features of a fofgroup in a particular pig folder.
+    Return list of features of a fofgroup in a particular PIG folder.
 
     Parameters
     ----------
     pig_id : int
-        ID of a pig folder.
+        ID of a PIG folder.
     """
     check_pig_id(pig_id=pig_id)
     subdirectories = []
@@ -261,7 +261,7 @@ def check_feature(pig_id: int, ptype: str, feature: str):
     Parameters
     ----------
     pig_id : int
-        ID of a pig folder.
+        ID of a PIG folder.
     ptype : str
         Name of particle type.
     feature : str
@@ -312,12 +312,12 @@ def check_criterion(criterion: str):
 
 def get_particle_data(pig_id: int, group_id: int, ptype: str, feature: str):
     """
-    Return particle feature data in a particular pig folder in json format.
+    Return particle feature data in a particular PIG folder in json format.
 
     Parameters
     ----------
     pig_id : int
-        ID of a pig folder.
+        ID of a PIG folder.
     group_id : int
         ID of a halo group.
     ptype : str
@@ -354,7 +354,7 @@ def get_particle_data_criterion(pig_id: int, ptype: str,
     Parameters
     ----------
     pig_id : int
-        ID of a pig folder.
+        ID of a PIG folder.
     ptype : str
         Name of particle type for queried data.
     feature : str
@@ -399,12 +399,12 @@ def get_particle_data_criterion(pig_id: int, ptype: str,
 
 def get_fofgroup_data(pig_id: int, group_id: int, feature: str):
     """
-    Return fofgroup feature data in a particular pig folder in json format.
+    Return fofgroup feature data in a particular PIG folder in json format.
 
     Parameters
     ----------
     pig_id : int
-        ID of a pig folder.
+        ID of a PIG folder.
     group_id : int
         ID of a halo group.
     feature : str
