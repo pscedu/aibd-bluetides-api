@@ -23,50 +23,107 @@ tags_metadata = [
 ]
 
 
+        
 # 404 response description
 response_404 = {}
 response_404["pig_id"] = \
     {
         "description": "PIG folder does not exist",
-        "content": {
-            "application/json": {
-                "example": {
-                    "detail": "PIG_{id} folder does not exist, and should be in ['PIG_208', 'PIG_230', 'PIG_237', 'PIG_216', 'PIG_265', 'PIG_244', 'PIG_271', 'PIG_258', 'PIG_222', 'PIG_251', 'PIG_184', 'PIG_197']"},
-                "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"}
-            }
-        }
+        "detail": "PIG_{id} folder does not exist, and should be in ['PIG_208', 'PIG_230', 'PIG_237', 'PIG_216', 'PIG_265', 'PIG_244', 'PIG_271', 'PIG_258', 'PIG_222', 'PIG_251', 'PIG_184', 'PIG_197']."
     }
+
 response_404["ptype"] = \
     {
         "description": "Particle type does not exist",
-        "content": {
-            "application/json": {
-                "example": {
-                    "detail": "{ptype} does not exist, should be in ['gas', 'dm', 'star', 'bh']"},
-                "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"}
-            }
-        }
+        "detail": "{ptype} does not exist, should be in ['gas', 'dm', 'star', 'bh']."
     }
-response_404["read_snapshot_type_info"] = \
+
+response_404["group_id"] = \
     {
-        "description": response_404["pig_id"]["description"] + " or " + response_404["ptype"]["description"],
+        "description": "group_id out of range",
+        "detail": "group_id out of range, should be in [1,max_group_size]."
+    }
+
+response_404["halo_id"] = \
+    {
+        "description": "halo_id out of range",
+        "detail": "halo_id out of range, should be in [1,max_halo_size]."
+    }
+
+response_404["haloid_list"] = \
+    {
+        "description": "haloid_list is empty",
+        "detail": "ID list is empty. Please input a valid one."
+    }
+
+response_404["type_id"] = \
+    {
+        "description": "type_id out of range",
+        "detail": "type_id out of range, should be in [0,6)."
+    }
+
+response_404["ptype"] = \
+    {
+        "description": "ptype does not exist",
+        "detail": "ptype does not exist, should be in ['gas', 'dm', 'star', 'bh']."
+    }
+
+response_404["feature"] = \
+    {
+        "description": "feature does not exist",
+        "detail": "feature does not exist."
+    }
+
+response_404["criterion"] = \
+    {
+        "description": "Search criterion does not exist",
+        "detail": "Search criterion does not exist, should be in ['bh_mass', 'gas_mass', 'dm_mass', 'star_mass', 'bh_mdot']."
+    }
+
+def construct_response_404(error_list):
+    response = {
+        "description": "",
         "content": {
             "application/json": {
                 "example": {
-                    "detail": response_404["pig_id"]["content"]["application/json"]["example"]["detail"] + " or " + response_404["ptype"]["content"]["application/json"]["example"]["detail"]},
+                    "detail": ""},
                 "schema": {
                     "$ref": "#/components/schemas/HTTPValidationError"}
             }
         }
     }
+    for error in error_list:
+        if response["description"] == "":
+            response["description"] += response_404[error]["description"]
+        else:
+            response["description"] += " | " + response_404[error]["description"]
+        if response["content"]["application/json"]["example"]["detail"] == "":
+            response["content"]["application/json"]["example"]["detail"] += response_404[error]["detail"]
+        else:
+            response["content"]["application/json"]["example"]["detail"] += " Or " + response_404[error]["detail"]
+    return response
+
+response_404["read_snapshot_info"] = construct_response_404(["pig_id"])
+response_404["read_snapshot_type_info"] = construct_response_404(["pig_id", "ptype"])
+response_404["read_lbt_file"] = construct_response_404(["pig_id", "group_id"])
+response_404["read_lbt_by_haloid"] = construct_response_404(["pig_id", "halo_id"])
+response_404["read_lbt_by_haloid_list"] = construct_response_404(["pig_id", "haloid_list", "halo_id"])
+response_404["read_lbht"] = construct_response_404(["pig_id", "halo_id", "type_id"])
+response_404["read_obh"] = construct_response_404(["pig_id", "halo_id"])
+response_404["read_haloid_by_criterion"] = construct_response_404(["pig_id", "ptype", "feature"])
+response_404["read_particle_data_by_criterion"] = construct_response_404(["pig_id", "ptype", "feature", "criterion", ])
+response_404["read_fofgroup_data"] = construct_response_404(["pig_id", "feature", "group_id"])
+response_404["read_particle_data_by_groupid"] = construct_response_404(["pig_id", "ptype", "feature", "group_id"])
+response_404["read_particle_data_by_post_groupid_list"] = construct_response_404(["pig_id", "ptype", "feature", "haloid_list"])
+
 # 200 response description
 response_200 = {}
+
 response_200["read_pig"] = \
     {
         "description": "Successful Response - Snapshot info requested by pig ID",
     }
+
 response_200["read_snapshot_info"] = \
     {
         "description": "Particle type does not exist",
@@ -90,6 +147,7 @@ response_200["read_snapshot_info"] = \
                     }
                 }
     }
+
 response_200["read_snapshot_fof_info"] = \
     {
         "description": "Successful Response - FoFGroup info requested by pig ID",
@@ -118,6 +176,7 @@ response_200["read_snapshot_fof_info"] = \
                 }
             }
         }
+
 response_200["read_snapshot_type_info"] = \
     {
         "description": "Successful Response - Particle feature requested by pig ID and type",
@@ -136,6 +195,28 @@ response_200["read_snapshot_type_info"] = \
                     ]},
                 "schema": {
                     "$ref": "#/components/schemas/Particle"}
+                }
+            }
+    }
+
+response_200["read_lbt_file"] = \
+    {
+        "description": "Successful Response - Lengthbytype data requested by pig ID and halo number",
+        "content": {
+            "application/json": {
+                "example": {
+                    "id": 251,
+                    "type": "dm",
+                    "subdirs": [
+                        "GroupID",
+                        "Velocity",
+                        "ID",
+                        "Potential",
+                        "Generation",
+                        "Position"
+                    ]},
+                # "schema": {
+                #     "$ref": "#/components/schemas/Particle"}
                 }
             }
     }

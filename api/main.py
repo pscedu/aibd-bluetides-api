@@ -76,7 +76,7 @@ async def read_pig():
     tags=["pig"],
     response_model=Snapshot,
     responses={
-        404: constants.response_404["pig_id"],
+        404: constants.response_404["read_snapshot_info"],
         200: constants.response_200["read_snapshot_info"],
         },
     )
@@ -103,7 +103,7 @@ async def read_snapshot_info(id: int= Path(..., description="ID of a PIG folder"
     tags=["pig"],
     response_model=FoFGroup,
     responses={
-        404: constants.response_404["pig_id"],
+        404: constants.response_404["read_snapshot_info"],
         200: constants.response_200["read_snapshot_fof_info"],
         },)
 async def read_snapshot_fof_info(id: int = Path(..., description="ID of a PIG folder")):
@@ -137,7 +137,13 @@ async def read_snapshot_type_info(id: int = Path(..., description="ID of a PIG f
 
 # Route
 # Get the first n lengthByType data in a particular PIG folder.
-@app.get("/pig/{id}/lengthbytype/n={num}", tags=["lengthbytype"])
+@app.get(
+    "/pig/{id}/lengthbytype/n={num}", 
+    tags=["lengthbytype"],
+    responses={
+    404: constants.response_404["read_lbt_file"],
+    200: constants.response_200["read_lbt_file"]
+    },)
 async def read_lbt_file(id: int = Path(..., description="ID of a PIG folder"), num: int = Path(..., description="Number of halos")):
     """
     Get the length info of the first n halos in a PIG folder with all the information:
@@ -148,7 +154,7 @@ async def read_lbt_file(id: int = Path(..., description="ID of a PIG folder"), n
     # Data
     utils.check_pig_id(pig_id=id)
     pig = utils.get_pig_data(id)
-    utils.check_halo_id_range(pig=pig, halo_id=num - 1)
+    utils.check_group_id_range(pig=pig, group_id=num)
     nhalo = num  # only read from the first n halos
 
     # lbt: number of particles in each Fof halo
@@ -162,7 +168,13 @@ async def read_lbt_file(id: int = Path(..., description="ID of a PIG folder"), n
 
 
 # Get the number of all gas type particles in the nth halo of a particular PIG folder
-@app.get("/pig/{id}/lengthbytype/{halo_id}/", tags=["lengthbytype"])
+@app.get(
+    "/pig/{id}/lengthbytype/{halo_id}/", 
+    tags=["lengthbytype"],
+    responses={
+    404: constants.response_404["read_lbt_by_haloid"],
+    # 200: constants.response_200["read_lbt_by_haloid"]
+    },)
 async def read_lbt_by_haloid(id: int = Path(..., description="ID of a PIG folder"), halo_id: int = Path(..., description="ID of a halo")):
     """
     Get the number of all type particles for the nth halo in a PIG folder with all the information:
@@ -175,7 +187,13 @@ async def read_lbt_by_haloid(id: int = Path(..., description="ID of a PIG folder
 
 
 # Get the number of all type particles in a halo list of a particular PIG folder
-@app.get("/pig/{id}/lengthbytype/", tags=["lengthbytype"])
+@app.get(
+    "/pig/{id}/lengthbytype/", 
+    tags=["lengthbytype"],
+    responses={
+    404: constants.response_404["read_lbt_by_haloid_list"],
+    # 200: constants.response_200["read_lbt_by_haloid_list"]
+    },)
 async def read_lbt_by_haloid_list(id: int = Path(..., description="ID of a PIG folder"), haloid_list: List[int] = Query(None, description="A list of group IDs")):
     """
     Get the number of all type particles for a halo list in a PIG folder with all the information:
@@ -183,7 +201,7 @@ async def read_lbt_by_haloid_list(id: int = Path(..., description="ID of a PIG f
     - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
     - **haloid_list**: A list of group IDs. It should be a list and be passed as a query parameter.
     """
-    data = {}
+    data = {} 
     utils.check_query_list(haloid_list)
     for halo_id in haloid_list:
         data[halo_id] = utils.get_lbt_by_haloid(pig_id=id, halo_id=halo_id)
@@ -191,7 +209,13 @@ async def read_lbt_by_haloid_list(id: int = Path(..., description="ID of a PIG f
 
 
 # Get the number of a specific type particles in the nth halo of a particular PIG folder
-@app.get("/pig/{id}/lengthbytype/{halo_id}/{type_id}", tags=["lengthbytype"])
+@app.get(
+    "/pig/{id}/lengthbytype/{halo_id}/{type_id}", 
+    tags=["lengthbytype"],
+    responses={
+    404: constants.response_404["read_lbht"],
+    # 200: constants.response_200["read_lbht"]
+    },)
 async def read_lbht(id: int = Path(..., description="ID of a PIG folder"), halo_id: int = Path(..., description="ID of a halo"), type_id: int = Path(..., description="ID of a particle type")):
     """
     Get the number of a specific type particles for the nth halo in a PIG folder with all the information:
@@ -211,7 +235,13 @@ async def read_lbht(id: int = Path(..., description="ID of a PIG folder"), halo_
 
 
 # Get the beginning and the ending index of a particular group and PIG folder.
-@app.get("/pig/{id}/offsetbytype/{halo_id}/", tags=["lengthbytype"])
+@app.get(
+    "/pig/{id}/offsetbytype/{halo_id}/", 
+    tags=["lengthbytype"],
+    responses={
+    404: constants.response_404["read_obh"],
+    # 200: constants.response_200["read_obh"]
+    },)
 async def read_obh(id: int = Path(..., description="ID of a PIG folder"), halo_id: int = Path(..., description="ID of a halo")):
     """
     Get the beginning and the ending index of the nth halo group in a PIG folder with all the information:
@@ -239,7 +269,13 @@ async def read_obh(id: int = Path(..., description="ID of a PIG folder"), halo_i
 ###################################################################
 #                     Search by Criterion Queries                 #
 ###################################################################
-@app.get("/pig/{id}/search_id/{ptype}/{feature}", tags=["advanced"])
+@app.get(
+    "/pig/{id}/search_id/{ptype}/{feature}", 
+    tags=["advanced"],
+    responses={
+    404: constants.response_404["read_haloid_by_criterion"],
+    # 200: constants.response_200["read_haloid_by_criterion"]
+    },)
 async def read_haloid_by_criterion(id: int = Path(..., description="ID of a PIG folder"), feature: str = Path(..., description="Feature of FoFGroup"), 
     ptype: str = Path(..., description="Name of particle type"), min_range: Optional[float] = Query(None, description="Min range of a searching criterion"), 
     max_range: Optional[float] = Query(None, description="Min range of a searching criterion")):
@@ -269,7 +305,13 @@ async def read_haloid_by_criterion(id: int = Path(..., description="ID of a PIG 
     return {"IDlist": encoded_numpy_data}
 
 
-@app.get("/pig/{id}/search/{ptype}/{feature}/{criterion}", tags=["advanced"])
+@app.get(
+    "/pig/{id}/search/{ptype}/{feature}/{criterion}", 
+    tags=["advanced"],
+    responses={
+    404: constants.response_404["read_particle_data_by_criterion"],
+    # 200: constants.response_200["read_particle_data_by_criterion"]
+    },)
 async def read_particle_data_by_criterion(id: int = Path(..., description="ID of a PIG folder"), ptype: str = Path(..., description="Name of particle type"), 
     feature: str  = Path(..., description="Feature of the particle"), criterion: str = Path(..., description="Searching Criterion"), 
     min_range: Optional[float] = Query(None, description="Min range of a searching criterion"), max_range: Optional[float] = Query(None, description="Min range of a searching criterion")):
@@ -291,7 +333,13 @@ async def read_particle_data_by_criterion(id: int = Path(..., description="ID of
 #                        FoF Group Queries                        #
 ###################################################################
 # Regular query for particle data in a Group={group_id} of type={ptype}
-@app.get("/pig/{id}/fofgroup/{feature}/{group_id}", tags=["particle"])
+@app.get(
+    "/pig/{id}/fofgroup/{feature}/{group_id}", 
+    tags=["particle"],
+    responses={
+    404: constants.response_404["read_fofgroup_data"],
+    # 200: constants.response_200["read_fofgroup_data"]
+    },)
 async def read_fofgroup_data(id: int = Path(..., description="ID of a PIG folder"), group_id: int = Path(..., description="ID of a halo group"), feature: str = Path(..., description="Feature of FoFGroup")):
     """
     Get the the FoFGroup feature data of the nth halo group in a PIG folder with all the information:
@@ -308,7 +356,13 @@ async def read_fofgroup_data(id: int = Path(..., description="ID of a PIG folder
 #                        Particle Queries                         #
 ###################################################################
 # Regular query for particle data in a Group={group_id} of type={ptype}
-@app.get("/pig/{id}/{ptype}/{feature}/{group_id}", tags=["particle"])
+@app.get(
+    "/pig/{id}/{ptype}/{feature}/{group_id}", 
+    tags=["particle"],
+    responses={
+    404: constants.response_404["read_particle_data_by_groupid"],
+    # 200: constants.response_200["read_particle_data_by_groupid"]
+    },)
 async def read_particle_data_by_groupid(id: int = Path(..., description="ID of a PIG folder"), group_id: int = Path(..., description="ID of a halo group"), 
     ptype: str = Path(..., description="Name of particle type"), feature: str = Path(..., description="Feature of the particle")):
     """
@@ -323,7 +377,13 @@ async def read_particle_data_by_groupid(id: int = Path(..., description="ID of a
 
 
 ### bulk query post
-@app.post("/pig/{id}/{ptype}/{feature}/", tags=["advanced"])
+@app.post(
+    "/pig/{id}/{ptype}/{feature}/", 
+    tags=["advanced"],
+    responses={
+    404: constants.response_404["read_particle_data_by_post_groupid_list"],
+    # 200: constants.response_200["read_particle_data_by_post_groupid_list"]
+    },)
 async def read_particle_data_by_post_groupid_list(id: int = Path(..., description="ID of a PIG folder"), ptype: str = Path(..., description="Name of particle type"), 
     feature: str = Path(..., description="Feature of the particle"), groupid_list: List[int] = Body(..., description="A list of group IDs")):
     """
