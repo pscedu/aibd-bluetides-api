@@ -212,8 +212,8 @@ def get_lbt_by_haloid(pig_id: int, halo_id: int):
     check_halo_id_range(pig=pig, halo_id=halo_id)
     nhalo = pig.open('FOFGroups/LengthByType')[halo_id]
     numpy_array_type_data = numpy.array(nhalo)
-    encoded_numpy_type_data = json.dumps(numpy_array_type_data, cls=NumpyArrayEncoder)
-    return encoded_numpy_type_data
+    # encoded_numpy_type_data = json.dumps(numpy_array_type_data, cls=NumpyArrayEncoder)
+    return numpy_array_type_data.tolist()
 
 
 def get_part_subfield(pig_id: int, ptype: str):

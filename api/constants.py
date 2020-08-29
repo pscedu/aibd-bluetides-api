@@ -118,6 +118,19 @@ response_404["read_particle_data_by_post_groupid_list"] = construct_response_404
 
 # 200 response description
 response_200 = {}
+def construct_response_200(description, example, model):
+    response = {
+        "description": description,
+        "content": {
+                "application/json": {
+                    "example": example,
+                    "schema": {
+                        "$ref": "#/components/schemas/" + model
+                    }
+                }
+            }
+    }
+    return response
 
 response_200["read_pig"] = \
     {
@@ -125,98 +138,97 @@ response_200["read_pig"] = \
     }
 
 response_200["read_snapshot_info"] = \
-    {
-        "description": "Particle type does not exist",
-        "content": {
-                "application/json": {
-                    "example": {
-                        "id": 251,
-                        "subdirs": [
-                                "fofgroup",
-                                "gas",
-                                "dm",
-                                "star",
-                                "bh"
-                            ],
-                        "num_gas": 19358022252,
-                        "num_dm": 21165203462,
-                        "num_star": 587619843,
-                        "num_bh": 235967},
-                    "schema": {
-                        "$ref": "#/components/schemas/Snapshot"}
-                    }
-                }
-    }
+    construct_response_200(
+        "Successful Response - Particle info requested by pig ID",
+        {
+            "id": 251,
+            "subdirs": [
+                    "fofgroup",
+                    "gas",
+                    "dm",
+                    "star",
+                    "bh"
+                ],
+            "num_gas": 19358022252,
+            "num_dm": 21165203462,
+            "num_star": 587619843,
+            "num_bh": 235967
+        },
+        "Snapshot")
 
 response_200["read_snapshot_fof_info"] = \
-    {
-        "description": "Successful Response - FoFGroup info requested by pig ID",
-        "content": {
-            "application/json": {
-                "example": {
-                    "id": 251,
-                    "fof_subdirs": [
-                    "Imom",
-                    "GroupID",
-                    "Mass",
-                    "Jmom",
-                    "OffsetByType",
-                    "BlackholeMass",
-                    "LengthByType",
-                    "FirstPos",
-                    "MassCenterPosition",
-                    "BlackholeAccretionRate",
-                    "MinID",
-                    "MassByType",
-                    "MassCenterVelocity",
-                    "StarFormationRate"
-                    ]},
-                "schema": {
-                    "$ref": "#/components/schemas/FoFGroup"}
-                }
-            }
-        }
+    construct_response_200(
+        "Successful Response - FoFGroup info requested by pig ID",
+        {
+            "id": 251,
+            "fof_subdirs": [
+            "Imom",
+            "GroupID",
+            "Mass",
+            "Jmom",
+            "OffsetByType",
+            "BlackholeMass",
+            "LengthByType",
+            "FirstPos",
+            "MassCenterPosition",
+            "BlackholeAccretionRate",
+            "MinID",
+            "MassByType",
+            "MassCenterVelocity",
+            "StarFormationRate"
+            ]
+        },
+        "SnapshotFoFGroup")
 
 response_200["read_snapshot_type_info"] = \
-    {
-        "description": "Successful Response - Particle feature requested by pig ID and type",
-        "content": {
-            "application/json": {
-                "example": {
-                    "id": 251,
-                    "type": "dm",
-                    "subdirs": [
-                        "GroupID",
-                        "Velocity",
-                        "ID",
-                        "Potential",
-                        "Generation",
-                        "Position"
-                    ]},
-                "schema": {
-                    "$ref": "#/components/schemas/Particle"}
-                }
-            }
-    }
+    construct_response_200(
+        "Successful Response - Particle feature requested by pig ID and type",
+        {
+            "id": 251,
+            "type": "dm",
+            "subdirs": [
+                "GroupID",
+                "Velocity",
+                "ID",
+                "Potential",
+                "Generation",
+                "Position"
+            ]
+        },
+        "SnapshotParticle")
 
 response_200["read_lbt_file"] = \
-    {
-        "description": "Successful Response - Lengthbytype data requested by pig ID and halo number",
-        "content": {
-            "application/json": {
-                "example": {
-                    "id": 251,
-                    "type": "dm",
-                    "subdirs": [
-                        "GroupID",
-                        "Velocity",
-                        "ID",
-                        "Potential",
-                        "Generation",
-                        "Position"
-                    ]},
-                # "schema": {
-                #     "$ref": "#/components/schemas/Particle"}
-                }
-            }
-    }
+    construct_response_200(
+        "Successful Response - Lengthbytype data requested by pig ID and halo number",
+        {
+            "id": 251,
+            "num": 1,
+            "length_by_type": [
+                [
+                446499,
+                507723,
+                0,
+                0,
+                561897,
+                7
+                ]
+            ]
+        },
+        "LengthbytypeN")
+
+response_200["read_lbt_by_haloid"] = \
+    construct_response_200(
+        "Successful Response - Lengthbytype data requested by pig ID and halo ID",
+        {
+            "id": 251,
+            "halo_id": 10,
+            "type_length": [
+                102244,
+                121770,
+                0,
+                0,
+                140880,
+                6
+            ]
+        },
+        "LengthbytypeHaloID")

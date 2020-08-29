@@ -32,16 +32,40 @@ class Snapshot(BaseModel):
     num_bh: int
 
 
-class FoFGroup(BaseModel):
+class SnapshotFoFGroup(BaseModel):
     id: int
     fof_subdirs: list
 
 
-class Particle(BaseModel):
+class SnapshotParticle(BaseModel):
     id: int
     ptype: str
     subdirs: list
 
+class LengthbytypeN(BaseModel):
+    id: int
+    num: int
+    length_by_type: list
+
+class LengthbytypeHaloID(BaseModel):
+    id: int
+    halo_id: int
+    type_length: list
+
+# class LengthbytypeHaloList(BaseModel):
+#     id: int
+
+class LengthbytypeHaloIDTypeID(BaseModel):
+    id: int
+    halo_id: int
+    type_id: int
+    length: int
+
+class Offsetbytype(BaseModel):
+    id: int
+    halo_id: int
+    beginning_index: list
+    ending_index: list
 
 @app.get("/")
 async def read_main():
@@ -101,7 +125,7 @@ async def read_snapshot_info(id: int= Path(..., description="ID of a PIG folder"
 @app.get(
     "/pig/{id}/fofgroup", 
     tags=["pig"],
-    response_model=FoFGroup,
+    response_model=SnapshotFoFGroup,
     responses={
         404: constants.response_404["read_snapshot_info"],
         200: constants.response_200["read_snapshot_fof_info"],
@@ -119,7 +143,7 @@ async def read_snapshot_fof_info(id: int = Path(..., description="ID of a PIG fo
 @app.get(
     "/pig/{id}/{ptype}", 
     tags=["pig"],
-    response_model=Particle,
+    response_model=SnapshotParticle,
     responses={
         404: constants.response_404["read_snapshot_type_info"],
         200: constants.response_200["read_snapshot_type_info"]
@@ -140,6 +164,7 @@ async def read_snapshot_type_info(id: int = Path(..., description="ID of a PIG f
 @app.get(
     "/pig/{id}/lengthbytype/n={num}", 
     tags=["lengthbytype"],
+    response_model=LengthbytypeN,
     responses={
     404: constants.response_404["read_lbt_file"],
     200: constants.response_200["read_lbt_file"]
@@ -163,17 +188,18 @@ async def read_lbt_file(id: int = Path(..., description="ID of a PIG folder"), n
 
     # serialize lbt numpy array into json
     numpy_array_data = numpy.array(lbt)
-    encoded_numpy_data = json.dumps(numpy_array_data, cls=utils.NumpyArrayEncoder)
-    return {"length_by_type": encoded_numpy_data}
+    # encoded_numpy_data = json.dumps(numpy_array_data, cls=utils.NumpyArrayEncoder)
+    return {"id": id, "num": num, "length_by_type": numpy_array_data.tolist()}
 
 
 # Get the number of all gas type particles in the nth halo of a particular PIG folder
 @app.get(
     "/pig/{id}/lengthbytype/{halo_id}/", 
     tags=["lengthbytype"],
+    response_model=LengthbytypeHaloID,
     responses={
     404: constants.response_404["read_lbt_by_haloid"],
-    # 200: constants.response_200["read_lbt_by_haloid"]
+    200: constants.response_200["read_lbt_by_haloid"]
     },)
 async def read_lbt_by_haloid(id: int = Path(..., description="ID of a PIG folder"), halo_id: int = Path(..., description="ID of a halo")):
     """
@@ -183,7 +209,7 @@ async def read_lbt_by_haloid(id: int = Path(..., description="ID of a PIG folder
     - **halo_id**: ID of a halo. ID of a halo. It should be between 0 to the max halo ID.
     """
     data = utils.get_lbt_by_haloid(pig_id=id, halo_id=halo_id)
-    return {"halo_id": halo_id, "type_length": data}
+    return {"id": id, "halo_id": halo_id, "type_length": data}
 
 
 # Get the number of all type particles in a halo list of a particular PIG folder
