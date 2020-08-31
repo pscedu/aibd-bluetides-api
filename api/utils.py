@@ -6,7 +6,7 @@ import bigfile
 import numpy
 from fastapi import HTTPException
 
-import constants
+from . import constants
 
 
 class NumpyArrayEncoder(JSONEncoder):
@@ -395,6 +395,26 @@ def get_particle_data_criterion(pig_id: int, ptype: str,
         id_list = list(set(pig.open('5/GroupID')[:][index] - 1))
     data = {str(i): json.dumps(pig.open(path)[obt[i, ind]:obt[i + 1, ind]], cls=NumpyArrayEncoder) for i in id_list}
     return data
+
+
+def get_fofgroup_data_all(pig_id: int, feature: str):
+    """
+    Return all fofgroup feature data in a particular PIG folder in json format.
+
+    Parameters
+    ----------
+    pig_id : int
+        ID of a PIG folder.
+    feature : str
+        Feature of a particle.
+    """
+    check_pig_id(pig_id=pig_id)
+    pig = get_pig_data(pig_id)
+    check_feature(pig_id=pig_id, ptype='fofgroup', feature=feature)
+    data = pig.open('FOFGroups/' + feature)[:]
+    numpy_array_data = numpy.array(data)
+    encoded_numpy_data = json.dumps(numpy_array_data, cls=NumpyArrayEncoder)
+    return encoded_numpy_data
 
 
 def get_fofgroup_data(pig_id: int, group_id: int, feature: str):

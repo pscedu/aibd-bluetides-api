@@ -11,8 +11,8 @@ from fastapi import FastAPI, Query, Path, Body, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-import utils
-import constants
+from . import utils
+from . import constants
 
 
 # Init
@@ -358,6 +358,24 @@ async def read_particle_data_by_criterion(id: int = Path(..., description="ID of
 ###################################################################
 #                        FoF Group Queries                        #
 ###################################################################
+# Regular query for particle data in a Group={group_id} of type={ptype}
+@app.get(
+    "/pig/{id}/fofgroup/{feature}/all", 
+    tags=["particle"],
+    responses={
+    404: constants.response_404["read_fofgroup_data_all"],
+    # 200: constants.response_200["read_fofgroup_data"]
+    },)
+async def read_fofgroup_data_all(id: int = Path(..., description="ID of a PIG folder"), feature: str = Path(..., description="Feature of FoFGroup")):
+    """
+    Get the the FoFGroup feature data of all groups in a PIG folder with all the information:
+
+    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
+    - **feature**: Feature of FoFGroup.
+    """
+    data = utils.get_fofgroup_data_all(pig_id=id, feature=feature)
+    return {('fofgroup' + '_' + feature.lower()): data}
+
 # Regular query for particle data in a Group={group_id} of type={ptype}
 @app.get(
     "/pig/{id}/fofgroup/{feature}/{group_id}", 
