@@ -81,19 +81,14 @@ def test_get_lbt_251():
     response = client.get("/pig/251/lengthbytype/n=4")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
-    assert response.json() == {
-        "length_by_type": "[[446499, 507723, 0, 0, 561897, 7], [700225, 0, 0, 0, 1, 0], "
-                          "[239021, 247773, 0, 0, 173607, 8], [125966, 152736, 0, 0, 206388, 2]]"
-    }
+    assert response.json()["length_by_type"] == [[446499, 507723, 0, 0, 561897, 7], [700225, 0, 0, 0, 1, 0], [239021, 247773, 0, 0, 173607, 8], [125966, 152736, 0, 0, 206388, 2]]
 
 
 def test_get_lbt_271():
     response = client.get("/pig/271/lengthbytype/n=4")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
-    assert response.json() == {
-        "length_by_type": "[[513379, 579338, 0, 0, 622535, 9], [791952, 0, 0, 0, 7, 0], [226008, 237161, 0, 0, 182457, 7], [127491, 160510, 0, 0, 232226, 2]]"
-    }
+    assert response.json()["length_by_type"] == [[513379, 579338, 0, 0, 622535, 9], [791952, 0, 0, 0, 7, 0], [226008, 237161, 0, 0, 182457, 7], [127491, 160510, 0, 0, 232226, 2]]
 
 
 # Negative testing with invalid input
@@ -131,8 +126,9 @@ def test_get_lbh_251():
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
     assert response.json() == {
+        "id": 251,
         "halo_id": 100,
-        "type_length": "[71937, 74788, 0, 0, 54739, 4]"
+        "type_length": [71937, 74788, 0, 0, 54739, 4]
     }
 
 
@@ -141,8 +137,9 @@ def test_get_lbh_271():
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
     assert response.json() == {
+        "id": 271,
         "halo_id": 100,
-        "type_length": "[89069, 87802, 0, 0, 50623, 5]"
+        "type_length": [89069, 87802, 0, 0, 50623, 5]
     }
 
 
@@ -178,9 +175,9 @@ def test_get_advanced_lbt_251():
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- haloids and their length should match the file data.
     assert response.json() == {
-        "1": "[700225, 0, 0, 0, 1, 0]",
-        "2": "[239021, 247773, 0, 0, 173607, 8]",
-        "3": "[125966, 152736, 0, 0, 206388, 2]"
+        "1": [700225, 0, 0, 0, 1, 0],
+        "2": [239021, 247773, 0, 0, 173607, 8],
+        "3": [125966, 152736, 0, 0, 206388, 2]
     }
 
 
@@ -189,7 +186,7 @@ def test_get_advanced_lbt_271():
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- haloids and their length should match the file data.
     assert response.json() == {
-        "100": "[89069, 87802, 0, 0, 50623, 5]",
-        "200": "[79770, 77107, 0, 0, 23746, 5]",
-        "300": "[41642, 52102, 0, 0, 62728, 2]"
+        "100": [89069, 87802, 0, 0, 50623, 5],
+        "200": [79770, 77107, 0, 0, 23746, 5],
+        "300": [41642, 52102, 0, 0, 62728, 2]
     }
