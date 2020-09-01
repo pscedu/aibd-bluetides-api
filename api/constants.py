@@ -113,6 +113,7 @@ response_404["read_obh"] = construct_response_404(["pig_id", "halo_id"])
 response_404["read_haloid_by_criterion"] = construct_response_404(["pig_id", "ptype", "feature"])
 response_404["read_particle_data_by_criterion"] = construct_response_404(["pig_id", "ptype", "feature", "criterion", ])
 response_404["read_fofgroup_data"] = construct_response_404(["pig_id", "feature", "group_id"])
+response_404["read_fofgroup_data_all"] = construct_response_404(["pig_id", "feature"])
 response_404["read_particle_data_by_groupid"] = construct_response_404(["pig_id", "ptype", "feature", "group_id"])
 response_404["read_particle_data_by_post_groupid_list"] = construct_response_404(["pig_id", "ptype", "feature", "haloid_list"])
 
