@@ -232,3 +232,65 @@ response_200["read_lbt_by_haloid"] = \
             ]
         },
         "LengthbytypeHaloID")
+
+response_200["read_lbt_by_haloid_list"] = \
+    construct_response_200(
+        "Successful Response - Lengthbytype data requested by pig ID and list of halo IDs",
+        {
+            "id": 251,
+            "haloid_lbt": {
+                "1": [
+                700225,
+                0,
+                0,
+                0,
+                1,
+                0
+                ],
+                "2": [
+                239021,
+                247773,
+                0,
+                0,
+                173607,
+                8
+                ]
+            }
+            },
+        "LengthbytypeHaloList")
+
+response_200["read_lbht"] = \
+    construct_response_200(
+        "Successful Response - Lengthbytype data requested by pig ID, halo ID, and type ID",
+        {
+            "id": 251,
+            "halo_id": 10,
+            "type_id": 1,
+            "length": 121770
+        },
+        "LengthbytypeHaloIDTypeID")
+
+response_200["read_obh"] = \
+    construct_response_200(
+        "Successful Response - Offsetbytype data requested by pig ID, and halo ID",
+        {
+        "id": 251,
+        "halo_id": 10,
+        "beginning_index": [
+            2433830,
+            1847385,
+            0,
+            0,
+            1524584,
+            69
+        ],
+        "ending_index": [
+            2536074,
+            1969155,
+            0,
+            0,
+            1665464,
+            75
+        ]
+        },
+        "Offsetbytype")

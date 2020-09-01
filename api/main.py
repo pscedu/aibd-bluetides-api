@@ -6,7 +6,7 @@
 import json
 
 import numpy
-from typing import List, Optional
+from typing import List, Dict, Optional
 from fastapi import FastAPI, Query, Path, Body, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -34,26 +34,27 @@ class Snapshot(BaseModel):
 
 class SnapshotFoFGroup(BaseModel):
     id: int
-    fof_subdirs: list
+    fof_subdirs: List[str] = []
 
 
 class SnapshotParticle(BaseModel):
     id: int
     ptype: str
-    subdirs: list
+    subdirs: List[str] = []
 
 class LengthbytypeN(BaseModel):
     id: int
     num: int
-    length_by_type: list
+    length_by_type: List[list] = []
 
 class LengthbytypeHaloID(BaseModel):
     id: int
     halo_id: int
-    type_length: list
+    type_length: List[int] = []
 
-# class LengthbytypeHaloList(BaseModel):
-#     id: int
+class LengthbytypeHaloList(BaseModel):
+    id: int
+    haloid_lbt: Dict[int, List[int]] = {}
 
 class LengthbytypeHaloIDTypeID(BaseModel):
     id: int
@@ -64,8 +65,8 @@ class LengthbytypeHaloIDTypeID(BaseModel):
 class Offsetbytype(BaseModel):
     id: int
     halo_id: int
-    beginning_index: list
-    ending_index: list
+    beginning_index: List[int] = []
+    ending_index: List[int] = []
 
 @app.get("/")
 async def read_main():
@@ -216,9 +217,10 @@ async def read_lbt_by_haloid(id: int = Path(..., description="ID of a PIG folder
 @app.get(
     "/pig/{id}/lengthbytype/", 
     tags=["lengthbytype"],
+    response_model=LengthbytypeHaloList,
     responses={
     404: constants.response_404["read_lbt_by_haloid_list"],
-    # 200: constants.response_200["read_lbt_by_haloid_list"]
+    200: constants.response_200["read_lbt_by_haloid_list"]
     },)
 async def read_lbt_by_haloid_list(id: int = Path(..., description="ID of a PIG folder"), haloid_list: List[int] = Query(None, description="A list of group IDs")):
     """
@@ -227,20 +229,21 @@ async def read_lbt_by_haloid_list(id: int = Path(..., description="ID of a PIG f
     - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
     - **haloid_list**: A list of group IDs. It should be a list and be passed as a query parameter.
     """
-    data = {} 
+    data = {}
     utils.check_query_list(haloid_list)
     for halo_id in haloid_list:
         data[halo_id] = utils.get_lbt_by_haloid(pig_id=id, halo_id=halo_id)
-    return data
+    return {"id": id, "haloid_lbt": data}
 
 
 # Get the number of a specific type particles in the nth halo of a particular PIG folder
 @app.get(
     "/pig/{id}/lengthbytype/{halo_id}/{type_id}", 
     tags=["lengthbytype"],
+    response_model=LengthbytypeHaloIDTypeID,
     responses={
     404: constants.response_404["read_lbht"],
-    # 200: constants.response_200["read_lbht"]
+    200: constants.response_200["read_lbht"]
     },)
 async def read_lbht(id: int = Path(..., description="ID of a PIG folder"), halo_id: int = Path(..., description="ID of a halo"), type_id: int = Path(..., description="ID of a particle type")):
     """
@@ -257,16 +260,17 @@ async def read_lbht(id: int = Path(..., description="ID of a PIG folder"), halo_
     length = nhalo[type_id]
     numpy_array_len_data = numpy.array(length)
     encoded_numpy_len_data = json.dumps(numpy_array_len_data, cls=utils.NumpyArrayEncoder)
-    return {"halo_id": halo_id, "type_id": type_id, "length": encoded_numpy_len_data}
+    return {"id": id, "halo_id": halo_id, "type_id": type_id, "length": encoded_numpy_len_data}
 
 
 # Get the beginning and the ending index of a particular group and PIG folder.
 @app.get(
     "/pig/{id}/offsetbytype/{halo_id}/", 
     tags=["lengthbytype"],
+    response_model=Offsetbytype,
     responses={
     404: constants.response_404["read_obh"],
-    # 200: constants.response_200["read_obh"]
+    200: constants.response_200["read_obh"]
     },)
 async def read_obh(id: int = Path(..., description="ID of a PIG folder"), halo_id: int = Path(..., description="ID of a halo")):
     """
@@ -286,10 +290,10 @@ async def read_obh(id: int = Path(..., description="ID of a PIG folder"), halo_i
         begin = obt[halo_id - 1]
     end = obt[halo_id]
     numpy_array_begin_data = numpy.array(begin)
-    encoded_numpy_begin_data = json.dumps(numpy_array_begin_data, cls=utils.NumpyArrayEncoder)
+    # encoded_numpy_begin_data = json.dumps(numpy_array_begin_data, cls=utils.NumpyArrayEncoder)
     numpy_array_end_data = numpy.array(end)
-    encoded_numpy_end_data = json.dumps(numpy_array_end_data, cls=utils.NumpyArrayEncoder)
-    return {"halo_id": halo_id, "beginning_index": encoded_numpy_begin_data, "ending_index": encoded_numpy_end_data}
+    # encoded_numpy_end_data = json.dumps(numpy_array_end_data, cls=utils.NumpyArrayEncoder)
+    return {"id": id, "halo_id": halo_id, "beginning_index": numpy_array_begin_data.tolist(), "ending_index": numpy_array_end_data.tolist()}
 
 
 ###################################################################

@@ -13,9 +13,10 @@ def test_get_length_251():
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
     assert response.json() == {
+        "id": 251,
         "halo_id": 100,
         "type_id": 1,
-        "length": "74788"
+        "length": 74788
     }
 
 
@@ -24,9 +25,10 @@ def test_get_length_271():
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
     assert response.json() == {
+        "id": 271,
         "halo_id": 100,
         "type_id": 1,
-        "length": "87802"
+        "length": 87802
     }
 
 
@@ -174,7 +176,7 @@ def test_get_advanced_lbt_251():
     response = client.get("/pig/251/lengthbytype/", params={'haloid_list': [1, 2, 3]})
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- haloids and their length should match the file data.
-    assert response.json() == {
+    assert response.json()["haloid_lbt"] == {
         "1": [700225, 0, 0, 0, 1, 0],
         "2": [239021, 247773, 0, 0, 173607, 8],
         "3": [125966, 152736, 0, 0, 206388, 2]
@@ -185,7 +187,7 @@ def test_get_advanced_lbt_271():
     response = client.get("/pig/271/lengthbytype/", params={'haloid_list': [100, 200, 300]})
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- haloids and their length should match the file data.
-    assert response.json() == {
+    assert response.json()["haloid_lbt"] == {
         "100": [89069, 87802, 0, 0, 50623, 5],
         "200": [79770, 77107, 0, 0, 23746, 5],
         "300": [41642, 52102, 0, 0, 62728, 2]

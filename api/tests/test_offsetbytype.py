@@ -15,24 +15,26 @@ def test_get_index_251():
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object
     # response data -- beginning and ending index should be 1 row 6 colums array and match the file data.
-    assert len(json.loads(response.json()["beginning_index"])) == 6
-    assert len(json.loads(response.json()["ending_index"])) == 6
+    assert len(response.json()["beginning_index"]) == 6
+    assert len(response.json()["ending_index"]) == 6
     assert response.json() == {
+        "id": 251,
         "halo_id": 100,
-        "beginning_index": "[9806101, 9899951, 0, 0, 8568855, 414]",
-        "ending_index": "[9878038, 9974739, 0, 0, 8623594, 418]"
+        "beginning_index": [9806101, 9899951, 0, 0, 8568855, 414],
+        "ending_index": [9878038, 9974739, 0, 0, 8623594, 418]
     }
 
 
 def test_get_index_271():
     response = client.get("/pig/271/offsetbytype/1/")
     utils.common_positive_tests(response)
-    assert len(json.loads(response.json()["beginning_index"])) == 6
-    assert len(json.loads(response.json()["ending_index"])) == 6
+    assert len(response.json()["beginning_index"]) == 6
+    assert len(response.json()["ending_index"]) == 6
     assert response.json() == {
+        "id": 271,
         "halo_id": 1,
-        "beginning_index": "[513379, 579338, 0, 0, 622535, 9]",
-        "ending_index": "[1305331, 579338, 0, 0, 622542, 9]"
+        "beginning_index": [513379, 579338, 0, 0, 622535, 9],
+        "ending_index": [1305331, 579338, 0, 0, 622542, 9]
     }
 
 
