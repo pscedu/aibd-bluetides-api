@@ -6,7 +6,7 @@ import bigfile
 import numpy
 from fastapi import HTTPException
 
-from . import constants
+import constants
 
 
 class NumpyArrayEncoder(JSONEncoder):

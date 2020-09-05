@@ -14,7 +14,7 @@ def test_get_fofgroup_minid_251():
     response = client.get("/pig/251/fofgroup/MinID/10")  # test boundary case
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
-    fof_data = json.loads(response.json()["fofgroup_minid"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is int
     assert fof_data == 597130367454
 
@@ -23,7 +23,7 @@ def test_get_fofgroup_minid_271():
     response = client.get("/pig/271/fofgroup/MinID/20")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
-    fof_data = json.loads(response.json()["fofgroup_minid"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is int
     assert fof_data == 437900381799
 
@@ -34,7 +34,7 @@ def test_get_fofgroup_bhmass_251():
     response = client.get("/pig/251/fofgroup/BlackholeMass/10")  # test boundary case
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
-    fof_data = json.loads(response.json()["fofgroup_blackholemass"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is float
     assert fof_data == 0.020697657018899918
 
@@ -43,7 +43,7 @@ def test_get_fofgroup_bhmass_271():
     response = client.get("/pig/271/fofgroup/BlackholeMass/20")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
-    fof_data = json.loads(response.json()["fofgroup_blackholemass"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is float
     assert fof_data == 0.013113398104906082
 
@@ -54,7 +54,7 @@ def test_get_fofgroup_sfr_251():
     response = client.get("/pig/251/fofgroup/StarFormationRate/10")  # test boundary case
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
-    fof_data = json.loads(response.json()["fofgroup_starformationrate"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is float
     assert fof_data == 73.0089416503906250
 
@@ -63,7 +63,7 @@ def test_get_fofgroup_sfr_271():
     response = client.get("/pig/271/fofgroup/StarFormationRate/20")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
-    fof_data = json.loads(response.json()["fofgroup_starformationrate"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is float
     assert fof_data == 101.4774246215820312
 
@@ -74,7 +74,7 @@ def test_get_fofgroup_mass_251():
     response = client.get("/pig/251/fofgroup/Mass/286036300")  # test boundary case
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
-    fof_data = json.loads(response.json()["fofgroup_mass"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is float
     assert fof_data == 0.023881886154413223
 
@@ -83,7 +83,7 @@ def test_get_fofgroup_mass_271():
     response = client.get("/pig/271/fofgroup/Mass/20")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
-    fof_data = json.loads(response.json()["fofgroup_mass"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is float
     assert fof_data == 181.4469909667968750
 
@@ -94,7 +94,7 @@ def test_get_fofgroup_bhacc_251():
     response = client.get("/pig/251/fofgroup/BlackholeAccretionRate/10")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
-    fof_data = json.loads(response.json()["fofgroup_blackholeaccretionrate"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is float
     assert fof_data == 0.10691969841718674
 
@@ -103,7 +103,7 @@ def test_get_fofgroup_bhacc_271():
     response = client.get("/pig/271/fofgroup/BlackholeAccretionRate/20")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
-    fof_data = json.loads(response.json()["fofgroup_blackholeaccretionrate"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is float
     assert fof_data == 0.18356771767139435
 
@@ -114,7 +114,7 @@ def test_get_fofgroup_mbt_251():
     response = client.get("/pig/251/fofgroup/MassByType/10")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
-    fof_data = json.loads(response.json()["fofgroup_massbytype"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is list
     assert fof_data == [28.0266895294189453, 166.1539764404296875, 0., 0., 5.8279027938842773, 0.022659240290522575]
 
@@ -123,7 +123,7 @@ def test_get_fofgroup_mbt_271():
     response = client.get("/pig/271/fofgroup/MassByType/10")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
-    fof_data = json.loads(response.json()["fofgroup_massbytype"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is list
     assert fof_data == [30.0651035308837891, 190.1893615722656250, 0., 0., 7.6514310836791992, 0.021950561553239822]
 
@@ -134,7 +134,7 @@ def test_get_fofgroup_mcp_251():
     response = client.get("/pig/251/fofgroup/MassCenterPosition/10")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
-    fof_data = json.loads(response.json()["fofgroup_masscenterposition"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is list
     assert fof_data == [286021.04757619253, 99592.58435937122, 186922.28821872440]
 
@@ -143,7 +143,7 @@ def test_get_fofgroup_mcp_271():
     response = client.get("/pig/271/fofgroup/MassCenterPosition/10")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
-    fof_data = json.loads(response.json()["fofgroup_masscenterposition"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is list
     assert fof_data == [72871.81341054394, 195094.91935102656, 229728.45949624668]
 
@@ -154,7 +154,7 @@ def test_get_fofgroup_mcv_251():
     response = client.get("/pig/251/fofgroup/MassCenterVelocity/10")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 446499*1 array list
-    fof_data = json.loads(response.json()["fofgroup_masscentervelocity"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is list
     assert fof_data == [-7.5896172523498535, 29.7871456146240234, 9.3012847900390625]
 
@@ -163,7 +163,7 @@ def test_get_fofgroup_mcv_271():
     response = client.get("/pig/271/fofgroup/MassCenterVelocity/10")
     utils.common_positive_tests(response)
     # Validate payload: Response is a well-formed JSON object and response data -- gas internal_energy data should be a 513379*1 array list
-    fof_data = json.loads(response.json()["fofgroup_masscentervelocity"])
+    fof_data = json.loads(response.json()["fof_data"])
     assert type(fof_data) is list
     assert fof_data == [30.488758087158203, -15.635041236877441, 44.830150604248047]
 

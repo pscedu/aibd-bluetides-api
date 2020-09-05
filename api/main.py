@@ -11,8 +11,8 @@ from fastapi import FastAPI, Query, Path, Body, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from . import utils
-from . import constants
+import utils
+import constants
 
 
 # Init
@@ -32,7 +32,7 @@ class Snapshot(BaseModel):
     num_bh: int
 
 
-class SnapshotFoFGroup(BaseModel):
+class SnapshotFOFGroup(BaseModel):
     id: int
     fof_subdirs: List[str] = []
 
@@ -67,6 +67,19 @@ class Offsetbytype(BaseModel):
     halo_id: int
     beginning_index: List[int] = []
     ending_index: List[int] = []
+
+class FOFGroup(BaseModel):
+    id: int
+    group_id: int
+    feature: str
+    fof_data: str
+
+class Particle(BaseModel):
+    id: int
+    ptype: str
+    feature: str
+    group_id: int
+    data: list
 
 @app.get("/")
 async def read_main():
@@ -126,7 +139,7 @@ async def read_snapshot_info(id: int= Path(..., description="ID of a PIG folder"
 @app.get(
     "/pig/{id}/fofgroup", 
     tags=["pig"],
-    response_model=SnapshotFoFGroup,
+    response_model=SnapshotFOFGroup,
     responses={
         404: constants.response_404["read_snapshot_info"],
         200: constants.response_200["read_snapshot_fof_info"],
@@ -304,11 +317,11 @@ async def read_obh(id: int = Path(..., description="ID of a PIG folder"), halo_i
     tags=["advanced"],
     responses={
     404: constants.response_404["read_haloid_by_criterion"],
-    # 200: constants.response_200["read_haloid_by_criterion"]
+    200: constants.response_200["read_haloid_by_criterion"]
     },)
 async def read_haloid_by_criterion(id: int = Path(..., description="ID of a PIG folder"), feature: str = Path(..., description="Feature of FoFGroup"), 
     ptype: str = Path(..., description="Name of particle type"), min_range: Optional[float] = Query(None, description="Min range of a searching criterion"), 
-    max_range: Optional[float] = Query(None, description="Min range of a searching criterion")):
+    max_range: Optional[float] = Query(None, description="Max range of a searching criterion")):
     utils.check_pig_id(pig_id=id)
     """
     Get all halo IDs of particles matching some searching criterion in a PIG folder with all the information:
@@ -317,7 +330,7 @@ async def read_haloid_by_criterion(id: int = Path(..., description="ID of a PIG 
     - **ptype**: Name of pariticle type. It should be in ['gas', 'dm', 'star', 'bh'].
     - **feature**: Feature of FoFGroup.
     """
-    # utils.check_feature(pig_id = id, ptype = ptype, feature = feature)
+    utils.check_feature(pig_id = id, ptype = "fofgroup", feature = feature)
     type_ind = {'gas': 0, 'dm': 1, 'star': 4, 'bh': 5}
     ind = type_ind[ptype]
     pig = utils.get_pig_data(id)
@@ -344,7 +357,7 @@ async def read_haloid_by_criterion(id: int = Path(..., description="ID of a PIG 
     },)
 async def read_particle_data_by_criterion(id: int = Path(..., description="ID of a PIG folder"), ptype: str = Path(..., description="Name of particle type"), 
     feature: str  = Path(..., description="Feature of the particle"), criterion: str = Path(..., description="Searching Criterion"), 
-    min_range: Optional[float] = Query(None, description="Min range of a searching criterion"), max_range: Optional[float] = Query(None, description="Min range of a searching criterion")):
+    min_range: Optional[float] = Query(None, description="Min range of a searching criterion"), max_range: Optional[float] = Query(None, description="Max range of a searching criterion")):
     """
     Get a dictionary of {groupid:data} for data of specific particle feature within the searching criterion in a PIG folder:
 
@@ -380,24 +393,26 @@ async def read_fofgroup_data_all(id: int = Path(..., description="ID of a PIG fo
     data = utils.get_fofgroup_data_all(pig_id=id, feature=feature)
     return {('fofgroup' + '_' + feature.lower()): data}
 
+
 # Regular query for particle data in a Group={group_id} of type={ptype}
 @app.get(
     "/pig/{id}/fofgroup/{feature}/{group_id}", 
     tags=["particle"],
+    response_model=FOFGroup,
     responses={
     404: constants.response_404["read_fofgroup_data"],
-    # 200: constants.response_200["read_fofgroup_data"]
+    200: constants.response_200["read_fofgroup_data"]
     },)
 async def read_fofgroup_data(id: int = Path(..., description="ID of a PIG folder"), group_id: int = Path(..., description="ID of a halo group"), feature: str = Path(..., description="Feature of FoFGroup")):
     """
-    Get the the FoFGroup feature data of the nth halo group in a PIG folder with all the information:
+    Get the the FOFGroup feature data of the nth halo group in a PIG folder with all the information:
 
     - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
     - **feature**: Feature of FoFGroup.
     - **group_id**: ID of a halo group. It should be between 1 to the max halo group size.
     """
     data = utils.get_fofgroup_data(pig_id=id, group_id=group_id, feature=feature)
-    return {('fofgroup' + '_' + feature.lower()): data}
+    return {"id": id, "group_id": group_id, "feature": feature, "fof_data": data}
 
 
 ###################################################################
@@ -409,7 +424,7 @@ async def read_fofgroup_data(id: int = Path(..., description="ID of a PIG folder
     tags=["particle"],
     responses={
     404: constants.response_404["read_particle_data_by_groupid"],
-    # 200: constants.response_200["read_particle_data_by_groupid"]
+    200: constants.response_200["read_particle_data_by_groupid"]
     },)
 async def read_particle_data_by_groupid(id: int = Path(..., description="ID of a PIG folder"), group_id: int = Path(..., description="ID of a halo group"), 
     ptype: str = Path(..., description="Name of particle type"), feature: str = Path(..., description="Feature of the particle")):
@@ -421,8 +436,8 @@ async def read_particle_data_by_groupid(id: int = Path(..., description="ID of a
     - **group_id**: ID of a halo group. It should be between 1 to the max halo group size.
     """
     data = utils.get_particle_data(pig_id=id, group_id=group_id, ptype=ptype, feature=feature)
+    # return {"id": id, "ptype": ptype, "feature": feature, "group_id": group_id, "data": data} # instead of  (ptype + '_' + feature.lower())
     return {(ptype + '_' + feature.lower()): data}
-
 
 ### bulk query post
 @app.post(
@@ -430,7 +445,7 @@ async def read_particle_data_by_groupid(id: int = Path(..., description="ID of a
     tags=["advanced"],
     responses={
     404: constants.response_404["read_particle_data_by_post_groupid_list"],
-    # 200: constants.response_200["read_particle_data_by_post_groupid_list"]
+    200: constants.response_200["read_particle_data_by_post_groupid_list"]
     },)
 async def read_particle_data_by_post_groupid_list(id: int = Path(..., description="ID of a PIG folder"), ptype: str = Path(..., description="Name of particle type"), 
     feature: str = Path(..., description="Feature of the particle"), groupid_list: List[int] = Body(..., description="A list of group IDs")):
