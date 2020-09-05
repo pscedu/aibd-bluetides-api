@@ -106,10 +106,8 @@ def construct_response_404(error_list):
 response_404["read_snapshot_info"] = construct_response_404(["pig_id"])
 response_404["read_snapshot_type_info"] = construct_response_404(["pig_id", "ptype"])
 response_404["read_lbt_file"] = construct_response_404(["pig_id", "group_id"])
-response_404["read_lbt_by_haloid"] = construct_response_404(["pig_id", "halo_id"])
 response_404["read_lbt_by_haloid_list"] = construct_response_404(["pig_id", "haloid_list", "halo_id"])
 response_404["read_lbht"] = construct_response_404(["pig_id", "halo_id", "type_id"])
-response_404["read_obh"] = construct_response_404(["pig_id", "halo_id"])
 response_404["read_haloid_by_criterion"] = construct_response_404(["pig_id", "ptype", "feature"])
 response_404["read_particle_data_by_criterion"] = construct_response_404(["pig_id", "ptype", "feature", "criterion", ])
 response_404["read_fofgroup_data"] = construct_response_404(["pig_id", "feature", "group_id"])
@@ -217,23 +215,6 @@ response_200["read_lbt_file"] = \
         },
         "LengthbytypeN")
 
-response_200["read_lbt_by_haloid"] = \
-    construct_response_200(
-        "Successful Response - Lengthbytype data requested by pig ID and halo ID",
-        {
-            "id": 251,
-            "halo_id": 10,
-            "type_length": [
-                102244,
-                121770,
-                0,
-                0,
-                140880,
-                6
-            ]
-        },
-        "LengthbytypeHaloID")
-
 response_200["read_lbt_by_haloid_list"] = \
     construct_response_200(
         "Successful Response - Lengthbytype data requested by pig ID and list of halo IDs",
@@ -270,32 +251,6 @@ response_200["read_lbht"] = \
             "length": 121770
         },
         "LengthbytypeHaloIDTypeID")
-
-response_200["read_obh"] = \
-    construct_response_200(
-        "Successful Response - Offsetbytype data requested by pig ID, and halo ID",
-        {
-        "id": 251,
-        "halo_id": 10,
-        "beginning_index": [
-            2433830,
-            1847385,
-            0,
-            0,
-            1524584,
-            69
-        ],
-        "ending_index": [
-            2536074,
-            1969155,
-            0,
-            0,
-            1665464,
-            75
-        ]
-        },
-        "Offsetbytype")
-
 
 response_200["read_fofgroup_data"] = \
     construct_response_200(

@@ -47,11 +47,6 @@ class LengthbytypeN(BaseModel):
     num: int
     length_by_type: List[list] = []
 
-class LengthbytypeHaloID(BaseModel):
-    id: int
-    halo_id: int
-    type_length: List[int] = []
-
 class LengthbytypeHaloList(BaseModel):
     id: int
     haloid_lbt: Dict[int, List[int]] = {}
@@ -61,12 +56,6 @@ class LengthbytypeHaloIDTypeID(BaseModel):
     halo_id: int
     type_id: int
     length: int
-
-class Offsetbytype(BaseModel):
-    id: int
-    halo_id: int
-    beginning_index: List[int] = []
-    ending_index: List[int] = []
 
 class FOFGroup(BaseModel):
     id: int
@@ -206,26 +195,6 @@ async def read_lbt_file(id: int = Path(..., description="ID of a PIG folder"), n
     return {"id": id, "num": num, "length_by_type": numpy_array_data.tolist()}
 
 
-# Get the number of all gas type particles in the nth halo of a particular PIG folder
-@app.get(
-    "/pig/{id}/lengthbytype/{halo_id}/", 
-    tags=["lengthbytype"],
-    response_model=LengthbytypeHaloID,
-    responses={
-    404: constants.response_404["read_lbt_by_haloid"],
-    200: constants.response_200["read_lbt_by_haloid"]
-    },)
-async def read_lbt_by_haloid(id: int = Path(..., description="ID of a PIG folder"), halo_id: int = Path(..., description="ID of a halo")):
-    """
-    Get the number of all type particles for the nth halo in a PIG folder with all the information:
-
-    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
-    - **halo_id**: ID of a halo. ID of a halo. It should be between 0 to the max halo ID.
-    """
-    data = utils.get_lbt_by_haloid(pig_id=id, halo_id=halo_id)
-    return {"id": id, "halo_id": halo_id, "type_length": data}
-
-
 # Get the number of all type particles in a halo list of a particular PIG folder
 @app.get(
     "/pig/{id}/lengthbytype/", 
@@ -274,39 +243,6 @@ async def read_lbht(id: int = Path(..., description="ID of a PIG folder"), halo_
     numpy_array_len_data = numpy.array(length)
     encoded_numpy_len_data = json.dumps(numpy_array_len_data, cls=utils.NumpyArrayEncoder)
     return {"id": id, "halo_id": halo_id, "type_id": type_id, "length": encoded_numpy_len_data}
-
-
-# Get the beginning and the ending index of a particular group and PIG folder.
-@app.get(
-    "/pig/{id}/offsetbytype/{halo_id}/", 
-    tags=["lengthbytype"],
-    response_model=Offsetbytype,
-    responses={
-    404: constants.response_404["read_obh"],
-    200: constants.response_200["read_obh"]
-    },)
-async def read_obh(id: int = Path(..., description="ID of a PIG folder"), halo_id: int = Path(..., description="ID of a halo")):
-    """
-    Get the beginning and the ending index of the nth halo group in a PIG folder with all the information:
-
-    - **id**: ID of a PIG folder. It should be in [208, 230, 237, 216, 265, 244, 271, 258, 222, 251, 184, 197].
-    - **halo_id**: ID of a halo. It should be between 0 to the max halo ID.
-    """
-    utils.check_pig_id(pig_id=id)
-    pig = utils.get_pig_data(id)
-    utils.check_halo_id_range(pig=pig, halo_id=halo_id)
-    lbt = pig.open('FOFGroups/LengthByType')[:halo_id + 1]
-    obt = numpy.cumsum(lbt, axis=0).astype(int)
-    if halo_id == 0:
-        begin = [0] * 6
-    else:
-        begin = obt[halo_id - 1]
-    end = obt[halo_id]
-    numpy_array_begin_data = numpy.array(begin)
-    # encoded_numpy_begin_data = json.dumps(numpy_array_begin_data, cls=utils.NumpyArrayEncoder)
-    numpy_array_end_data = numpy.array(end)
-    # encoded_numpy_end_data = json.dumps(numpy_array_end_data, cls=utils.NumpyArrayEncoder)
-    return {"id": id, "halo_id": halo_id, "beginning_index": numpy_array_begin_data.tolist(), "ending_index": numpy_array_end_data.tolist()}
 
 
 ###################################################################

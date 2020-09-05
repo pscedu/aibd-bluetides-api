@@ -121,30 +121,6 @@ def test_get_lbt_invalid_pig_id():
     assert response.status_code == 404
 
 
-### endpoint: /pig/{id}/lengthbytype/{halo_id}/
-# Basic positive tests
-def test_get_lbh_251():
-    response = client.get("/pig/251/lengthbytype/100")
-    utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
-    assert response.json() == {
-        "id": 251,
-        "halo_id": 100,
-        "type_length": [71937, 74788, 0, 0, 54739, 4]
-    }
-
-
-def test_get_lbh_271():
-    response = client.get("/pig/271/lengthbytype/100")
-    utils.common_positive_tests(response)
-    # Validate payload: Response is a well-formed JSON object and response data -- length should match the file data.
-    assert response.json() == {
-        "id": 271,
-        "halo_id": 100,
-        "type_length": [89069, 87802, 0, 0, 50623, 5]
-    }
-
-
 # Negative testing with invalid input
 # Missing required parameters
 def test_get_lbh_missing_input():
@@ -152,22 +128,6 @@ def test_get_lbh_missing_input():
     response = client.get("/pig/251/lengthbytype/")
     assert response.status_code == 404
     response = client.get("/pig/271/lengthbytype/")
-    assert response.status_code == 404
-
-
-# Invalid value for endpoint parameters. E.g. pig 251 halo_id not in [0,286036300) and pig 271 halo_id not in [0,294288056)
-def test_get_lbh_invalid_haloid():
-    # Validate the status code: 400
-    response = client.get("/pig/251/lengthbytype/-1")
-    assert response.status_code == 404
-    response = client.get("/pig/271/lengthbytype/294288056")
-    assert response.status_code == 404
-
-
-# Invalid value for endpoint parameters. E.g. pig id not in PIG folder
-def test_get_lbh_invalid_pig_id():
-    # Validate the status code: 404
-    response = client.get("/pig/200/lengthbytype/5/")
     assert response.status_code == 404
 
 
