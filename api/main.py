@@ -11,8 +11,8 @@ from fastapi import FastAPI, Query, Path, Body, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-import utils
-import constants
+from . import utils
+from . import constants
 
 
 # Init
