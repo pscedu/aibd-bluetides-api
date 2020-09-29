@@ -1,6 +1,6 @@
 PIG_BASE_DIR = '/pylon5/as5pi3p/bluetides3/'
 
-WEB_URL = "http://cosmo.psc.edu/"
+WEB_URL = "http://bluetides.psc.edu/"
 
 #  metadata for tags
 tags_metadata = [
