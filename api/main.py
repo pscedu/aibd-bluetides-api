@@ -16,7 +16,7 @@ from . import constants
 
 # Init
 app = FastAPI(
-    title="BlueTides",
+    title="BlueTides API",
     description="A REST API for the BlueTides Cosmology Simulation Data. "
                 "You can find out more about BlueTides at [{}]({}).".format(constants.WEB_URL, constants.WEB_URL),
     openapi_tags=constants.tags_metadata,
