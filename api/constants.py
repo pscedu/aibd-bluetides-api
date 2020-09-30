@@ -2,6 +2,13 @@ PIG_BASE_DIR = '/pylon5/as5pi3p/bluetides3/'
 
 WEB_URL = "http://bluetides.psc.edu/"
 
+BASE_API_URL = "http://bluetides-api.psc.edu/"
+BASE_DATA_SHARING_PORTAL_URL = "http://bluetides-portal.psc.edu/"
+BASE_ORIGINAL_BLUETIDES_URL = "http://bluetides-project.org/"
+DATA_STRUCTURE = BASE_API_URL + "data-structure/"
+API_REFERENCE = BASE_API_URL + "api-reference/"
+API_TUTORIAL = BASE_API_URL + "tutorial/"
+
 #  metadata for tags
 tags_metadata = [
     {
