@@ -18,9 +18,9 @@ from . import constants
 app = FastAPI(
     title="BlueTides API",
     description="A REST API for the BlueTides Cosmology Simulation Data. You can find out more about BlueTides on the "
-                "[project webpage]({bluetides_web}).<br/><br/> Additionally, the [data structure]({data_structure}), "
-                "[API Reference]({reference}), and a [Getting Started Tutorial]({tutorial}) are available for "
-                "reference.".format(bluetides_web=constants.WEB_URL,
+                "[project webpage]({bluetides_web}).<br/><br/> Additionally, a description of the [data structure]"
+                "({data_structure}), an [API reference]({reference}) listing the endpoints available, and a [Getting "
+                "Started tutorial]({tutorial}) are available.".format(bluetides_web=constants.WEB_URL,
                                     data_structure=constants.DATA_STRUCTURE,
                                     reference=constants.API_REFERENCE,
                                     tutorial=constants.API_TUTORIAL),
