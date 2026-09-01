@@ -1,0 +1,16 @@
+.git
+.gitignore
+mpi
+original_scripts
+venv
+# .dockerignore uses Go filepath.Match: `*` does not cross `/`, so the bare
+# patterns below only match at the context root. The `**/` forms are what
+# actually exclude nested files (e.g. api/BT_api_tutorial.ipynb, 312 KB).
+__pycache__
+**/__pycache__
+.pytest_cache
+**/.pytest_cache
+*.pyc
+**/*.pyc
+*.ipynb
+**/*.ipynb
