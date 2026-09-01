@@ -1,27 +1,67 @@
+# Pins verified against the production venv (/opt/environments/cosmo/api on vm017,
+# `pip freeze`, 2026-09) — the versions the running API actually imported and served
+# traffic with. They supersede this repo's original pins, which described a state
+# that was never installed anywhere: bigfile 0.1.49, fastapi 0.58.0, pydantic 1.5.1,
+# starlette 0.13.4, uvicorn 0.11.5, h11 0.9.0, requests 2.24.0, chardet 3.0.4,
+# certifi 2020.4.5.2, packaging 20.4. A plain `pip install -r` of the ORIGINAL file
+# reproduces neither production nor this image.
+#
+# The production venv was shared with unrelated projects (vitessce, zarr, negspy,
+# tifffile, google-api-*, fedex). That pollution is deliberately not listed here,
+# and it is why the venv ended up in a combination pip cannot construct: its exact
+# version set is NOT pip-resolvable, so two pins below deviate from the freeze on
+# purpose, each toward what the package itself declares:
+#
+#   starlette==0.14.2  venv had 0.14.0, but fastapi 0.65.1 declares
+#                      `starlette==0.14.2`. Production ran a combination fastapi
+#                      considers wrong; this runs the one it considers right.
+#                      Two patch releases; no effect on the served API.
+#   click==7.1.2       venv had 8.0.4, but uvicorn 0.13.4 declares `click==7.*`.
+#                      Note: click IS imported in the serving path — uvicorn 0.13.x
+#                      defines its CLI in uvicorn/main.py, which uvicorn/workers.py
+#                      imports for `Server`, so click's decorators execute at import
+#                      even though the CLI command itself never runs under gunicorn +
+#                      UvicornWorker. Matching uvicorn's declared click 7.x is
+#                      therefore the safer choice, not a cosmetic one.
+#
+# The alternative — installing the venv's exact set with `pip install --no-deps` —
+# was built and tested and works, but it permanently turns this file into a
+# hand-maintained dependency closure. That trap already bit once (typing-extensions
+# was silently required and absent), so it was rejected: the goal is fidelity to
+# what the API does, not to a broken-by-construction environment.
+#
+# typing-extensions is required by pydantic 1.8.2 and was missing from the repo's
+# original pins; 4.1.1 is the production value and is pinned explicitly so the
+# resolver cannot pull a newer one.
+#
+# gunicorn is the only addition for containerization (20.1.0 is the last release
+# supporting Python 3.8).
 astropy==4.0.1.post1
 attrs==19.3.0
-bigfile==0.1.49
-certifi==2023.7.22
-chardet==3.0.4
+bigfile==0.1.51
+certifi==2020.12.5
+chardet==4.0.0
 click==7.1.2
 Cython==0.29.20
-fastapi==0.58.0
-h11==0.9.0
+fastapi==0.65.1
+gunicorn==20.1.0
+h11==0.12.0
 httptools==0.1.1
 idna==2.10
 more-itertools==8.4.0
 numpy==1.18.5
-packaging==20.4
+packaging==20.9
 pluggy==0.13.1
 py==1.9.0
-pydantic==1.5.1
+pydantic==1.8.2
 pyparsing==2.4.7
 pytest==5.4.3
-requests==2.24.0
+requests==2.25.1
 six==1.15.0
-starlette==0.13.4
+starlette==0.14.2
+typing-extensions==4.1.1
 urllib3==1.25.9
-uvicorn==0.11.5
+uvicorn==0.13.4
 uvloop==0.14.0
 wcwidth==0.2.5
 websockets==8.1

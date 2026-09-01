@@ -5,7 +5,7 @@ from astropy.cosmology import FlatLambdaCDM
 from bigfile import BigFile
 
 cosmo = FlatLambdaCDM(H0=69.7, Om0=0.2814, Ob0=0.0464)
-files = '/pylon5/as5pi3p/bluetides3/PIG_*'
+files = '/hildafs/datasets/public/BlueTides/PIG_FILES/PIG_*'
 
 # Yueying: The snapshot is written in bigfile.
 # The header file can be used to extract the general information of the PIG file.
